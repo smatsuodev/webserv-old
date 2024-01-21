@@ -39,38 +39,4 @@ int main() {
 	taskManager.createIOTask(acceptConnection, sock);
 
 	taskManager.executeTasks();
-
-//	while (true) {
-//		poll(&fds[0], fds.size(), -1);
-//
-//		if (fds[0].revents == POLLIN) {
-//			int conn_fd = accept(sock, nullptr, nullptr);
-//			struct pollfd conn = {0};
-//			conn.fd = conn_fd;
-//			conn.events = POLLIN | POLLOUT;
-//			if (available_fd_index.empty()) {
-//				fds.push_back(conn);
-//			} else {
-//				int index = available_fd_index.top();
-//				available_fd_index.pop();
-//
-//				fds[index] = conn;
-//			}
-//			cout << "<- connection: fd=" << conn.fd << ", poll_fds.size=" << fds.size()
-//				 << ", stack.size="
-//				 << available_fd_index.size() << endl;
-//		} else {
-//			for (int i = 1; i < fds.size(); i++) {
-//				if (fds[i].revents & POLLHUP) {
-//					close(fds[i].fd);
-//					available_fd_index.push(i);
-//					cout << "-> disconnection: fd=" << fds[i].fd << ", poll_fds.size=" << fds.size()
-//						 << ", stack.size="
-//						 << available_fd_index.size() << endl;
-//					fds[i].fd = -1;
-//					break;
-//				}
-//			}
-//		}
-//	}
 }
