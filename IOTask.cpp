@@ -93,11 +93,23 @@ void WriteFile::execute(IOTaskManager &m) {
 	}
 }
 
-Accept::Accept(int socket, Callback callback) : IOTask(socket, POLLIN), callback(callback) {}
+AcceptCallback::AcceptCallback(AcceptCallback::Callback callback) : callback(callback) {}
+
+void
+AcceptCallback::trigger(int connection, SockAddrIn addr, socklen_t addr_len, IOTaskManager &m) {
+	callback(connection, addr, addr_len, m);
+}
+
+Accept::Accept(int socket, AcceptCallback *callback) : IOTask(socket, POLLIN), callback(callback) {}
 
 void Accept::execute(IOTaskManager &m) {
 	int connection = accept(fd, (SockAddr *) &sock_addr, &sock_addr_len);
-	callback(connection, sock_addr, sock_addr_len, m);
+	if (callback != nullptr)
+		callback->trigger(connection, sock_addr, sock_addr_len, m);
+}
+
+Accept::~Accept() {
+	delete callback;
 }
 
 CloseCallback::CloseCallback(CloseCallback::Callback callback, SockAddrIn sock_addr,
@@ -108,10 +120,15 @@ void CloseCallback::trigger() {
 	callback(sock_addr, sock_addr_len);
 }
 
-Close::Close(int fd, CloseCallback callback) : IOTask(fd, POLLHUP), callback(callback) {}
+Close::Close(int fd, CloseCallback *callback) : IOTask(fd, POLLHUP), callback(callback) {}
+
+Close::~Close() {
+	delete callback;
+}
 
 void Close::execute(IOTaskManager &m) {
 	close(fd);
-	callback.trigger();
+	if (callback != nullptr)
+		callback->trigger();
 	m.remove(fd, events);
 }

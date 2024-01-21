@@ -68,15 +68,24 @@ public:
 	void execute(IOTaskManager &m);
 };
 
-class Accept : public IOTask {
+class AcceptCallback {
 	typedef void (*Callback)(int, SockAddrIn, socklen_t, IOTaskManager &);
 
 	Callback callback;
+
+public:
+	AcceptCallback(Callback callback);
+	void trigger(int connection, SockAddrIn addr, socklen_t addr_len, IOTaskManager &m);
+};
+
+class Accept : public IOTask {
+	AcceptCallback *callback;
 	SockAddrIn sock_addr;
 	socklen_t sock_addr_len;
 
 public:
-	Accept(int socket, Callback callback);
+	Accept(int socket, AcceptCallback *callback);
+	~Accept();
 	void execute(IOTaskManager &m);
 };
 
@@ -93,10 +102,11 @@ public:
 };
 
 class Close : public IOTask {
-	CloseCallback callback;
+	CloseCallback *callback;
 
 public:
-	Close(int fd, CloseCallback callback);
+	Close(int fd, CloseCallback *callback);
+	~Close();
 	void execute(IOTaskManager &m);
 };
 

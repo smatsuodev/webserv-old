@@ -20,9 +20,7 @@ void handleConnection(int fd, SockAddrIn addr, socklen_t addr_len, IOTaskManager
 	inet_ntop(AF_INET, &addr, dst, addr_len);
 	cout << "<- connection from " << dst << endl;
 
-	CloseCallback callback(handleHangUp, addr, addr_len);
-
-	m.add(new Close(fd, callback));
+	m.add(new Close(fd, new CloseCallback(handleHangUp, addr, addr_len)));
 }
 
 int main() {
@@ -39,6 +37,6 @@ int main() {
 
 	IOTaskManager taskManager;
 
-	taskManager.add(new Accept(sock, handleConnection));
+	taskManager.add(new Accept(sock, new AcceptCallback(handleConnection)));
 	taskManager.executeTasks();
 }
