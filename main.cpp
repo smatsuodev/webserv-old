@@ -7,8 +7,11 @@
 
 using namespace std;
 
-void handleHangUp() {
-	cout << "-> disconnected" << endl;
+void handleHangUp(SockAddrIn addr, socklen_t addr_len) {
+	char dst[INET_ADDRSTRLEN];
+
+	inet_ntop(AF_INET, &addr, dst, addr_len);
+	cout << "-> disconnection of " << dst << endl;
 }
 
 void handleConnection(int fd, SockAddrIn addr, socklen_t addr_len, IOTaskManager &m) {
@@ -17,7 +20,9 @@ void handleConnection(int fd, SockAddrIn addr, socklen_t addr_len, IOTaskManager
 	inet_ntop(AF_INET, &addr, dst, addr_len);
 	cout << "<- connection from " << dst << endl;
 
-	m.add(new Close(fd, handleHangUp));
+	CloseCallback callback(handleHangUp, addr, addr_len);
+
+	m.add(new Close(fd, callback));
 }
 
 int main() {

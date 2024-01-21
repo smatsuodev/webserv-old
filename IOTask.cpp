@@ -100,10 +100,18 @@ void Accept::execute(IOTaskManager &m) {
 	callback(connection, sock_addr, sock_addr_len, m);
 }
 
-Close::Close(int fd, Callback callback) : IOTask(fd, POLLHUP), callback(callback) {}
+CloseCallback::CloseCallback(CloseCallback::Callback callback, SockAddrIn sock_addr,
+							 socklen_t sock_addr_len)
+	: callback(callback), sock_addr(sock_addr), sock_addr_len(sock_addr_len) {}
+
+void CloseCallback::trigger() {
+	callback(sock_addr, sock_addr_len);
+}
+
+Close::Close(int fd, CloseCallback callback) : IOTask(fd, POLLHUP), callback(callback) {}
 
 void Close::execute(IOTaskManager &m) {
 	close(fd);
-	callback();
+	callback.trigger();
 	m.remove(fd, events);
 }

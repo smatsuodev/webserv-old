@@ -80,13 +80,23 @@ public:
 	void execute(IOTaskManager &m);
 };
 
-class Close : public IOTask {
-	typedef void (*Callback)();
+class CloseCallback {
+	typedef void (*Callback)(SockAddrIn, socklen_t);
 
 	Callback callback;
+	SockAddrIn sock_addr;
+	socklen_t sock_addr_len;
 
 public:
-	Close(int fd, Callback callback);
+	CloseCallback(Callback callback, SockAddrIn sock_addr, socklen_t sock_addr_len);
+	void trigger();
+};
+
+class Close : public IOTask {
+	CloseCallback callback;
+
+public:
+	Close(int fd, CloseCallback callback);
 	void execute(IOTaskManager &m);
 };
 
