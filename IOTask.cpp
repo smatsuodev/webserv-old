@@ -28,12 +28,6 @@ void IOTaskManager::add(IOTask *task) {
 	}
 }
 
-void IOTaskManager::createIOTask(IOTaskFactory &factory, int fd) {
-	IOTask *task = factory.create(fd);
-
-	add(task);
-}
-
 void IOTaskManager::remove(int fd, short events) {
 	std::pair<int, short> key = std::pair<int, short>(fd, events);
 	TaskIndexMap::iterator it = task_index_map.find(key);
@@ -82,12 +76,6 @@ void ReadFile::execute(IOTaskManager &m) {
 	read_buf.append((const char *) tmp_buf);
 }
 
-ReadFileFactory::ReadFileFactory(ReadFile::Callback callback) : callback(callback) {}
-
-ReadFile *ReadFileFactory::create(int fd) {
-	return new ReadFile(fd, callback);
-}
-
 WriteFile::WriteFile(int fd, const std::string &dataToWrite, Callback callback)
 	: IOTask(fd, POLLOUT), callback(callback) {
 	this->buf = dataToWrite.c_str();
@@ -105,24 +93,11 @@ void WriteFile::execute(IOTaskManager &m) {
 	}
 }
 
-WriteFileFactory::WriteFileFactory(const std::string &dataToWrite, WriteFile::Callback callback)
-	: dataToWrite(dataToWrite), callback(callback) {}
-
-WriteFile *WriteFileFactory::create(int fd) {
-	return new WriteFile(fd, dataToWrite, callback);
-}
-
 Accept::Accept(int socket, Callback callback) : IOTask(socket, POLLIN), callback(callback) {}
 
 void Accept::execute(IOTaskManager &m) {
 	int connection = accept(fd, (SockAddr *) &sock_addr, &sock_addr_len);
 	callback(connection, sock_addr, sock_addr_len, m);
-}
-
-AcceptFactory::AcceptFactory(Accept::Callback callback) : callback(callback) {}
-
-Accept *AcceptFactory::create(int fd) {
-	return new Accept(fd, callback);
 }
 
 Close::Close(int fd, Callback callback) : IOTask(fd, POLLHUP), callback(callback) {}
@@ -131,10 +106,4 @@ void Close::execute(IOTaskManager &m) {
 	close(fd);
 	callback();
 	m.remove(fd, events);
-}
-
-CloseFactory::CloseFactory(Close::Callback callback) : callback(callback) {}
-
-Close *CloseFactory::create(int fd) {
-	return new Close(fd, callback);
 }

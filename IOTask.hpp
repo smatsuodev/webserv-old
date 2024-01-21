@@ -23,17 +23,14 @@ typedef std::map<std::pair<int, short>, int> TaskIndexMap;
 
 class IOTask;
 
-class IOTaskFactory;
-
 class IOTaskManager {
 	TaskIndexMap task_index_map;
 	std::vector<PollFd> poll_fds;
 	std::vector<IOTask *> tasks;
 	std::stack<unsigned long> vacant_slots;
 
-	void add(IOTask *task);
 public:
-	void createIOTask(IOTaskFactory &factory, int fd);
+	void add(IOTask *task);
 	void remove(int fd, short events);
 	noreturn void executeTasks();
 };
@@ -47,15 +44,8 @@ public:
 	virtual void execute(IOTaskManager &m) = 0;
 };
 
-class IOTaskFactory {
-public:
-	virtual IOTask *create(int fd) = 0;
-};
-
 class ReadFile : public IOTask {
 	typedef void (*Callback)(const std::string &);
-
-	friend class ReadFileFactory;
 
 	Callback callback;
 	char *tmp_buf[READ_FILE_READ_SIZE];
@@ -66,18 +56,8 @@ public:
 	void execute(IOTaskManager &m);
 };
 
-class ReadFileFactory : public IOTaskFactory {
-	ReadFile::Callback callback;
-
-public:
-	explicit ReadFileFactory(ReadFile::Callback callback);
-	ReadFile *create(int fd);
-};
-
 class WriteFile : public IOTask {
 	typedef void (*Callback)();
-
-	friend class WriteFileFactory;
 
 	Callback callback;
 	const char *buf;
@@ -88,19 +68,8 @@ public:
 	void execute(IOTaskManager &m);
 };
 
-class WriteFileFactory : public IOTaskFactory {
-	const std::string &dataToWrite;
-	WriteFile::Callback callback;
-
-public:
-	explicit WriteFileFactory(const std::string &dataToWrite, WriteFile::Callback callback);
-	WriteFile *create(int fd);
-};
-
 class Accept : public IOTask {
 	typedef void (*Callback)(int, SockAddrIn, socklen_t, IOTaskManager &);
-
-	friend class AcceptFactory;
 
 	Callback callback;
 	SockAddrIn sock_addr;
@@ -111,32 +80,14 @@ public:
 	void execute(IOTaskManager &m);
 };
 
-class AcceptFactory : public IOTaskFactory {
-	Accept::Callback callback;
-
-public:
-	explicit AcceptFactory(Accept::Callback callback);
-	Accept *create(int fd);
-};
-
 class Close : public IOTask {
 	typedef void (*Callback)();
-
-	friend class CloseFactory;
 
 	Callback callback;
 
 public:
 	Close(int fd, Callback callback);
 	void execute(IOTaskManager &m);
-};
-
-class CloseFactory : public IOTaskFactory {
-	Close::Callback callback;
-
-public:
-	explicit CloseFactory(Close::Callback callback);
-	Close *create(int fd);
 };
 
 #endif

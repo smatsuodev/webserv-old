@@ -17,8 +17,7 @@ void handleConnection(int fd, SockAddrIn addr, socklen_t addr_len, IOTaskManager
 	inet_ntop(AF_INET, &addr, dst, addr_len);
 	cout << "<- connection from " << dst << endl;
 
-	CloseFactory hangUp(handleHangUp);
-	m.createIOTask(hangUp, fd);
+	m.add(new Close(fd, handleHangUp));
 }
 
 int main() {
@@ -34,9 +33,7 @@ int main() {
 	listen(sock, SOMAXCONN);
 
 	IOTaskManager taskManager;
-	AcceptFactory acceptConnection(handleConnection);
 
-	taskManager.createIOTask(acceptConnection, sock);
-
+	taskManager.add(new Accept(sock, handleConnection));
 	taskManager.executeTasks();
 }
