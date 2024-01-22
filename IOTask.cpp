@@ -114,16 +114,3 @@ void Accept::execute(IOTaskManager &m) {
 Accept::~Accept() {
 	delete callback;
 }
-
-Close::Close(int fd, ICloseCallback *callback) : IOTask(fd, POLLHUP), callback(callback) {}
-
-Close::~Close() {
-	delete callback;
-}
-
-void Close::execute(IOTaskManager &m) {
-	close(fd);
-	if (callback != nullptr)
-		callback->trigger();
-	m.remove(fd, events);
-}

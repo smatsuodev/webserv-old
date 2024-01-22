@@ -97,18 +97,4 @@ public:
 	void execute(IOTaskManager &m);
 };
 
-class ICloseCallback : public IOCallback {
-public:
-	virtual void trigger() = 0;
-};
-
-class Close : public IOTask {
-	ICloseCallback *callback;
-
-public:
-	Close(int fd, ICloseCallback *callback);
-	~Close();
-	void execute(IOTaskManager &m);
-};
-
 #endif

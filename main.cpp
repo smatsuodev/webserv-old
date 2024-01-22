@@ -30,16 +30,6 @@ public:
 	}
 };
 
-class HangUpCallback : public ICloseCallback {
-	SockAddrIn addr;
-public:
-	explicit HangUpCallback(SockAddrIn addr) : addr(addr) {}
-
-	void trigger() {
-		cout << "-> disconnection of " << inet_ntoa(addr.sin_addr) << endl;
-	}
-};
-
 class AcceptCallback : public IAcceptCallback {
 public :
 	AcceptCallback() {}
@@ -47,7 +37,6 @@ public :
 	void trigger(int connection, SockAddrIn addr, IOTaskManager &m) {
 		cout << "<- connection from " << inet_ntoa(addr.sin_addr) << endl;
 
-//		m.add(new Close(connection, new HangUpCallback(addr)));
 		m.add(new ReadFile(connection, new EchoCallback(connection)));
 	}
 };
