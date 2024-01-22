@@ -1,3 +1,4 @@
+#include <iostream>
 #include "IOTask.hpp"
 #include <unistd.h>
 #include <stdnoreturn.h>
@@ -10,9 +11,7 @@ void IOTaskManager::add(IOTask *task) {
 		return; // TODO:例外を返す
 
 	if (vacant_slots.empty()) {
-		PollFd poll_fd;
-		poll_fd.fd = task->fd;
-		poll_fd.events = task->events;
+		PollFd poll_fd = {task->fd, task->events, 0};
 
 		poll_fds.push_back(poll_fd);
 		tasks.push_back(task);
@@ -26,6 +25,15 @@ void IOTaskManager::add(IOTask *task) {
 		poll_fds[index].events = task->events;
 		tasks[index] = task;
 	}
+//	std::cout << "added task: fd=" << task->fd << ", events=" << task->events << std::endl;
+//	for (unsigned long i = 0; i < poll_fds.size(); i++) {
+//		std::cout << "[" << i << "] fd=" << poll_fds[i].fd << ", events=" << poll_fds[i].events
+//				  << ", revents=" << poll_fds[i].revents << std::endl;
+//	}
+//	std::cout << "vacant_slots: size=" << vacant_slots.size();
+//	if (!vacant_slots.empty())
+//		std::cout << ", top=" << vacant_slots.top();
+//	std::cout << "\n" << std::endl;
 }
 
 void IOTaskManager::remove(int fd, short events) {
@@ -35,15 +43,28 @@ void IOTaskManager::remove(int fd, short events) {
 		return;
 	int *index = &it->second;
 
+	std::cout << "\n" << std::endl;
 	poll_fds[*index].fd = NOT_MONITORED;
+	poll_fds[*index].events = 0;
+	poll_fds[*index].revents = 0;
 	delete tasks[*index];
 	vacant_slots.push(*index);
 	*index = NOT_MONITORED;
+//	std::cout << "removed task: fd=" << fd << ", events=" << events << std::endl;
+//	for (unsigned long i = 0; i < poll_fds.size(); i++) {
+//		std::cout << "[" << i << "] fd=" << poll_fds[i].fd << ", events=" << poll_fds[i].events
+//				  << ", revents=" << poll_fds[i].revents << std::endl;
+//	}
+//	std::cout << "vacant_slots: size=" << vacant_slots.size();
+//	if (!vacant_slots.empty())
+//		std::cout << ", top=" << vacant_slots.top();
+//	std::cout << "\n" << std::endl;
 }
 
 noreturn void IOTaskManager::executeTasks() {
 	while (true) {
-		poll(&poll_fds[0], poll_fds.size(), -1);
+		if (poll(&poll_fds[0], poll_fds.size(), 0) == -1)
+			perror("poll");
 
 		for (unsigned long i = 0; i < poll_fds.size(); i++) {
 			PollFd *poll_fd = &poll_fds[i];
@@ -61,19 +82,34 @@ IOTask::IOTask(int fd, short events) : fd(fd), events(events) {}
 
 IOTask::~IOTask() {}
 
-ReadFile::ReadFile(int fd, Callback callback) : IOTask(fd, POLLIN), callback(callback) {
+ReadFileCallback::ReadFileCallback(ReadFileCallback::Callback callback) : callback(callback) {}
+
+void ReadFileCallback::trigger(const std::string &fileData, IOTaskManager &m) {
+	callback(fileData, m);
+}
+
+ReadFile::ReadFile(int fd, ReadFileCallback *callback) : IOTask(fd, POLLIN), callback(callback) {
 	memset(tmp_buf, 0, READ_FILE_READ_SIZE);
 }
 
 void ReadFile::execute(IOTaskManager &m) {
 	ssize_t read_size = read(fd, tmp_buf, READ_FILE_READ_SIZE);
+	if (read_size == -1) {
+		perror("read");
+		exit(1);
+	}
 
 	if (read_size == 0) {
-		callback(read_buf);
+		if (callback != nullptr)
+			callback->trigger(read_buf, m);
 		m.remove(fd, events);
 		return;
 	}
 	read_buf.append((const char *) tmp_buf);
+}
+
+ReadFile::~ReadFile() {
+	delete callback;
 }
 
 WriteFile::WriteFile(int fd, const std::string &dataToWrite, Callback callback)

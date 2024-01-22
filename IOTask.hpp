@@ -44,15 +44,23 @@ public:
 	virtual void execute(IOTaskManager &m) = 0;
 };
 
-class ReadFile : public IOTask {
-	typedef void (*Callback)(const std::string &);
+class ReadFileCallback {
+	typedef void (*Callback)(const std::string &, IOTaskManager &m);
 
 	Callback callback;
+public:
+	explicit ReadFileCallback(Callback callback);
+	void trigger(const std::string &fileData, IOTaskManager &m);
+};
+
+class ReadFile : public IOTask {
+	ReadFileCallback *callback;
 	char *tmp_buf[READ_FILE_READ_SIZE];
 	std::string read_buf;
 
 public:
-	ReadFile(int fd, Callback callback);
+	ReadFile(int fd, ReadFileCallback *callback);
+	~ReadFile();
 	void execute(IOTaskManager &m);
 };
 
@@ -74,7 +82,7 @@ class AcceptCallback {
 	Callback callback;
 
 public:
-	AcceptCallback(Callback callback);
+	explicit AcceptCallback(Callback callback);
 	void trigger(int connection, SockAddrIn addr, socklen_t addr_len, IOTaskManager &m);
 };
 

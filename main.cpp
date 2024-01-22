@@ -14,13 +14,17 @@ void handleHangUp(SockAddrIn addr, socklen_t addr_len) {
 	cout << "-> disconnection of " << dst << endl;
 }
 
-void handleConnection(int fd, SockAddrIn addr, socklen_t addr_len, IOTaskManager &m) {
-	char dst[INET_ADDRSTRLEN];
+void echo(const std::string &fileData, IOTaskManager &m) {
+	(void) m;
+	cout << fileData << endl;
+}
 
-	inet_ntop(AF_INET, &addr, dst, addr_len);
-	cout << "<- connection from " << dst << endl;
+void handleConnection(int fd, SockAddrIn addr, socklen_t addr_len, IOTaskManager &m) {
+
+	cout << "<- connection from " << inet_ntoa(addr.sin_addr) << endl;
 
 	m.add(new Close(fd, new CloseCallback(handleHangUp, addr, addr_len)));
+	m.add(new ReadFile(fd, new ReadFileCallback(echo)));
 }
 
 int main() {
