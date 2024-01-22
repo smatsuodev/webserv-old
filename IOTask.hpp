@@ -44,76 +44,69 @@ public:
 	virtual void execute(IOTaskManager &m) = 0;
 };
 
-class ReadFileCallback {
-	typedef void (*Callback)(const std::string &, IOTaskManager &m);
-
-	Callback callback;
+class IOCallback {
 public:
-	explicit ReadFileCallback(Callback callback);
-	void trigger(const std::string &fileData, IOTaskManager &m);
+	virtual ~IOCallback();
+};
+
+class IReadFileCallback : public IOCallback {
+public:
+	virtual void trigger(std::string fileData, IOTaskManager &m) = 0;
 };
 
 class ReadFile : public IOTask {
-	ReadFileCallback *callback;
+	IReadFileCallback *callback;
 	char *tmp_buf[READ_FILE_READ_SIZE];
 	std::string read_buf;
 
 public:
-	ReadFile(int fd, ReadFileCallback *callback);
+	ReadFile(int fd, IReadFileCallback *callback);
 	~ReadFile();
 	void execute(IOTaskManager &m);
 };
 
-class WriteFile : public IOTask {
-	typedef void (*Callback)();
+class IWriteFileCallback : public IOCallback {
+public:
+	virtual void trigger() = 0;
+};
 
-	Callback callback;
+class WriteFile : public IOTask {
+	IWriteFileCallback *callback;
+	std::string dataToWrite;
 	const char *buf;
 	size_t buf_len;
 
 public:
-	WriteFile(int fd, const std::string &dataToWrite, Callback callback);
+	WriteFile(int fd, const std::string &dataToWrite, IWriteFileCallback *callback);
 	void execute(IOTaskManager &m);
 };
 
-class AcceptCallback {
-	typedef void (*Callback)(int, SockAddrIn, socklen_t, IOTaskManager &);
-
-	Callback callback;
-
+class IAcceptCallback : public IOCallback {
 public:
-	explicit AcceptCallback(Callback callback);
-	void trigger(int connection, SockAddrIn addr, socklen_t addr_len, IOTaskManager &m);
+	virtual void trigger(int connection, SockAddrIn addr, IOTaskManager &m) = 0;
 };
 
 class Accept : public IOTask {
-	AcceptCallback *callback;
+	IAcceptCallback *callback;
 	SockAddrIn sock_addr;
 	socklen_t sock_addr_len;
 
 public:
-	Accept(int socket, AcceptCallback *callback);
+	Accept(int socket, IAcceptCallback *callback);
 	~Accept();
 	void execute(IOTaskManager &m);
 };
 
-class CloseCallback {
-	typedef void (*Callback)(SockAddrIn, socklen_t);
-
-	Callback callback;
-	SockAddrIn sock_addr;
-	socklen_t sock_addr_len;
-
+class ICloseCallback : public IOCallback {
 public:
-	CloseCallback(Callback callback, SockAddrIn sock_addr, socklen_t sock_addr_len);
-	void trigger();
+	virtual void trigger() = 0;
 };
 
 class Close : public IOTask {
-	CloseCallback *callback;
+	ICloseCallback *callback;
 
 public:
-	Close(int fd, CloseCallback *callback);
+	Close(int fd, ICloseCallback *callback);
 	~Close();
 	void execute(IOTaskManager &m);
 };

@@ -15,7 +15,6 @@ void IOTaskManager::add(IOTask *task) {
 
 		poll_fds.push_back(poll_fd);
 		tasks.push_back(task);
-
 		task_index_map[key] = poll_fds.size() - 1;
 	} else {
 		unsigned long index = vacant_slots.top();
@@ -24,16 +23,8 @@ void IOTaskManager::add(IOTask *task) {
 		poll_fds[index].fd = task->fd;
 		poll_fds[index].events = task->events;
 		tasks[index] = task;
+		task_index_map[key] = index;
 	}
-//	std::cout << "added task: fd=" << task->fd << ", events=" << task->events << std::endl;
-//	for (unsigned long i = 0; i < poll_fds.size(); i++) {
-//		std::cout << "[" << i << "] fd=" << poll_fds[i].fd << ", events=" << poll_fds[i].events
-//				  << ", revents=" << poll_fds[i].revents << std::endl;
-//	}
-//	std::cout << "vacant_slots: size=" << vacant_slots.size();
-//	if (!vacant_slots.empty())
-//		std::cout << ", top=" << vacant_slots.top();
-//	std::cout << "\n" << std::endl;
 }
 
 void IOTaskManager::remove(int fd, short events) {
@@ -43,28 +34,17 @@ void IOTaskManager::remove(int fd, short events) {
 		return;
 	int *index = &it->second;
 
-	std::cout << "\n" << std::endl;
 	poll_fds[*index].fd = NOT_MONITORED;
 	poll_fds[*index].events = 0;
 	poll_fds[*index].revents = 0;
 	delete tasks[*index];
 	vacant_slots.push(*index);
 	*index = NOT_MONITORED;
-//	std::cout << "removed task: fd=" << fd << ", events=" << events << std::endl;
-//	for (unsigned long i = 0; i < poll_fds.size(); i++) {
-//		std::cout << "[" << i << "] fd=" << poll_fds[i].fd << ", events=" << poll_fds[i].events
-//				  << ", revents=" << poll_fds[i].revents << std::endl;
-//	}
-//	std::cout << "vacant_slots: size=" << vacant_slots.size();
-//	if (!vacant_slots.empty())
-//		std::cout << ", top=" << vacant_slots.top();
-//	std::cout << "\n" << std::endl;
 }
 
 noreturn void IOTaskManager::executeTasks() {
 	while (true) {
-		if (poll(&poll_fds[0], poll_fds.size(), 0) == -1)
-			perror("poll");
+		poll(&poll_fds[0], poll_fds.size(), 0);
 
 		for (unsigned long i = 0; i < poll_fds.size(); i++) {
 			PollFd *poll_fd = &poll_fds[i];
@@ -82,22 +62,14 @@ IOTask::IOTask(int fd, short events) : fd(fd), events(events) {}
 
 IOTask::~IOTask() {}
 
-ReadFileCallback::ReadFileCallback(ReadFileCallback::Callback callback) : callback(callback) {}
+IOCallback::~IOCallback() {}
 
-void ReadFileCallback::trigger(const std::string &fileData, IOTaskManager &m) {
-	callback(fileData, m);
-}
-
-ReadFile::ReadFile(int fd, ReadFileCallback *callback) : IOTask(fd, POLLIN), callback(callback) {
+ReadFile::ReadFile(int fd, IReadFileCallback *callback) : IOTask(fd, POLLIN), callback(callback) {
 	memset(tmp_buf, 0, READ_FILE_READ_SIZE);
 }
 
 void ReadFile::execute(IOTaskManager &m) {
 	ssize_t read_size = read(fd, tmp_buf, READ_FILE_READ_SIZE);
-	if (read_size == -1) {
-		perror("read");
-		exit(1);
-	}
 
 	if (read_size == 0) {
 		if (callback != nullptr)
@@ -112,9 +84,9 @@ ReadFile::~ReadFile() {
 	delete callback;
 }
 
-WriteFile::WriteFile(int fd, const std::string &dataToWrite, Callback callback)
-	: IOTask(fd, POLLOUT), callback(callback) {
-	this->buf = dataToWrite.c_str();
+WriteFile::WriteFile(int fd, const std::string &dataToWrite, IWriteFileCallback *callback)
+	: IOTask(fd, POLLOUT), callback(callback), dataToWrite(dataToWrite) {
+	this->buf = this->dataToWrite.c_str();
 	this->buf_len = dataToWrite.length();
 }
 
@@ -124,39 +96,26 @@ void WriteFile::execute(IOTaskManager &m) {
 	buf_len -= buf_len;
 
 	if (buf_len == 0) {
-		callback();
+		if (callback != nullptr)
+			callback->trigger();
 		m.remove(fd, events);
 	}
 }
 
-AcceptCallback::AcceptCallback(AcceptCallback::Callback callback) : callback(callback) {}
-
-void
-AcceptCallback::trigger(int connection, SockAddrIn addr, socklen_t addr_len, IOTaskManager &m) {
-	callback(connection, addr, addr_len, m);
-}
-
-Accept::Accept(int socket, AcceptCallback *callback) : IOTask(socket, POLLIN), callback(callback) {}
+Accept::Accept(int socket, IAcceptCallback *callback)
+	: IOTask(socket, POLLIN), callback(callback) {}
 
 void Accept::execute(IOTaskManager &m) {
 	int connection = accept(fd, (SockAddr *) &sock_addr, &sock_addr_len);
 	if (callback != nullptr)
-		callback->trigger(connection, sock_addr, sock_addr_len, m);
+		callback->trigger(connection, sock_addr, m);
 }
 
 Accept::~Accept() {
 	delete callback;
 }
 
-CloseCallback::CloseCallback(CloseCallback::Callback callback, SockAddrIn sock_addr,
-							 socklen_t sock_addr_len)
-	: callback(callback), sock_addr(sock_addr), sock_addr_len(sock_addr_len) {}
-
-void CloseCallback::trigger() {
-	callback(sock_addr, sock_addr_len);
-}
-
-Close::Close(int fd, CloseCallback *callback) : IOTask(fd, POLLHUP), callback(callback) {}
+Close::Close(int fd, ICloseCallback *callback) : IOTask(fd, POLLHUP), callback(callback) {}
 
 Close::~Close() {
 	delete callback;

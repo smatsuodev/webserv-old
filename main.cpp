@@ -1,3 +1,4 @@
+#include <unistd.h>
 #include <iostream>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -7,25 +8,49 @@
 
 using namespace std;
 
-void handleHangUp(SockAddrIn addr, socklen_t addr_len) {
-	char dst[INET_ADDRSTRLEN];
+class CloseConnectionCallback : public IWriteFileCallback {
+	int connection;
 
-	inet_ntop(AF_INET, &addr, dst, addr_len);
-	cout << "-> disconnection of " << dst << endl;
-}
+public:
+	CloseConnectionCallback(int connection) : connection(connection) {}
 
-void echo(const std::string &fileData, IOTaskManager &m) {
-	(void) m;
-	cout << fileData << endl;
-}
+	void trigger() {
+		close(connection);
+	}
+};
 
-void handleConnection(int fd, SockAddrIn addr, socklen_t addr_len, IOTaskManager &m) {
+class EchoCallback : public IReadFileCallback {
+	int dst;
 
-	cout << "<- connection from " << inet_ntoa(addr.sin_addr) << endl;
+public:
+	explicit EchoCallback(int dst) : dst(dst) {}
 
-	m.add(new Close(fd, new CloseCallback(handleHangUp, addr, addr_len)));
-	m.add(new ReadFile(fd, new ReadFileCallback(echo)));
-}
+	void trigger(std::string fileData, IOTaskManager &m) {
+		m.add(new WriteFile(dst, fileData, new CloseConnectionCallback(dst)));
+	}
+};
+
+class HangUpCallback : public ICloseCallback {
+	SockAddrIn addr;
+public:
+	explicit HangUpCallback(SockAddrIn addr) : addr(addr) {}
+
+	void trigger() {
+		cout << "-> disconnection of " << inet_ntoa(addr.sin_addr) << endl;
+	}
+};
+
+class AcceptCallback : public IAcceptCallback {
+public :
+	AcceptCallback() {}
+
+	void trigger(int connection, SockAddrIn addr, IOTaskManager &m) {
+		cout << "<- connection from " << inet_ntoa(addr.sin_addr) << endl;
+
+//		m.add(new Close(connection, new HangUpCallback(addr)));
+		m.add(new ReadFile(connection, new EchoCallback(connection)));
+	}
+};
 
 int main() {
 	int sock = socket(AF_INET, SOCK_STREAM, 0);
@@ -41,6 +66,7 @@ int main() {
 
 	IOTaskManager taskManager;
 
-	taskManager.add(new Accept(sock, new AcceptCallback(handleConnection)));
+	taskManager.add(new Accept(sock, new AcceptCallback()));
 	taskManager.executeTasks();
+	return 0;
 }
