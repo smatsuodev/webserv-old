@@ -42,7 +42,7 @@ void IOTaskManager::remove(int fd, short events) {
 	*index = NOT_MONITORED;
 }
 
-noreturn void IOTaskManager::executeTasks() {
+void IOTaskManager::executeTasks() {
 	while (true) {
 		poll(&poll_fds[0], poll_fds.size(), 0);
 

@@ -12,7 +12,7 @@ class CloseConnectionCallback : public IWriteFileCallback {
 	int connection;
 
 public:
-	CloseConnectionCallback(int connection) : connection(connection) {}
+	explicit CloseConnectionCallback(int connection) : connection(connection) {}
 
 	void trigger() {
 		close(connection);
