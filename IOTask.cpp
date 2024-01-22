@@ -1,7 +1,6 @@
 #include <iostream>
 #include "IOTask.hpp"
 #include <unistd.h>
-#include <stdnoreturn.h>
 #include <sys/socket.h>
 
 void IOTaskManager::add(IOTask *task) {
