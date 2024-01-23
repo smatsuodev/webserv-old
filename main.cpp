@@ -8,7 +8,7 @@
 
 using namespace std;
 
-class CloseConnectionCallback : public IWriteFileCallback {
+class CloseConnectionCallback : public WriteFileCallback {
 	int connection;
 
 public:
@@ -19,25 +19,27 @@ public:
 	}
 };
 
-class EchoCallback : public IReadFileCallback {
+class EchoCallback : public ReadFileCallback {
+	IOTaskManager &m;
 	int dst;
 
 public:
-	explicit EchoCallback(int dst) : dst(dst) {}
+	explicit EchoCallback(IOTaskManager &m, int dst) : m(m), dst(dst) {}
 
-	void trigger(std::string fileData, IOTaskManager &m) {
+	void trigger(std::string fileData) {
 		m.add(new WriteFile(dst, fileData, new CloseConnectionCallback(dst)));
 	}
 };
 
-class AcceptCallback : public IAcceptCallback {
+class EstablishConnectionCallback : public AcceptCallback {
+	IOTaskManager &m;
 public :
-	AcceptCallback() {}
+	EstablishConnectionCallback(IOTaskManager &m) : m(m) {}
 
-	void trigger(int connection, SockAddrIn addr, IOTaskManager &m) {
+	void trigger(int connection, SockAddrIn addr) {
 		cout << "<- connection from " << inet_ntoa(addr.sin_addr) << endl;
 
-		m.add(new ReadFile(connection, new EchoCallback(connection)));
+		m.add(new ReadFile(connection, new EchoCallback(m, connection)));
 	}
 };
 
@@ -55,7 +57,7 @@ int main() {
 
 	IOTaskManager taskManager;
 
-	taskManager.add(new Accept(sock, new AcceptCallback()));
+	taskManager.add(new Accept(sock, new EstablishConnectionCallback(taskManager)));
 	taskManager.executeTasks();
 	return 0;
 }

@@ -51,8 +51,11 @@ void IOTaskManager::executeTasks() {
 				continue;
 
 			IOTask *task = tasks[i];
-			if (poll_fd->revents & task->events)
-				task->execute(*this);
+			if (poll_fd->revents & task->events) {
+				if (task->execute() == REMOVE) {
+					remove(task);
+				}
+			}
 		}
 	}
 }
@@ -63,33 +66,33 @@ IOTask::~IOTask() {}
 
 IOCallback::~IOCallback() {}
 
-ReadFile::ReadFile(int fd, IReadFileCallback *callback) : IOTask(fd, POLLIN), callback(callback) {
+ReadFile::ReadFile(int fd, ReadFileCallback *callback) : IOTask(fd, POLLIN), callback(callback) {
 	memset(tmp_buf, 0, READ_FILE_READ_SIZE);
 }
 
-void ReadFile::execute(IOTaskManager &m) {
+IOTaskResult ReadFile::execute() {
 	ssize_t read_size = read(fd, tmp_buf, READ_FILE_READ_SIZE);
 
 	if (read_size == 0) {
 		if (callback != nullptr)
-			callback->trigger(read_buf, m);
-		m.remove(this);
-		return;
+			callback->trigger(read_buf);
+		return REMOVE;
 	}
 	read_buf.append((const char *) tmp_buf);
+	return PAUSE;
 }
 
 ReadFile::~ReadFile() {
 	delete callback;
 }
 
-WriteFile::WriteFile(int fd, const std::string &dataToWrite, IWriteFileCallback *callback)
+WriteFile::WriteFile(int fd, const std::string &dataToWrite, WriteFileCallback *callback)
 	: IOTask(fd, POLLOUT), callback(callback), dataToWrite(dataToWrite) {
 	this->buf = this->dataToWrite.c_str();
 	this->buf_len = dataToWrite.length();
 }
 
-void WriteFile::execute(IOTaskManager &m) {
+IOTaskResult WriteFile::execute() {
 	ssize_t written_size = write(fd, buf, std::min(WRITE_FILE_WRITE_SIZE, buf_len));
 	buf += written_size;
 	buf_len -= buf_len;
@@ -97,17 +100,19 @@ void WriteFile::execute(IOTaskManager &m) {
 	if (buf_len == 0) {
 		if (callback != nullptr)
 			callback->trigger();
-		m.remove(this);
+		return REMOVE;
 	}
+	return PAUSE;
 }
 
-Accept::Accept(int socket, IAcceptCallback *callback)
+Accept::Accept(int socket, AcceptCallback *callback)
 	: IOTask(socket, POLLIN), callback(callback) {}
 
-void Accept::execute(IOTaskManager &m) {
+IOTaskResult Accept::execute() {
 	int connection = accept(fd, (SockAddr *) &sock_addr, &sock_addr_len);
 	if (callback != nullptr)
-		callback->trigger(connection, sock_addr, m);
+		callback->trigger(connection, sock_addr);
+	return PAUSE;
 }
 
 Accept::~Accept() {

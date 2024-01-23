@@ -35,13 +35,18 @@ public:
 	void executeTasks();
 };
 
+typedef enum {
+	PAUSE,
+	REMOVE,
+} IOTaskResult;
+
 class IOTask {
 public:
 	const int fd;
 	const short events;
 	IOTask(int fd, short events);
 	virtual ~IOTask();
-	virtual void execute(IOTaskManager &m) = 0;
+	virtual IOTaskResult execute() = 0;
 };
 
 class IOCallback {
@@ -49,52 +54,52 @@ public:
 	virtual ~IOCallback();
 };
 
-class IReadFileCallback : public IOCallback {
+class ReadFileCallback : public IOCallback {
 public:
-	virtual void trigger(std::string fileData, IOTaskManager &m) = 0;
+	virtual void trigger(std::string fileData) = 0;
 };
 
 class ReadFile : public IOTask {
-	IReadFileCallback *callback;
+	ReadFileCallback *callback;
 	char *tmp_buf[READ_FILE_READ_SIZE];
 	std::string read_buf;
 
 public:
-	ReadFile(int fd, IReadFileCallback *callback);
+	ReadFile(int fd, ReadFileCallback *callback);
 	~ReadFile();
-	void execute(IOTaskManager &m);
+	IOTaskResult execute();
 };
 
-class IWriteFileCallback : public IOCallback {
+class WriteFileCallback : public IOCallback {
 public:
 	virtual void trigger() = 0;
 };
 
 class WriteFile : public IOTask {
-	IWriteFileCallback *callback;
+	WriteFileCallback *callback;
 	std::string dataToWrite;
 	const char *buf;
 	size_t buf_len;
 
 public:
-	WriteFile(int fd, const std::string &dataToWrite, IWriteFileCallback *callback);
-	void execute(IOTaskManager &m);
+	WriteFile(int fd, const std::string &dataToWrite, WriteFileCallback *callback);
+	IOTaskResult execute();
 };
 
-class IAcceptCallback : public IOCallback {
+class AcceptCallback : public IOCallback {
 public:
-	virtual void trigger(int connection, SockAddrIn addr, IOTaskManager &m) = 0;
+	virtual void trigger(int connection, SockAddrIn addr) = 0;
 };
 
 class Accept : public IOTask {
-	IAcceptCallback *callback;
+	AcceptCallback *callback;
 	SockAddrIn sock_addr;
 	socklen_t sock_addr_len;
 
 public:
-	Accept(int socket, IAcceptCallback *callback);
+	Accept(int socket, AcceptCallback *callback);
 	~Accept();
-	void execute(IOTaskManager &m);
+	IOTaskResult execute();
 };
 
 #endif
