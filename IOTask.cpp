@@ -4,7 +4,7 @@
 #include <sys/socket.h>
 
 void IOTaskManager::add(IOTask *task) {
-	std::pair<int, short> key = std::pair<int, short>(task->fd, task->events);
+	std::pair<int, short> key = getKey(task);
 	TaskIndexMap::iterator it = task_index_map.find(key);
 	if (it != task_index_map.end() && it->second != NOT_MONITORED)
 		return; // TODO:例外を返す
@@ -27,7 +27,7 @@ void IOTaskManager::add(IOTask *task) {
 }
 
 void IOTaskManager::remove(IOTask *task) {
-	std::pair<int, short> key = std::pair<int, short>(task->fd, task->events);
+	std::pair<int, short> key = getKey(task);
 	TaskIndexMap::iterator it = task_index_map.find(key);
 	if (it == task_index_map.end() || it->second == NOT_MONITORED)
 		return;
@@ -36,9 +36,12 @@ void IOTaskManager::remove(IOTask *task) {
 	poll_fds[*index].fd = NOT_MONITORED;
 	poll_fds[*index].events = 0;
 	poll_fds[*index].revents = 0;
-	delete task;
 	vacant_slots.push(*index);
 	*index = NOT_MONITORED;
+}
+
+std::pair<int, short> IOTaskManager::getKey(IOTask *task) {
+	return std::pair<int, short>(task->fd, task->events);
 }
 
 void IOTaskManager::executeTasks() {
@@ -53,20 +56,25 @@ void IOTaskManager::executeTasks() {
 			IOTask *task = tasks[i];
 			if (poll_fd->revents & task->events) {
 				if (task->execute() == REMOVE) {
-					remove(task);
+					delete task;
 				}
 			}
 		}
 	}
 }
 
-IOTask::IOTask(int fd, short events) : fd(fd), events(events) {}
+IOTask::IOTask(IOTaskManager &m, int fd, short events) : m(m), fd(fd), events(events) {
+	m.add(this);
+}
 
-IOTask::~IOTask() {}
+IOTask::~IOTask() {
+	m.remove(this);
+}
 
 IOCallback::~IOCallback() {}
 
-ReadFile::ReadFile(int fd, ReadFileCallback *callback) : IOTask(fd, POLLIN), callback(callback) {
+ReadFile::ReadFile(IOTaskManager &m, int fd, ReadFileCallback *callback)
+	: IOTask(m, fd, POLLIN), callback(callback) {
 	memset(tmp_buf, 0, READ_FILE_READ_SIZE);
 }
 
@@ -86,8 +94,9 @@ ReadFile::~ReadFile() {
 	delete callback;
 }
 
-WriteFile::WriteFile(int fd, const std::string &dataToWrite, WriteFileCallback *callback)
-	: IOTask(fd, POLLOUT), callback(callback), dataToWrite(dataToWrite) {
+WriteFile::WriteFile(IOTaskManager &m, int fd, const std::string &dataToWrite,
+					 WriteFileCallback *callback)
+	: IOTask(m, fd, POLLOUT), callback(callback), dataToWrite(dataToWrite) {
 	this->buf = this->dataToWrite.c_str();
 	this->buf_len = dataToWrite.length();
 }
@@ -105,8 +114,8 @@ IOTaskResult WriteFile::execute() {
 	return PAUSE;
 }
 
-Accept::Accept(int socket, AcceptCallback *callback)
-	: IOTask(socket, POLLIN), callback(callback) {}
+Accept::Accept(IOTaskManager &m, int socket, AcceptCallback *callback)
+	: IOTask(m, socket, POLLIN), callback(callback) {}
 
 IOTaskResult Accept::execute() {
 	int connection = accept(fd, (SockAddr *) &sock_addr, &sock_addr_len);

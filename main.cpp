@@ -27,19 +27,19 @@ public:
 	explicit EchoCallback(IOTaskManager &m, int dst) : m(m), dst(dst) {}
 
 	void trigger(std::string fileData) {
-		m.add(new WriteFile(dst, fileData, new CloseConnectionCallback(dst)));
+		new WriteFile(m, dst, fileData, new CloseConnectionCallback(dst));
 	}
 };
 
 class EstablishConnectionCallback : public AcceptCallback {
 	IOTaskManager &m;
 public :
-	EstablishConnectionCallback(IOTaskManager &m) : m(m) {}
+	explicit EstablishConnectionCallback(IOTaskManager &m) : m(m) {}
 
 	void trigger(int connection, SockAddrIn addr) {
 		cout << "<- connection from " << inet_ntoa(addr.sin_addr) << endl;
 
-		m.add(new ReadFile(connection, new EchoCallback(m, connection)));
+		new ReadFile(m, connection, new EchoCallback(m, connection));
 	}
 };
 
@@ -57,7 +57,7 @@ int main() {
 
 	IOTaskManager taskManager;
 
-	taskManager.add(new Accept(sock, new EstablishConnectionCallback(taskManager)));
+	new Accept(taskManager, sock, new EstablishConnectionCallback(taskManager));
 	taskManager.executeTasks();
 	return 0;
 }

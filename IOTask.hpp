@@ -29,6 +29,7 @@ class IOTaskManager {
 	std::vector<IOTask *> tasks;
 	std::stack<unsigned long> vacant_slots;
 
+	std::pair<int, short> getKey(IOTask *task);
 public:
 	void add(IOTask *task);
 	void remove(IOTask *task);
@@ -41,10 +42,12 @@ typedef enum {
 } IOTaskResult;
 
 class IOTask {
+	IOTaskManager &m;
+
 public:
 	const int fd;
 	const short events;
-	IOTask(int fd, short events);
+	IOTask(IOTaskManager &m, int fd, short events);
 	virtual ~IOTask();
 	virtual IOTaskResult execute() = 0;
 };
@@ -65,7 +68,7 @@ class ReadFile : public IOTask {
 	std::string read_buf;
 
 public:
-	ReadFile(int fd, ReadFileCallback *callback);
+	ReadFile(IOTaskManager &m, int fd, ReadFileCallback *callback);
 	~ReadFile();
 	IOTaskResult execute();
 };
@@ -82,7 +85,8 @@ class WriteFile : public IOTask {
 	size_t buf_len;
 
 public:
-	WriteFile(int fd, const std::string &dataToWrite, WriteFileCallback *callback);
+	WriteFile(IOTaskManager &m, int fd, const std::string &dataToWrite,
+			  WriteFileCallback *callback);
 	IOTaskResult execute();
 };
 
@@ -97,7 +101,7 @@ class Accept : public IOTask {
 	socklen_t sock_addr_len;
 
 public:
-	Accept(int socket, AcceptCallback *callback);
+	Accept(IOTaskManager &m, int socket, AcceptCallback *callback);
 	~Accept();
 	IOTaskResult execute();
 };
