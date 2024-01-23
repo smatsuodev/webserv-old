@@ -31,7 +31,7 @@ class IOTaskManager {
 
 public:
 	void add(IOTask *task);
-	void remove(int fd, short events);
+	void remove(IOTask *task);
 	void executeTasks();
 };
 

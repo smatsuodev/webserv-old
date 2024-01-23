@@ -26,8 +26,8 @@ void IOTaskManager::add(IOTask *task) {
 	}
 }
 
-void IOTaskManager::remove(int fd, short events) {
-	std::pair<int, short> key = std::pair<int, short>(fd, events);
+void IOTaskManager::remove(IOTask *task) {
+	std::pair<int, short> key = std::pair<int, short>(task->fd, task->events);
 	TaskIndexMap::iterator it = task_index_map.find(key);
 	if (it == task_index_map.end() || it->second == NOT_MONITORED)
 		return;
@@ -36,7 +36,7 @@ void IOTaskManager::remove(int fd, short events) {
 	poll_fds[*index].fd = NOT_MONITORED;
 	poll_fds[*index].events = 0;
 	poll_fds[*index].revents = 0;
-	delete tasks[*index];
+	delete task;
 	vacant_slots.push(*index);
 	*index = NOT_MONITORED;
 }
@@ -73,7 +73,7 @@ void ReadFile::execute(IOTaskManager &m) {
 	if (read_size == 0) {
 		if (callback != nullptr)
 			callback->trigger(read_buf, m);
-		m.remove(fd, events);
+		m.remove(this);
 		return;
 	}
 	read_buf.append((const char *) tmp_buf);
@@ -97,7 +97,7 @@ void WriteFile::execute(IOTaskManager &m) {
 	if (buf_len == 0) {
 		if (callback != nullptr)
 			callback->trigger();
-		m.remove(fd, events);
+		m.remove(this);
 	}
 }
 
