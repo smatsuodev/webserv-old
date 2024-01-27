@@ -29,7 +29,7 @@ class IOTaskManager {
 	std::vector<IOTask *> tasks;
 	std::stack<unsigned long> vacant_slots;
 
-	std::pair<int, short> getKey(IOTask *task);
+	static std::pair<int, short> getKey(IOTask *task);
 public:
 	void add(IOTask *task);
 	void remove(IOTask *task);
@@ -59,7 +59,7 @@ public:
 
 class ReadFileCallback : public IOCallback {
 public:
-	virtual void trigger(std::string fileData) = 0;
+	virtual void trigger(std::string file_data) = 0;
 };
 
 class ReadFile : public IOTask {
@@ -85,7 +85,7 @@ class WriteFile : public IOTask {
 	size_t buf_len;
 
 public:
-	WriteFile(IOTaskManager &m, int fd, const std::string &dataToWrite,
+	WriteFile(IOTaskManager &m, int fd, const std::string &data_to_write,
 			  WriteFileCallback *callback);
 	IOTaskResult execute();
 };

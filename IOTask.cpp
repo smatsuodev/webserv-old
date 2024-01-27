@@ -94,11 +94,11 @@ ReadFile::~ReadFile() {
 	delete callback;
 }
 
-WriteFile::WriteFile(IOTaskManager &m, int fd, const std::string &dataToWrite,
+WriteFile::WriteFile(IOTaskManager &m, int fd, const std::string &data_to_write,
 					 WriteFileCallback *callback)
-	: IOTask(m, fd, POLLOUT), callback(callback), dataToWrite(dataToWrite) {
+	: IOTask(m, fd, POLLOUT), callback(callback), dataToWrite(data_to_write) {
 	this->buf = this->dataToWrite.c_str();
-	this->buf_len = dataToWrite.length();
+	this->buf_len = data_to_write.length();
 }
 
 IOTaskResult WriteFile::execute() {
