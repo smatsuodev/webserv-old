@@ -3,6 +3,6 @@
 
 #include <iostream>
 
-void hello();
+void Hello();
 
 #endif //WEBSERV_HELLO_HPP

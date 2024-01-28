@@ -28,9 +28,10 @@ include_directories(utils)
 link_libraries(webserv_internal gtest_main FakeIt::FakeIt-gtest)
 
 # Utils
-# Uncomment if you want to use test_utils
-#add_library(tests_utils STATIC )
-#link_libraries(test_utils)
+add_library(tests_utils STATIC
+        utils/stream_buffer_switcher.cpp
+        utils/stream_buffer_switcher.hpp)
+link_libraries(test_utils)
 
 # Tests
 add_executable(hello_test hello_test.cpp)

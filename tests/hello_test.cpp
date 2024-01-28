@@ -1,6 +1,10 @@
-#include "assert_output.hpp"
+#include "stream_buffer_switcher.hpp"
 #include "hello/hello.hpp"
+#include <gtest/gtest.h>
 
 TEST(hello_test, output) {
-	assert_stdout("Hello, World!\n", hello);
+    std::stringstream ss;
+    StreamBufferSwitcher sbs(std::cout, ss.rdbuf());
+    Hello();
+    EXPECT_EQ(ss.str(), "Hello, World!\n");
 }

@@ -1,5 +1,5 @@
 #include "hello.hpp"
 
-void hello() {
+void Hello() {
 	std::cout << "Hello, World!" << std::endl;
 }
