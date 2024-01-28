@@ -1,6 +1,7 @@
 project(webserv_tests)
 
 set(CMAKE_CXX_STANDARD 17)
+unset(CMAKE_RUNTIME_OUTPUT_DIRECTORY)
 
 include(FetchContent)
 
