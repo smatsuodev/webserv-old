@@ -1,10 +1,20 @@
-cmake_minimum_required(VERSION 3.27)
-project(echo_server)
+cmake_minimum_required(VERSION 3.11)
+project(webserv)
 
+set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_CXX_STANDARD 98)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++98 -Wall -Wextra")
+set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -fsanitize=address,undefined")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
+set(CMAKE_CXX_CLANG_TIDY clang-tidy)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-file(GLOB SRC *.hpp *cpp)
+enable_testing()
 
-add_executable(echo_server ${SRC})
-target_compile_options(echo_server PUBLIC -Wall -Wextra -Werror -g -fsanitize=address)
-target_link_options(echo_server PUBLIC -fsanitize=address)
+add_subdirectory(internal)
+add_subdirectory(tests)
+
+add_executable(webserv cmd/webserv.cpp)
+target_link_libraries(webserv webserv_internal)
+target_include_directories(webserv PRIVATE internal)
