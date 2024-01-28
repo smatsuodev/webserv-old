@@ -25,6 +25,12 @@ This project uses CMake as build system.
 cmake -B build
 cd build && make -j
 ```
+
+For release build, please execute `cmake` command as follows.
+```bash
+cmake -B build -DCMAKE_BUILD_TYPE=Release
+```
+
 The executable are built in the `bin/` directory.
 ```bash
 bin/webserv
