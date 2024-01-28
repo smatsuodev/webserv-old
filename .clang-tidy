@@ -1,3 +1,4 @@
+HeaderFilterRegex: '.*'
 Checks: >-
   bugprone-*,
   readability-*,
@@ -9,7 +10,6 @@ Checks: >-
   -*-braces-around-statements,
   -*-use-nullptr,
   -*-identifier-length,
-
 CheckOptions:
   cppcoreguidelines-special-member-functions.AllowMissingMoveFunctions: true
   # Google Style Guide: https://google.github.io/styleguide/cppguide.html
