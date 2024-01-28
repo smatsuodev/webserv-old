@@ -1,8 +1,8 @@
-#ifndef WEBSERV_HELLO_HPP
-#define WEBSERV_HELLO_HPP
+#ifndef HELLO_HPP
+#define HELLO_HPP
 
 #include <iostream>
 
 void Hello();
 
-#endif //WEBSERV_HELLO_HPP
+#endif //HELLO_HPP
