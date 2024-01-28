@@ -2,6 +2,7 @@ project(webserv_tests)
 
 set(CMAKE_CXX_STANDARD 17)
 unset(CMAKE_RUNTIME_OUTPUT_DIRECTORY)
+unset(CMAKE_CXX_CLANG_TIDY) # disable temporarily
 
 include(FetchContent)
 
@@ -25,13 +26,14 @@ FetchContent_MakeAvailable(fakeit)
 include_directories(${CMAKE_SOURCE_DIR}/internal)
 include_directories(utils)
 
-link_libraries(webserv_internal gtest_main FakeIt::FakeIt-gtest)
+set(CMAKE_CXX_CLANG_TIDY clang-tidy)
 
 # Utils
-add_library(tests_utils STATIC
+add_library(test_utils STATIC
         utils/stream_buffer_switcher.cpp
         utils/stream_buffer_switcher.hpp)
-link_libraries(test_utils)
+
+link_libraries(webserv_internal gtest_main FakeIt::FakeIt-gtest test_utils)
 
 # Tests
 add_executable(hello_test hello_test.cpp)
