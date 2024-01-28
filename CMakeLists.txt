@@ -4,6 +4,8 @@ project(webserv)
 set(CMAKE_CXX_STANDARD 98)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++98 -Wall -Wextra")
 
+enable_testing()
+
 add_subdirectory(internal)
 add_subdirectory(tests)
 
