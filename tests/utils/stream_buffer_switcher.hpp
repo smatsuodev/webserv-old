@@ -1,7 +1,7 @@
 #ifndef STREAM_BUFFER_SWITCHER_HPP
 #define STREAM_BUFFER_SWITCHER_HPP
 
-#include "ostream"
+#include <ostream>
 
 class StreamBufferSwitcher {
 public:
