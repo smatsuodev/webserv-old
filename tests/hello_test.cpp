@@ -2,7 +2,7 @@
 #include "hello/hello.hpp"
 #include <gtest/gtest.h>
 
-TEST(hello_test, output) {
+TEST(HelloTest, output) {
     std::stringstream ss;
     StreamBufferSwitcher sbs(std::cout, ss.rdbuf());
     Hello();
