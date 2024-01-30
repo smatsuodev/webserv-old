@@ -1,0 +1,14 @@
+name: ctest
+on: [ pull_request, workflow_dispatch ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Configure CMake
+        run: cmake -B build
+      - name: Build
+        run: cmake --build build
+      - name: Test
+        working-directory: build
+        run: ctest -j $(nproc)

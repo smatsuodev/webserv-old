@@ -1,5 +1,5 @@
-#include "stream_buffer_switcher.hpp"
 #include "hello/hello.hpp"
+#include "stream_buffer_switcher.hpp"
 #include <gtest/gtest.h>
 
 TEST(HelloTest, output) {

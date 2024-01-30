@@ -1,0 +1,18 @@
+name: format
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install clang-format
+        run: sudo apt-get install -y clang-format
+      - name: Run clang-format
+        run: clang-format -i $(git ls-files '*.cpp' '*.hpp')
+      - name: Check for changes
+        run: git diff --exit-code
