@@ -27,7 +27,9 @@ FetchContent_MakeAvailable(fakeit)
 include_directories(${CMAKE_SOURCE_DIR}/internal)
 include_directories(utils)
 
-set(CMAKE_CXX_CLANG_TIDY clang-tidy)
+if (CLANG_TIDY)
+    set(CMAKE_CXX_CLANG_TIDY clang-tidy)
+endif ()
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Utils
