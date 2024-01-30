@@ -17,4 +17,4 @@ jobs:
       - name: Build
         run: cmake --build build
       - name: Run clang-tidy
-        run: run-clang-tidy -q -p build -warnings-as-errors '*' -j $(nproc)
+        run: clang-tidy -p build -warnings-as-errors '*' $(git ls-files '*.cpp' '*.hpp')
