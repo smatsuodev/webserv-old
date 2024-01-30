@@ -2,6 +2,5 @@
 
 int main() {
     Hello();
-    int testVar = 0;
-    return testVar;
+    return 0;
 }
