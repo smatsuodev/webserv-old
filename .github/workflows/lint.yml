@@ -14,7 +14,5 @@ jobs:
         run: sudo apt-get install -y clang-tidy
       - name: Configure cmake
         run: cmake -B build
-      - name: Build
-        run: cmake --build build
       - name: Run clang-tidy
         run: clang-tidy -p build -warnings-as-errors '*' $(git ls-files '*.cpp' '*.hpp')
