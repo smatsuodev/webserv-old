@@ -6,6 +6,12 @@ VirtualServerConfig::VirtualServerConfig(const std::string &config_string) {
     ParseVirtualServerConfigString(config_string);
 }
 
+VirtualServerConfig::VirtualServerConfig(
+        const std::vector<RouteConfig> &routes,
+        const std::string &host, const std::string &port,
+        const std::vector<std::string> &server_names)
+    : host_(host), port_(port), server_names_(server_names), routes_(routes) {}
+
 VirtualServerConfig::~VirtualServerConfig() {}
 
 VirtualServerConfig::VirtualServerConfig(const VirtualServerConfig &other)

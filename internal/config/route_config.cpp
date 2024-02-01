@@ -6,6 +6,26 @@ RouteConfig::RouteConfig(const std::string &config_string) : autoindex_enabled_(
     ParseRouteConfigString(config_string);
 }
 
+RouteConfig::RouteConfig(
+        const std::string &route_path,
+        const std::vector<HttpMethod> &allowed_methods,
+        const std::string &document_root,
+        const std::string &upload_path,
+        const std::string &redirect_path,
+        bool autoindex_enabled,
+        const std::string &index_file_name,
+        const std::vector<std::string> &cgi_extensions,
+        const std::map<std::string, std::string> &response_headers)
+    : route_path_(route_path),
+      allowed_methods_(allowed_methods),
+      upload_path_(upload_path),
+      document_root_(document_root),
+      autoindex_enabled_(autoindex_enabled),
+      index_file_name_(index_file_name),
+      redirect_path_(redirect_path),
+      cgi_extensions_(cgi_extensions),
+      response_headers_(response_headers) {}
+
 RouteConfig::~RouteConfig() {}
 
 RouteConfig::RouteConfig(const RouteConfig &other)
@@ -34,9 +54,7 @@ RouteConfig &RouteConfig::operator=(const RouteConfig &other) {
     return *this;
 }
 
-void RouteConfig::ParseRouteConfigString(const std::string &config_string) {
-    (void) config_string;
-}
+void RouteConfig::ParseRouteConfigString(const std::string &config_string) {}
 
 /* getters */
 const std::string &RouteConfig::GetRoutePath() const {

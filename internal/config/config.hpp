@@ -11,6 +11,10 @@ class Config {
 public:
     Config();
     explicit Config(const std::string &path);
+    explicit Config(
+            const std::vector<VirtualServerConfig> &virtual_servers,
+            const std::map<HttpStatusCode, std::string> &error_pages = std::map<HttpStatusCode, std::string>(),
+            unsigned int client_max_body_size = kDefaultClientMaxBodySize);
     ~Config();
     Config(const Config &other);
     Config &operator=(const Config &other);
@@ -35,6 +39,7 @@ private:
     std::map<HttpStatusCode, std::string> error_pages_;
 
     void ParseConfigFile(const std::string &path);
+    void SetDefaultErrorPages();
 };
 
 #endif //CONFIG_HPP

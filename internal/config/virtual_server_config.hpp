@@ -9,6 +9,10 @@ class VirtualServerConfig {
 public:
     VirtualServerConfig();
     explicit VirtualServerConfig(const std::string &config_string);
+    explicit VirtualServerConfig(
+            const std::vector<RouteConfig> &routes,
+            const std::string &host = "0.0.0.0", const std::string &port = "80",
+            const std::vector<std::string> &server_names = std::vector<std::string>());
     ~VirtualServerConfig();
     VirtualServerConfig(const VirtualServerConfig &other);
     VirtualServerConfig &operator=(const VirtualServerConfig &other);

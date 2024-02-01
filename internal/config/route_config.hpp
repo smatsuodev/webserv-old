@@ -2,6 +2,7 @@
 #define ROUTE_CONFIG_HPP
 
 #include "http/method.hpp"
+#include <map>
 #include <string>
 #include <vector>
 
@@ -9,6 +10,16 @@ class RouteConfig {
 public:
     RouteConfig();
     explicit RouteConfig(const std::string &config_string);
+    explicit RouteConfig(
+            const std::string &route_path,
+            const std::vector<HttpMethod> &allowed_methods,
+            const std::string &document_root = "/",
+            const std::string &upload_path = "/tmp",
+            const std::string &redirect_path = "/",
+            bool autoindex_enabled = false,
+            const std::string &index_file_name = "index.html",
+            const std::vector<std::string> &cgi_extensions = std::vector<std::string>(),
+            const std::map<std::string, std::string> &response_headers = std::map<std::string, std::string>());
     ~RouteConfig();
     RouteConfig(const RouteConfig &other);
     RouteConfig &operator=(const RouteConfig &other);
@@ -21,7 +32,7 @@ public:
     const std::string &GetIndexFileName() const;
     const std::string &GetRedirectPath() const;
     const std::vector<std::string> &GetCgiExtensions() const;
-    const std::vector<std::pair<std::string, std::string> > &GetResponseHeaders() const;
+    const std::map<std::string, std::string> &GetResponseHeaders() const;
 
 private:
     // Path for the route, similar to location directive in nginx
@@ -46,7 +57,7 @@ private:
     // Extensions of CGI scripts
     std::vector<std::string> cgi_extensions_;
     // Server responds by appending these headers
-    std::vector<std::pair<std::string, std::string> > response_headers_;
+    std::map<std::string, std::string> response_headers_;
 
     void ParseRouteConfigString(const std::string &config_string);
 };
