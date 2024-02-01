@@ -21,7 +21,8 @@ public:
 
     unsigned int GetClientMaxBodySize() const;
     const std::vector<VirtualServerConfig> &GetVirtualServers() const;
-    const std::map<HttpStatusCode, std::string> &GetErrorPages() const;
+    // There should be no need for the map itself, so no getter has been provided
+    const std::string &GetErrorPage(HttpStatusCode status_code);
 
 private:
     static const std::string kDefaultPath;
@@ -39,7 +40,7 @@ private:
     std::map<HttpStatusCode, std::string> error_pages_;
 
     void ParseConfigFile(const std::string &path);
-    void SetDefaultErrorPages();
+    void SetDefaultErrorPage(HttpStatusCode code);
 };
 
 #endif //CONFIG_HPP
