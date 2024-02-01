@@ -15,4 +15,4 @@ private:
     std::streambuf *old_buffer_;
 };
 
-#endif//STREAM_BUFFER_SWITCHER_HPP
+#endif //STREAM_BUFFER_SWITCHER_HPP
