@@ -89,6 +89,6 @@ const std::vector<std::string> &RouteConfig::GetCgiExtensions() const {
     return cgi_extensions_;
 }
 
-const std::vector<std::pair<std::string, std::string> > &RouteConfig::GetResponseHeaders() const {
+const std::map<std::string, std::string> &RouteConfig::GetResponseHeaders() const {
     return response_headers_;
 }
