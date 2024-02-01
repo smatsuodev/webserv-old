@@ -15,7 +15,6 @@ public:
     Config(const Config &other);
     Config &operator=(const Config &other);
 
-    const std::string &GetConfigPath() const;
     unsigned int GetClientMaxBodySize() const;
     const std::vector<VirtualServerConfig> &GetVirtualServers() const;
     const std::map<HttpStatusCode, std::string> &GetErrorPages() const;
@@ -26,8 +25,6 @@ private:
     // refs: https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size
     static const unsigned int kDefaultClientMaxBodySize = utils::kMiB;
 
-    // Path to config file to parse
-    std::string config_path_;
     // Max body size of client request (bytes)
     unsigned int client_max_body_size_;
     // Config consists of virtual server configs
