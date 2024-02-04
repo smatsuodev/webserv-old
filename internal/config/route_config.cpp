@@ -3,7 +3,7 @@
 RouteConfig::RouteConfig() : autoindex_enabled_() {}
 
 RouteConfig::RouteConfig(const std::string &config_string) : autoindex_enabled_() {
-    ParseRouteConfigString(config_string);
+    parseRouteConfigString(config_string);
 }
 
 RouteConfig::RouteConfig(
@@ -54,41 +54,41 @@ RouteConfig &RouteConfig::operator=(const RouteConfig &other) {
     return *this;
 }
 
-void RouteConfig::ParseRouteConfigString(const std::string &config_string) {}
+void RouteConfig::parseRouteConfigString(const std::string &config_string) {}
 
 /* getters */
-const std::string &RouteConfig::GetRoutePath() const {
+const std::string &RouteConfig::getRoutePath() const {
     return route_path_;
 }
 
-const std::vector<HttpMethod> &RouteConfig::GetAllowedMethods() const {
+const std::vector<HttpMethod> &RouteConfig::getAllowedMethods() const {
     return allowed_methods_;
 }
 
-const std::string &RouteConfig::GetUploadPath() const {
+const std::string &RouteConfig::getUploadPath() const {
     return upload_path_;
 }
 
-const std::string &RouteConfig::GetDocumentRoot() const {
+const std::string &RouteConfig::getDocumentRoot() const {
     return document_root_;
 }
 
-bool RouteConfig::IsAutoindexEnabled() const {
+bool RouteConfig::isAutoindexEnabled() const {
     return autoindex_enabled_;
 }
 
-const std::string &RouteConfig::GetIndexFileName() const {
+const std::string &RouteConfig::getIndexFileName() const {
     return index_file_name_;
 }
 
-const std::string &RouteConfig::GetRedirectPath() const {
+const std::string &RouteConfig::getRedirectPath() const {
     return redirect_path_;
 }
 
-const std::vector<std::string> &RouteConfig::GetCgiExtensions() const {
+const std::vector<std::string> &RouteConfig::getCgiExtensions() const {
     return cgi_extensions_;
 }
 
-const std::map<std::string, std::string> &RouteConfig::GetResponseHeaders() const {
+const std::map<std::string, std::string> &RouteConfig::getResponseHeaders() const {
     return response_headers_;
 }

@@ -79,7 +79,7 @@ enum HttpStatusCode {
     kStatusNetworkAuthenticationRequired = 511,
 };
 
-HttpStatusCode HttpStatusCodeFromInt(int code);
-std::string GetHttpStatusText(HttpStatusCode code);
+HttpStatusCode httpStatusCodeFromInt(int code);
+std::string getHttpStatusText(HttpStatusCode code);
 
 #endif //STATUS_HPP

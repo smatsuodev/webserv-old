@@ -17,10 +17,10 @@ public:
     VirtualServerConfig(const VirtualServerConfig &other);
     VirtualServerConfig &operator=(const VirtualServerConfig &other);
 
-    const std::string &GetHost() const;
-    const std::string &GetPort() const;
-    const std::vector<std::string> &GetServerNames() const;
-    const std::vector<RouteConfig> &GetRoutes() const;
+    const std::string &getHost() const;
+    const std::string &getPort() const;
+    const std::vector<std::string> &getServerNames() const;
+    const std::vector<RouteConfig> &getRoutes() const;
 
 private:
     // Listen host
@@ -32,7 +32,7 @@ private:
     // VirtualServerConfig consists of route configs
     std::vector<RouteConfig> routes_;
 
-    void ParseVirtualServerConfigString(const std::string &config_string);
+    void parseVirtualServerConfigString(const std::string &config_string);
 };
 
 #endif //VIRTUAL_SERVER_CONFIG_HPP

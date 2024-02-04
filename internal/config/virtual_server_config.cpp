@@ -3,7 +3,7 @@
 VirtualServerConfig::VirtualServerConfig() {}
 
 VirtualServerConfig::VirtualServerConfig(const std::string &config_string) {
-    ParseVirtualServerConfigString(config_string);
+    parseVirtualServerConfigString(config_string);
 }
 
 VirtualServerConfig::VirtualServerConfig(
@@ -27,21 +27,21 @@ VirtualServerConfig &VirtualServerConfig::operator=(const VirtualServerConfig &o
     return *this;
 }
 
-void VirtualServerConfig::ParseVirtualServerConfigString(const std::string &config_string) {}
+void VirtualServerConfig::parseVirtualServerConfigString(const std::string &config_string) {}
 
 /* getters */
-const std::string &VirtualServerConfig::GetHost() const {
+const std::string &VirtualServerConfig::getHost() const {
     return host_;
 }
 
-const std::string &VirtualServerConfig::GetPort() const {
+const std::string &VirtualServerConfig::getPort() const {
     return port_;
 }
 
-const std::vector<std::string> &VirtualServerConfig::GetServerNames() const {
+const std::vector<std::string> &VirtualServerConfig::getServerNames() const {
     return server_names_;
 }
 
-const std::vector<RouteConfig> &VirtualServerConfig::GetRoutes() const {
+const std::vector<RouteConfig> &VirtualServerConfig::getRoutes() const {
     return routes_;
 }

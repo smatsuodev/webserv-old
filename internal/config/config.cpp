@@ -1,11 +1,11 @@
 #include "config.hpp"
 
 Config::Config() : client_max_body_size_(kDefaultClientMaxBodySize) {
-    ParseConfigFile(kDefaultPath);
+    parseConfigFile(kDefaultPath);
 }
 
 Config::Config(const std::string &path) : client_max_body_size_(kDefaultClientMaxBodySize) {
-    ParseConfigFile(path);
+    parseConfigFile(path);
 }
 
 Config::Config(
@@ -32,30 +32,30 @@ Config &Config::operator=(const Config &other) {
     return *this;
 }
 
-void Config::ParseConfigFile(const std::string &path) {}
+void Config::parseConfigFile(const std::string &path) {}
 
 // Set a default error page like nginx
 // Do nothing if error page is already set
-void Config::SetDefaultErrorPage(HttpStatusCode code) {
+void Config::setDefaultErrorPage(HttpStatusCode code) {
     if (error_pages_.find(code) == error_pages_.end()) {
         error_pages_[code] = "";
     }
 }
 
 /* getters */
-unsigned int Config::GetClientMaxBodySize() const {
+unsigned int Config::getClientMaxBodySize() const {
     return client_max_body_size_;
 }
 
-const std::vector<VirtualServerConfig> &Config::GetVirtualServers() const {
+const std::vector<VirtualServerConfig> &Config::getVirtualServers() const {
     return virtual_servers_;
 }
 
 // If an error page is not set, generate a default one and store it to reduce resource usage
-const std::string &Config::GetErrorPage(HttpStatusCode code) {
+const std::string &Config::getErrorPage(HttpStatusCode code) {
     if (error_pages_.find(code) != error_pages_.end()) {
         return error_pages_.at(code);
     }
-    SetDefaultErrorPage(code);
+    setDefaultErrorPage(code);
     return error_pages_.at(code);
 }

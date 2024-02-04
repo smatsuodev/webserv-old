@@ -19,10 +19,10 @@ public:
     Config(const Config &other);
     Config &operator=(const Config &other);
 
-    unsigned int GetClientMaxBodySize() const;
-    const std::vector<VirtualServerConfig> &GetVirtualServers() const;
+    unsigned int getClientMaxBodySize() const;
+    const std::vector<VirtualServerConfig> &getVirtualServers() const;
     // There should be no need for the map itself, so no getter has been provided
-    const std::string &GetErrorPage(HttpStatusCode status_code);
+    const std::string &getErrorPage(HttpStatusCode status_code);
 
 private:
     static const std::string kDefaultPath;
@@ -39,8 +39,8 @@ private:
     // refs: https://nginx.org/en/docs/http/ngx_http_core_module.html#error_page
     std::map<HttpStatusCode, std::string> error_pages_;
 
-    void ParseConfigFile(const std::string &path);
-    void SetDefaultErrorPage(HttpStatusCode code);
+    void parseConfigFile(const std::string &path);
+    void setDefaultErrorPage(HttpStatusCode code);
 };
 
 #endif //CONFIG_HPP

@@ -1,6 +1,6 @@
 #include "status.hpp"
 
-HttpStatusCode HttpStatusCodeFromInt(int code) {
+HttpStatusCode httpStatusCodeFromInt(int code) {
     switch (code) {
         case kStatusContinue:
         case kStatusSwitchingProtocols:
@@ -70,7 +70,7 @@ HttpStatusCode HttpStatusCodeFromInt(int code) {
     }
 }
 
-std::string GetHttpStatusText(HttpStatusCode code) {
+std::string getHttpStatusText(HttpStatusCode code) {
     switch (code) {
         case kStatusContinue: return "Continue";
         case kStatusSwitchingProtocols: return "Switching Protocols";

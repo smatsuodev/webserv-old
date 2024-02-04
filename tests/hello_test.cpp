@@ -5,6 +5,6 @@
 TEST(HelloTest, output) {
     std::stringstream ss;
     StreamBufferSwitcher sbs(std::cout, ss.rdbuf());
-    Hello();
+    hello();
     EXPECT_EQ(ss.str(), "Hello, World!\n");
 }

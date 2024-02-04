@@ -24,15 +24,15 @@ public:
     RouteConfig(const RouteConfig &other);
     RouteConfig &operator=(const RouteConfig &other);
 
-    const std::string &GetRoutePath() const;
-    const std::vector<HttpMethod> &GetAllowedMethods() const;
-    const std::string &GetUploadPath() const;
-    const std::string &GetDocumentRoot() const;
-    bool IsAutoindexEnabled() const;
-    const std::string &GetIndexFileName() const;
-    const std::string &GetRedirectPath() const;
-    const std::vector<std::string> &GetCgiExtensions() const;
-    const std::map<std::string, std::string> &GetResponseHeaders() const;
+    const std::string &getRoutePath() const;
+    const std::vector<HttpMethod> &getAllowedMethods() const;
+    const std::string &getUploadPath() const;
+    const std::string &getDocumentRoot() const;
+    bool isAutoindexEnabled() const;
+    const std::string &getIndexFileName() const;
+    const std::string &getRedirectPath() const;
+    const std::vector<std::string> &getCgiExtensions() const;
+    const std::map<std::string, std::string> &getResponseHeaders() const;
 
 private:
     // Path for the route, similar to location directive in nginx
@@ -59,7 +59,7 @@ private:
     // Server responds by appending these headers
     std::map<std::string, std::string> response_headers_;
 
-    void ParseRouteConfigString(const std::string &config_string);
+    void parseRouteConfigString(const std::string &config_string);
 };
 
 #endif //ROUTE_CONFIG_HPP
