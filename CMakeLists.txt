@@ -15,6 +15,8 @@ endif ()
 
 enable_testing()
 
+include_directories(internal)
+
 add_subdirectory(internal)
 add_subdirectory(tests)
 

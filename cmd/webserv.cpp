@@ -1,6 +1,6 @@
 #include "hello/hello.hpp"
 
 int main() {
-    Hello();
+    hello();
     return 0;
 }

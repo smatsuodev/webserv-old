@@ -3,6 +3,6 @@
 
 #include <iostream>
 
-void Hello();
+void hello();
 
-#endif//HELLO_HPP
+#endif //HELLO_HPP
