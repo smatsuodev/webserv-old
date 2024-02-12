@@ -22,7 +22,7 @@ public:
     }
 
     Option &operator=(const Option &other) {
-        if (*this != other) {
+        if (this != &other) {
             some_ = other.some_;
         }
         return *this;

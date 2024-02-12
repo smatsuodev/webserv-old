@@ -9,7 +9,7 @@
 class Request {
 public:
     Request();
-    Request(const std::string &raw_request);
+    explicit Request(const std::string &raw_request);
     Request(const Request &request);
     ~Request();
     Request &operator=(const Request &other);

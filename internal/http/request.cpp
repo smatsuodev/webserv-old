@@ -1,8 +1,6 @@
 #include "request.hpp"
-#include <iostream>
 
 Request::Request() {
-    std::cout << "Request constructor called" << std::endl;
 }
 
 Request::Request(const std::string &raw_request) {
@@ -10,12 +8,10 @@ Request::Request(const std::string &raw_request) {
 }
 
 Request::Request(const Request &request) {
-    std::cout << "Request copy constructor called" << std::endl;
     *this = request;
 }
 
 Request::~Request() {
-    std::cout << "Request destructor called" << std::endl;
 }
 
 Request &Request::operator=(const Request &other) {
