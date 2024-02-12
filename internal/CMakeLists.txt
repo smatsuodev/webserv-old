@@ -10,4 +10,8 @@ add_library(webserv_internal STATIC
         config/virtual_server_config.hpp
         http/status.hpp
         http/status.cpp
-        utils/utils.hpp)
+        utils/utils.hpp
+        http/request.cpp
+        http/request.hpp
+        utils/option.hpp
+)
