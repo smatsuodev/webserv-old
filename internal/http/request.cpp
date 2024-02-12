@@ -1,13 +1,12 @@
 #include "request.hpp"
 
-Request::Request() {
-}
+Request::Request() : method_(kMethodUnknown) {}
 
-Request::Request(const std::string &raw_request) {
+Request::Request(const std::string &raw_request) : method_(kMethodUnknown) {
     parseRawRequest(raw_request);
 }
 
-Request::Request(const Request &request) {
+Request::Request(const Request &request) : method_(kMethodUnknown) {
     *this = request;
 }
 
