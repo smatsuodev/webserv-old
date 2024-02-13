@@ -99,12 +99,12 @@ TEST(OptionTest, unwrapNone) {
 
 TEST(OptionTest, unwrapOrSome) {
     Option<std::string> target = Some<std::string>("some");
-    EXPECT_EQ(target.unwrap_or("none"), "some");
+    EXPECT_EQ(target.unwrapOr("none"), "some");
 }
 
 TEST(OptionTest, unwrapOrNone) {
     Option<std::string> target = None;
-    EXPECT_EQ(target.unwrap_or("none"), "none");
+    EXPECT_EQ(target.unwrapOr("none"), "none");
 }
 
 Option<int> addOneIf(const Option<int> &op) {
