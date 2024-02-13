@@ -28,6 +28,7 @@ public:
         return *this;
     }
 
+    // NOLINTNEXTLINE(google-explicit-constructor)
     bool operator==(const Option &other) {
         if (isSome() != other.isSome())
             return false;
@@ -36,6 +37,7 @@ public:
         return *some_ == *other.some_;
     }
 
+    // NOLINTNEXTLINE(google-explicit-constructor)
     bool operator!=(const Option &other) {
         if (isSome() != other.isSome())
             return true;
