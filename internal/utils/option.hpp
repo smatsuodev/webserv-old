@@ -120,10 +120,11 @@ namespace types {
 } // namespace types
 
 template<class T>
-types::Some<T> Some(T val) { // NOLINT
+types::Some<T> Some(T val) { // NOLINT(readability-identifier-naming)
     return types::Some<T>(val);
 }
 
-types::None None = types::None(); // NOLINT
+// NOLINTNEXTLINE(readability-identifier-naming, cppcoreguidelines-avoid-non-const-global-variables)
+types::None None = types::None();
 
 #endif
