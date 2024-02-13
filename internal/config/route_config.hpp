@@ -9,7 +9,6 @@
 class RouteConfig {
 public:
     RouteConfig();
-    explicit RouteConfig(const std::string &config_string);
     explicit RouteConfig(
             const std::string &route_path,
             const std::vector<HttpMethod> &allowed_methods,
@@ -33,6 +32,8 @@ public:
     const std::string &getRedirectPath() const;
     const std::vector<std::string> &getCgiExtensions() const;
     const std::map<std::string, std::string> &getResponseHeaders() const;
+
+    static RouteConfig parseRouteConfigString(const std::string &config_string);
 
 private:
     // Path for the route, similar to location directive in nginx
@@ -58,8 +59,6 @@ private:
     std::vector<std::string> cgi_extensions_;
     // Server responds by appending these headers
     std::map<std::string, std::string> response_headers_;
-
-    void parseRouteConfigString(const std::string &config_string);
 };
 
 #endif //ROUTE_CONFIG_HPP
