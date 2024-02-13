@@ -14,5 +14,7 @@ jobs:
         run: sudo apt-get install -y clang-tidy
       - name: Configure cmake
         run: cmake -B build
-      - name: Run clang-tidy
-        run: clang-tidy -p build -warnings-as-errors '*,-clang-diagnostic-unused-parameter' -extra-arg=-std=c++98 $(git ls-files '*.cpp' '*.hpp')
+      - name: Run clang-tidy for internal and cmd
+        run: clang-tidy -p build -warnings-as-errors '*,-clang-diagnostic-unused-parameter' -extra-arg=-std=c++98 $(git ls-files 'internal/*.cpp' 'internal/*.hpp' 'cmd/*.cpp' 'cmd/*.hpp')
+      - name: Run clang-tidy for tests
+        run: clang-tidy -p build -warnings-as-errors '*,-clang-diagnostic-unused-parameter' -extra-arg=-std=c++17 $(git ls-files 'tests/*.cpp' 'tests/*.hpp')
