@@ -8,7 +8,6 @@
 class VirtualServerConfig {
 public:
     VirtualServerConfig();
-    explicit VirtualServerConfig(const std::string &config_string);
     explicit VirtualServerConfig(
             const std::vector<RouteConfig> &routes,
             const std::string &host = "0.0.0.0", const std::string &port = "80",
@@ -22,6 +21,8 @@ public:
     const std::vector<std::string> &getServerNames() const;
     const std::vector<RouteConfig> &getRoutes() const;
 
+    static VirtualServerConfig parseVirtualServerConfigString(const std::string &config_string);
+
 private:
     // Listen host
     std::string host_;
@@ -31,8 +32,6 @@ private:
     std::vector<std::string> server_names_;
     // VirtualServerConfig consists of route configs
     std::vector<RouteConfig> routes_;
-
-    void parseVirtualServerConfigString(const std::string &config_string);
 };
 
 #endif //VIRTUAL_SERVER_CONFIG_HPP

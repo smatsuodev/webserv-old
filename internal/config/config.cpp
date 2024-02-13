@@ -4,10 +4,6 @@ Config::Config() : client_max_body_size_(kDefaultClientMaxBodySize) {
     parseConfigFile(kDefaultPath);
 }
 
-Config::Config(const std::string &path) : client_max_body_size_(kDefaultClientMaxBodySize) {
-    parseConfigFile(path);
-}
-
 Config::Config(
         const std::vector<VirtualServerConfig> &virtual_servers,
         const std::map<HttpStatusCode, std::string> &error_pages,
@@ -32,7 +28,10 @@ Config &Config::operator=(const Config &other) {
     return *this;
 }
 
-void Config::parseConfigFile(const std::string &path) {}
+Config Config::parseConfigFile(const std::string &path) {
+    (void)path;
+    return Config();
+}
 
 // Set a default error page like nginx
 // Do nothing if error page is already set
