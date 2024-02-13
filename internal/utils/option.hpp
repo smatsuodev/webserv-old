@@ -141,9 +141,9 @@ const types::None None = types::None();
 #define TRY(expr) TRY_OR(expr, None)
 
 // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
-#define TRY_OR(expr, defaultValue) ({ \
+#define TRY_OR(expr, defaultValue) ({         \
     if ((expr).isNone()) return defaultValue; \
-    (expr).unwrap();                  \
+    (expr).unwrap();                          \
 })
 
 #endif
