@@ -2,6 +2,7 @@
 #define OPTION_HPP
 
 #include <cstddef>
+#include <string>
 
 template<class T>
 class Option;
@@ -25,11 +26,11 @@ namespace types {
             return *this;
         }
 
-        operator Option<T>() { // NOLINT(google-explicit-constructor)
+        operator Option<T>() const { // NOLINT(google-explicit-constructor)
             return Option<T>(new Some<T>(val_));
         }
 
-        T val() {
+        T val() const {
             return val_;
         }
 
@@ -58,7 +59,7 @@ namespace types {
         }
 
         template<class T>
-        operator Option<T>() { // NOLINT(google-explicit-constructor)
+        operator Option<T>() const { // NOLINT(google-explicit-constructor)
             return Option<T>(NULL);
         }
     };
@@ -90,7 +91,7 @@ public:
         return *this;
     }
 
-    bool operator==(const Option &other) {
+    bool operator==(const Option &other) const {
         if (isSome() != other.isSome())
             return false;
         if (isNone())
@@ -98,7 +99,7 @@ public:
         return *some_ == *other.some_;
     }
 
-    bool operator!=(const Option &other) {
+    bool operator!=(const Option &other) const {
         if (isSome() != other.isSome())
             return true;
         if (isNone())
@@ -118,6 +119,12 @@ public:
         return some_->val();
     }
 
+    T unwrap_or(T val) const {
+        if (isSome())
+            return some_->val();
+        return val;
+    }
+
 private:
     types::Some<T> *some_;
 };
@@ -129,5 +136,12 @@ types::Some<T> Some(T val) { // NOLINT(readability-identifier-naming)
 
 // NOLINTNEXTLINE(readability-identifier-naming)
 const types::None None = types::None();
+
+#define TRY(expr) TRY_OR(expr, None)
+
+#define TRY_OR(expr, defaultValue) ({ \
+    if (expr.isNone()) return defaultValue; \
+    expr.unwrap();                  \
+})
 
 #endif
