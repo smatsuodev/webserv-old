@@ -7,7 +7,6 @@ template<class T>
 class Option;
 
 namespace types {
-
     template<class T>
     class Some {
     public:
