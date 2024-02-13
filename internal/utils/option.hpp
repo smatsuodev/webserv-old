@@ -3,62 +3,8 @@
 
 #include <cstddef>
 
-namespace types {
-    template<class T>
-    class Some;
-}
-
 template<class T>
-class Option {
-public:
-    explicit Option(types::Some<T> *some) : some_(some) {}
-
-    Option(const Option &other) {
-        *this = other;
-    }
-
-    ~Option() {
-        delete some_;
-    }
-
-    Option &operator=(const Option &other) {
-        if (this != &other) {
-            some_ = other.some_;
-        }
-        return *this;
-    }
-
-    bool operator==(const Option &other) {
-        if (isSome() != other.isSome())
-            return false;
-        if (isNone())
-            return true;
-        return *some_ == *other.some_;
-    }
-
-    bool operator!=(const Option &other) {
-        if (isSome() != other.isSome())
-            return true;
-        if (isNone())
-            return false;
-        return *some_ != *other.some_;
-    }
-
-    bool isSome() const {
-        return some_ != NULL;
-    }
-
-    bool isNone() const {
-        return some_ == NULL;
-    }
-
-    T unwrap() const {
-        return some_->val();
-    }
-
-private:
-    types::Some<T> *some_;
-};
+class Option;
 
 namespace types {
 
@@ -120,11 +66,69 @@ namespace types {
 } // namespace types
 
 template<class T>
+class Option {
+public:
+    // Option<int> target = Some(1); みたいなことができるようにするためにexplicitをつけない
+    // NOLINTNEXTLINE(google-explicit-constructor)
+    Option(types::Some<T> *some) : some_(some) {}
+
+    // Option<int> target = None; みたいなことができるようにするためにexplicitをつけない
+    // NOLINTNEXTLINE(google-explicit-constructor)
+    Option(types::None none) : some_(NULL) {}
+
+    Option(const Option &other) {
+        *this = other;
+    }
+
+    ~Option() {
+        delete some_;
+    }
+
+    Option &operator=(const Option &other) {
+        if (this != &other) {
+            some_ = other.some_;
+        }
+        return *this;
+    }
+
+    bool operator==(const Option &other) {
+        if (isSome() != other.isSome())
+            return false;
+        if (isNone())
+            return true;
+        return *some_ == *other.some_;
+    }
+
+    bool operator!=(const Option &other) {
+        if (isSome() != other.isSome())
+            return true;
+        if (isNone())
+            return false;
+        return *some_ != *other.some_;
+    }
+
+    bool isSome() const {
+        return some_ != NULL;
+    }
+
+    bool isNone() const {
+        return some_ == NULL;
+    }
+
+    T unwrap() const {
+        return some_->val();
+    }
+
+private:
+    types::Some<T> *some_;
+};
+
+template<class T>
 types::Some<T> Some(T val) { // NOLINT(readability-identifier-naming)
     return types::Some<T>(val);
 }
 
-// NOLINTNEXTLINE(readability-identifier-naming, cppcoreguidelines-avoid-non-const-global-variables)
-types::None None = types::None();
+// NOLINTNEXTLINE(readability-identifier-naming)
+const types::None None = types::None();
 
 #endif
