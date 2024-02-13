@@ -28,7 +28,6 @@ public:
         return *this;
     }
 
-    // NOLINTNEXTLINE(google-explicit-constructor)
     bool operator==(const Option &other) {
         if (isSome() != other.isSome())
             return false;
@@ -37,7 +36,6 @@ public:
         return *some_ == *other.some_;
     }
 
-    // NOLINTNEXTLINE(google-explicit-constructor)
     bool operator!=(const Option &other) {
         if (isSome() != other.isSome())
             return true;
@@ -82,7 +80,7 @@ namespace types {
             return *this;
         }
 
-        operator Option<T>() {
+        operator Option<T>() { // NOLINT(google-explicit-constructor)
             return Option<T>(new Some<T>(val_));
         }
 
@@ -115,7 +113,7 @@ namespace types {
         }
 
         template<class T>
-        operator Option<T>() {
+        operator Option<T>() { // NOLINT(google-explicit-constructor)
             return Option<T>(NULL);
         }
     };
