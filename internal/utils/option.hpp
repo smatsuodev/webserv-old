@@ -119,7 +119,7 @@ public:
         return some_->val();
     }
 
-    T unwrap_or(T val) const {
+    T unwrapOr(T val) const {
         if (isSome())
             return some_->val();
         return val;
@@ -137,11 +137,13 @@ types::Some<T> Some(T val) { // NOLINT(readability-identifier-naming)
 // NOLINTNEXTLINE(readability-identifier-naming)
 const types::None None = types::None();
 
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define TRY(expr) TRY_OR(expr, None)
 
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define TRY_OR(expr, defaultValue) ({ \
-    if (expr.isNone()) return defaultValue; \
-    expr.unwrap();                  \
+    if ((expr).isNone()) return defaultValue; \
+    (expr).unwrap();                  \
 })
 
 #endif
