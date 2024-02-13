@@ -8,8 +8,11 @@
 
 class Request {
 public:
-    Request();
-    explicit Request(const std::string &raw_request);
+    explicit Request(HttpMethod method = kMethodUnknown,
+                     const std::string &route_path = "/",
+                     const std::map<std::string, std::string> &queries = std::map<std::string, std::string>(),
+                     const std::map<std::string, std::string> &headers = std::map<std::string, std::string>(),
+                     const std::string &body = "");
     Request(const Request &request);
     ~Request();
     Request &operator=(const Request &other);
@@ -18,6 +21,7 @@ public:
     Option<std::string> query(const std::string &key) const;
     Option<std::string> header(const std::string &key) const;
     const std::string &text() const;
+    static Request parseRawRequest(const std::string &raw_request);
 
 private:
     HttpMethod method_;
@@ -25,8 +29,6 @@ private:
     std::map<std::string, std::string> queries_;
     std::map<std::string, std::string> headers_;
     std::string body_;
-
-    void parseRawRequest(const std::string &raw_request);
 };
 
 #endif

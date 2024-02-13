@@ -1,10 +1,11 @@
 #include "request.hpp"
 
-Request::Request() : method_(kMethodUnknown) {}
-
-Request::Request(const std::string &raw_request) : method_(kMethodUnknown) {
-    parseRawRequest(raw_request);
-}
+Request::Request(HttpMethod method,
+                 const std::string &route_path,
+                 const std::map<std::string, std::string> &queries,
+                 const std::map<std::string, std::string> &headers,
+                 const std::string &body)
+    : method_(method), route_path_(route_path), queries_(queries), headers_(headers), body_(body) {}
 
 Request::Request(const Request &request) : method_(kMethodUnknown) {
     *this = request;
@@ -51,4 +52,9 @@ Option<std::string> Request::header(const std::string &key) const {
 
 const std::string &Request::text() const {
     return body_;
+}
+
+Request Request::parseRawRequest(const std::string &raw_request) {
+    // TODO: パースの処理をかく
+    return Request();
 }
