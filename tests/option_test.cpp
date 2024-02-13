@@ -8,7 +8,6 @@ TEST(OptionTest, constructSomeInt) {
 }
 
 TEST(OptionTest, constructNone) {
-    Some(0);
     Option<int> target = None;
     EXPECT_TRUE(target.isNone());
     EXPECT_FALSE(target.isSome());
