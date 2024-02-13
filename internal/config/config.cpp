@@ -29,7 +29,7 @@ Config &Config::operator=(const Config &other) {
 }
 
 Config Config::parseConfigFile(const std::string &path) {
-    (void)path;
+    (void) path;
     return Config();
 }
 

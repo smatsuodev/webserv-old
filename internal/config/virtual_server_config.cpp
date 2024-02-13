@@ -24,7 +24,7 @@ VirtualServerConfig &VirtualServerConfig::operator=(const VirtualServerConfig &o
 }
 
 VirtualServerConfig VirtualServerConfig::parseVirtualServerConfigString(const std::string &config_string) {
-    (void)config_string;
+    (void) config_string;
     return VirtualServerConfig();
 }
 

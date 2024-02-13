@@ -51,7 +51,7 @@ RouteConfig &RouteConfig::operator=(const RouteConfig &other) {
 }
 
 RouteConfig RouteConfig::parseRouteConfigString(const std::string &config_string) {
-    (void)config_string;
+    (void) config_string;
     return RouteConfig();
 }
 
