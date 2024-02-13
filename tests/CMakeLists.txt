@@ -42,3 +42,6 @@ link_libraries(webserv_internal gtest_main FakeIt::FakeIt-gtest test_utils)
 # Tests
 add_executable(hello_test hello_test.cpp)
 gtest_discover_tests(hello_test)
+
+add_executable(option_test option_test.cpp)
+gtest_discover_tests(option_test)
