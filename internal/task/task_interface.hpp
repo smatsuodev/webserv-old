@@ -11,8 +11,10 @@ enum IoTaskResult {
     kTaskComplete,
 };
 
+// NOLINTNEXTLINE(cppcoreguidelines-special-member-functions)
 class IoTask {
 public:
+    virtual ~IoTask() = 0;
     virtual Result<IoTaskResult, std::string> execute() = 0;
 };
 

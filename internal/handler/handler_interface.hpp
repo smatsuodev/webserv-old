@@ -9,8 +9,10 @@ class Result;
 
 class Context;
 
+// NOLINTNEXTLINE(cppcoreguidelines-special-member-functions)
 class IHandler {
 public:
+    virtual ~IHandler() = 0;
     virtual Result<types::Unit, std::string> trigger(Context &ctx) = 0;
 };
 
