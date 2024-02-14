@@ -5,9 +5,9 @@
 #define TRY(expr) TRY_OR(expr, expr)
 
 // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
-#define TRY_OR(expr, defaultValue) ({                                                             \
+#define TRY_OR(expr, defaultValue) ({             \
     if (!(expr).canUnwrap()) return defaultValue; \
-    (expr).unwrap();                                                                              \
+    (expr).unwrap();                              \
 })
 
 #endif
