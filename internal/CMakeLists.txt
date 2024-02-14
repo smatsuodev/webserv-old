@@ -14,4 +14,6 @@ add_library(webserv_internal STATIC
         http/request.cpp
         http/request.hpp
         utils/option.hpp
+        utils/result.hpp
+        utils/try.hpp
 )
