@@ -2,8 +2,7 @@
 #define UNIT_HPP
 
 namespace types {
-    typedef struct {
-    } Unit;
+    struct Unit {};
 } // namespace types
 
 // NOLINTNEXTLINE(readability-identifier-naming)
