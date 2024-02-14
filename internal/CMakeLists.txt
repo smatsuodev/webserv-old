@@ -1,6 +1,4 @@
 add_library(webserv_internal STATIC
-        hello/hello.cpp
-        hello/hello.hpp
         config/config.cpp
         config/config.hpp
         config/route_config.cpp
