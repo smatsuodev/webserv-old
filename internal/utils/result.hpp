@@ -85,7 +85,7 @@ types::Ok<T> Ok(T val) { // NOLINT(readability-identifier-naming)
 
 template<class E>
 types::Err<E> Err(E val) { // NOLINT(readability-identifier-naming)
-    return types::Err(val);
+    return types::Err<E>(val);
 }
 
 template<class T, class E>
