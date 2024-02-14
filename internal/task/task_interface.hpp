@@ -7,7 +7,7 @@ template<typename T, typename E>
 class Result;
 
 enum IoTaskResult {
-    kTaskPending,
+    kTaskSuspend,
     kTaskComplete,
 };
 
