@@ -3,6 +3,6 @@
 
 namespace types {
     struct Unit {};
-}
+} // namespace types
 
 #endif //UNIT_HPP
