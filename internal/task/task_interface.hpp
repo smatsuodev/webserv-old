@@ -6,16 +6,16 @@
 template<typename T, typename E>
 class Result;
 
-enum IoTaskResult {
+enum IOTaskResult {
     kTaskSuspend,
     kTaskComplete,
 };
 
 // NOLINTNEXTLINE(cppcoreguidelines-special-member-functions)
-class IoTask {
+class IOTask {
 public:
-    virtual ~IoTask() = 0;
-    virtual Result<IoTaskResult, std::string> execute() = 0;
+    virtual ~IOTask() = 0;
+    virtual Result<IOTaskResult, std::string> execute() = 0;
 };
 
 #endif //TASK_INTERFACE_HPP
