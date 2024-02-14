@@ -1,6 +1,11 @@
 #ifndef TASK_INTERFACE_HPP
 #define TASK_INTERFACE_HPP
 
+#include <string>
+
+template<typename T, typename E>
+class Result;
+
 enum IoTaskResult {
     kTaskPending,
     kTaskComplete,
@@ -8,7 +13,7 @@ enum IoTaskResult {
 
 class IoTask {
 public:
-    virtual IoTaskResult execute() = 0;
+    virtual Result<IoTaskResult, std::string> execute() = 0;
 };
 
 #endif //TASK_INTERFACE_HPP
