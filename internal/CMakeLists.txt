@@ -14,4 +14,6 @@ add_library(webserv_internal STATIC
         utils/option.hpp
         task/task_interface.hpp
         task/callback_interface.hpp
+        handler/handler_interface.hpp
+        utils/unit.hpp
 )
