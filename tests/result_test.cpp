@@ -87,24 +87,34 @@ TEST(ResultTest, neOkAndErrResults) {
     EXPECT_TRUE(res2 != res1);
 }
 
-TEST(ResultTest, unwrapOk) {
+TEST(ResultTest, unwrapOnOk) {
     Result<int, std::string> target = Ok(1);
     EXPECT_EQ(target.unwrap(), 1);
 }
 
-TEST(ResultTest, unwrapErr) {
+TEST(ResultTest, unwrapOnErr) {
     Result<int, std::string> target = Err<std::string>("error");
-    EXPECT_DEATH(target.unwrap(), ".*");
+    EXPECT_THROW(target.unwrap(), std::runtime_error);
 }
 
-TEST(ResultTest, unwrapOrOk) {
+TEST(ResultTest, unwrapOrOnOk) {
     Result<std::string, int> target = Ok<std::string>("ok");
     EXPECT_EQ(target.unwrapOr("error"), "ok");
 }
 
-TEST(ResultTest, unwrapOrErr) {
+TEST(ResultTest, unwrapOrOnErr) {
     Result<std::string, int> target = Err(1);
     EXPECT_EQ(target.unwrapOr("error"), "error");
+}
+
+TEST(ResultTest, unwrapErrOnErr) {
+    Result<int, std::string> target = Err<std::string>("error");
+    EXPECT_EQ(target.unwrapErr(), "error");
+}
+
+TEST(ResultTest, unwrapErrOnOk) {
+    Result<int, std::string> target = Ok(1);
+    EXPECT_THROW(target.unwrapErr(), std::runtime_error);
 }
 
 Result<int, std::string> addOneIf(const Result<int, std::string> &res) {

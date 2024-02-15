@@ -4,6 +4,7 @@
 #include "try.hpp"
 #include <cstddef>
 #include <string>
+#include <stdexcept>
 
 template<class T>
 class Option;
@@ -133,6 +134,9 @@ public:
     }
 
     T unwrap() const {
+        if (isNone()){
+            throw std::runtime_error("called `Option::unwrap()` on `None`");
+        }
         return some_->val();
     }
 

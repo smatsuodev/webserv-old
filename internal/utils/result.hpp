@@ -3,7 +3,7 @@
 
 #include "try.hpp"
 #include <cstddef>
-#include <exception>
+#include <stdexcept>
 
 template<class T, class E>
 class Result;
@@ -165,6 +165,9 @@ public:
     }
 
     T unwrap() const {
+        if (isErr()) {
+            throw std::runtime_error("called `Result::unwrap()` on an `Err` value");
+        }
         return ok_->val();
     }
 
@@ -172,6 +175,13 @@ public:
         if (isOk())
             return ok_->val();
         return val;
+    }
+
+    E unwrapErr() const {
+        if (isOk()) {
+            throw std::runtime_error("called `Result::unwrapErr()` on an `Ok` value");
+        }
+        return err_->error();
     }
 
     bool canUnwrap() const {
