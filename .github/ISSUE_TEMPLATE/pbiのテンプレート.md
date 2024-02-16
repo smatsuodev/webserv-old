@@ -2,7 +2,7 @@
 name: PBIのテンプレート
 about: PBIはこんな感じで記述しましょう
 title: ''
-labels: ''
+labels: icebox
 assignees: ''
 
 ---
