@@ -2,10 +2,6 @@
 
 RouteConfig::RouteConfig() : autoindex_enabled_() {}
 
-RouteConfig::RouteConfig(const std::string &config_string) : autoindex_enabled_() {
-    parseRouteConfigString(config_string);
-}
-
 RouteConfig::RouteConfig(
         const std::string &route_path,
         const std::vector<HttpMethod> &allowed_methods,
@@ -54,7 +50,10 @@ RouteConfig &RouteConfig::operator=(const RouteConfig &other) {
     return *this;
 }
 
-void RouteConfig::parseRouteConfigString(const std::string &config_string) {}
+RouteConfig RouteConfig::parseRouteConfigString(const std::string &config_string) {
+    (void) config_string;
+    return RouteConfig();
+}
 
 /* getters */
 const std::string &RouteConfig::getRoutePath() const {

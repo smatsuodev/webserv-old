@@ -1,0 +1,26 @@
+name: Sprint Event Reminder
+# 日本時間で毎週土曜日の朝9時に実行
+on:
+  schedule:
+    - cron: '0 0 * * 6'
+  workflow_dispatch:
+
+jobs:
+  reminder:
+    runs-on: ubuntu-latest
+    env:
+      DISCORD_WEBHOOK: ${{ secrets.DISCORD_REMINDER_WEBHOOK }}
+      FIRST_DATE_OF_CEREMONY: 2024-2-17
+    steps:
+      # 日付がFIRST_DATE_OF_CEREMONYから奇数週立っていたら"今日はリファインメントの日です"というメッセージを送信
+      # 偶数週であれば、"今日はセレモニーの日です"というメッセージを送信
+      - name: Send reminder
+        run: |
+          TODAY=$(date +%Y-%m-%d)
+          WEEKS=$((($(date -d $TODAY +%s) - $(date -d $FIRST_DATE_OF_CEREMONY +%s)) / (60*60*24*7)))
+          if [ $((WEEKS % 2)) -eq 0 ]; then
+          MESSAGE="今日はセレモニーの日です"
+          else
+          MESSAGE="今日はリファインメントの日です"
+          fi
+          curl -X POST -H 'Content-type: application/json' --data "{\"content\": \"$MESSAGE\"}" $DISCORD_WEBHOOK

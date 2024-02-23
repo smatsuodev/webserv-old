@@ -10,7 +10,6 @@
 class Config {
 public:
     Config();
-    explicit Config(const std::string &path);
     explicit Config(
             const std::vector<VirtualServerConfig> &virtual_servers,
             const std::map<HttpStatusCode, std::string> &error_pages = std::map<HttpStatusCode, std::string>(),
@@ -23,6 +22,8 @@ public:
     const std::vector<VirtualServerConfig> &getVirtualServers() const;
     // There should be no need for the map itself, so no getter has been provided
     const std::string &getErrorPage(HttpStatusCode status_code);
+
+    static Config parseConfigFile(const std::string &path);
 
 private:
     static const std::string kDefaultPath;
@@ -39,7 +40,6 @@ private:
     // refs: https://nginx.org/en/docs/http/ngx_http_core_module.html#error_page
     std::map<HttpStatusCode, std::string> error_pages_;
 
-    void parseConfigFile(const std::string &path);
     void setDefaultErrorPage(HttpStatusCode code);
 };
 

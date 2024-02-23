@@ -1,6 +1,4 @@
 add_library(webserv_internal STATIC
-        hello/hello.cpp
-        hello/hello.hpp
         config/config.cpp
         config/config.hpp
         config/route_config.cpp
@@ -16,4 +14,8 @@ add_library(webserv_internal STATIC
         utils/option.hpp
         utils/result.hpp
         utils/try.hpp
+        task/task_interface.hpp
+        task/callback_interface.hpp
+        handler/handler_interface.hpp
+        utils/unit.hpp
 )
