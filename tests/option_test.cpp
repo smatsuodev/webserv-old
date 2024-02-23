@@ -94,7 +94,7 @@ TEST(OptionTest, unwrapSome) {
 
 TEST(OptionTest, unwrapNone) {
     Option<int> target = None;
-    EXPECT_DEATH(target.unwrap(), ".*");
+    EXPECT_THROW(target.unwrap(), std::runtime_error);
 }
 
 TEST(OptionTest, unwrapOrSome) {

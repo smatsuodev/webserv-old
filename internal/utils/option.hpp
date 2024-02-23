@@ -1,7 +1,9 @@
 #ifndef OPTION_HPP
 #define OPTION_HPP
 
+#include "try.hpp"
 #include <cstddef>
+#include <stdexcept>
 #include <string>
 
 template<class T>
@@ -66,19 +68,23 @@ namespace types {
 } // namespace types
 
 template<class T>
+types::Some<T> Some(T val) { // NOLINT(readability-identifier-naming)
+    return types::Some<T>(val);
+}
+
+// NOLINTNEXTLINE(readability-identifier-naming)
+const types::None None = types::None();
+
+template<class T>
 class Option {
 public:
-    // Option<int> target = Some(1); みたいなことができるようにするためにexplicitをつけない
-    // NOLINTNEXTLINE(google-explicit-constructor)
-    Option(types::Some<T> *some) : some_(some) {}
+    explicit Option(types::Some<T> *some) : some_(some) {}
 
-    // Option<int> target = None; みたいなことができるようにするためにexplicitをつけない
-    // NOLINTNEXTLINE(google-explicit-constructor)
-    Option(types::None none) : some_(NULL) {}
-
-    Option(const Option &other) {
-        *this = other;
+    explicit Option(types::None none) : some_(NULL) {
+        (void) none;
     }
+
+    Option(const Option &other) : some_(other.some_) {}
 
     ~Option() {
         delete some_;
@@ -86,24 +92,36 @@ public:
 
     Option &operator=(const Option &other) {
         if (this != &other) {
-            some_ = other.some_;
+            if (other.isSome()) {
+                if (some_ != NULL) {
+                    *some_ = *other.some_;
+                } else {
+                    some_ = new types::Some<T>(*other.some_);
+                }
+            } else {
+                some_ = NULL;
+            }
         }
         return *this;
     }
 
     bool operator==(const Option &other) const {
-        if (isSome() != other.isSome())
+        if (isSome() != other.isSome()) {
             return false;
-        if (isNone())
+        }
+        if (isNone()) {
             return true;
+        }
         return *some_ == *other.some_;
     }
 
     bool operator!=(const Option &other) const {
-        if (isSome() != other.isSome())
+        if (isSome() != other.isSome()) {
             return true;
-        if (isNone())
+        }
+        if (isNone()) {
             return false;
+        }
         return *some_ != *other.some_;
     }
 
@@ -116,6 +134,9 @@ public:
     }
 
     T unwrap() const {
+        if (isNone()) {
+            throw std::runtime_error("called `Option::unwrap()` on `None`");
+        }
         return some_->val();
     }
 
@@ -125,25 +146,12 @@ public:
         return val;
     }
 
+    bool canUnwrap() const {
+        return isSome();
+    }
+
 private:
     types::Some<T> *some_;
 };
-
-template<class T>
-types::Some<T> Some(T val) { // NOLINT(readability-identifier-naming)
-    return types::Some<T>(val);
-}
-
-// NOLINTNEXTLINE(readability-identifier-naming)
-const types::None None = types::None();
-
-// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
-#define TRY(expr) TRY_OR(expr, None)
-
-// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
-#define TRY_OR(expr, defaultValue) ({         \
-    if ((expr).isNone()) return defaultValue; \
-    (expr).unwrap();                          \
-})
 
 #endif
