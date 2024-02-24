@@ -1,6 +1,6 @@
 ---
-name: Task PBI
-about: Taskに分類されるPBI
+name: Feature以外のテンプレート
+about: Task、Bug、SpikeのPBIはこれ
 title: ''
 labels: icebox
 assignees: ''
