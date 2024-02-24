@@ -1,6 +1,6 @@
 ---
-name: PBIのテンプレート
-about: PBIはこんな感じで記述しましょう
+name: Featureのテンプレート
+about: Feature PBIはこんな感じで記述しましょう
 title: ''
 labels: icebox
 assignees: ''
@@ -15,4 +15,6 @@ assignees: ''
 
 # TODO
 <!-- PBIを完了させるためにやるべきことを書きましょう -->
-- [ ] TODO
+- [ ] コーディング
+- [ ] レビュー
+- [ ] マージ
