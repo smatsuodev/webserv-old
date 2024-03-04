@@ -1,21 +1,27 @@
-#ifndef TASK_INTERFACE_HPP
-#define TASK_INTERFACE_HPP
+#ifndef IO_TASK_HPP
+#define IO_TASK_HPP
 
+#include "utils/result.hpp"
 #include <string>
-
-template<typename T, typename E>
-class Result;
 
 enum IOTaskResult {
     kTaskSuspend,
     kTaskComplete,
 };
 
+class IOTaskManager;
+
 // NOLINTNEXTLINE(cppcoreguidelines-special-member-functions)
 class IOTask {
 public:
-    virtual ~IOTask() = 0;
+    const int fd;
+
+    IOTask(IOTaskManager &m, int fd);
+    virtual ~IOTask();
     virtual Result<IOTaskResult, std::string> execute() = 0;
+
+private:
+    IOTaskManager &manager_;
 };
 
-#endif //TASK_INTERFACE_HPP
+#endif //IO_TASK_HPP

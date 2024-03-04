@@ -14,8 +14,15 @@ add_library(webserv_internal STATIC
         utils/option.hpp
         utils/result.hpp
         utils/try.hpp
-        task/task_interface.hpp
+        task/io_task.hpp
         task/callback_interface.hpp
         handler/handler_interface.hpp
         utils/unit.hpp
+        server/server.cpp
+        server/server.hpp
+        task/io_task_manager.cpp
+        task/io_task_manager.hpp
+        task/accept.cpp
+        task/accept.hpp
+        task/io_task.cpp
 )
