@@ -1,6 +1,4 @@
 #include "write_file.hpp"
-#include "read_request.hpp"
-#include <iostream>
 #include <unistd.h>
 
 IWriteFileCallback::~IWriteFileCallback() {}
@@ -13,6 +11,10 @@ Result<IOTaskResult, std::string> WriteFile::execute() {
     write(fd, data_to_write_.c_str(), data_to_write_.size());
     cb_->trigger();
     return Ok(kTaskComplete);
+}
+
+WriteFile::~WriteFile() {
+    delete cb_;
 }
 
 WriteFileCallback::WriteFileCallback(int fd) : fd_(fd) {}

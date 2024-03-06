@@ -23,6 +23,7 @@ private:
 class WriteFile : public IOTask {
 public:
     WriteFile(IOTaskManager &manager, int fd, const std::string data_to_write, IWriteFileCallback *cb);
+    ~WriteFile();
     virtual Result<IOTaskResult, std::string> execute();
 
 private:
