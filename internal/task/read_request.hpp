@@ -15,7 +15,7 @@ public:
 
 class ReadRequestCallback : public IReadRequestCallback {
 public:
-    ReadRequestCallback(IHandler *handler);
+    explicit ReadRequestCallback(IHandler *handler);
     virtual Result<types::Unit, std::string> trigger(std::string raw_request, IOTaskManager &manager, int fd);
 
 private:

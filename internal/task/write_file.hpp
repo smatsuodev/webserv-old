@@ -13,7 +13,7 @@ public:
 
 class WriteFileCallback : public IWriteFileCallback {
 public:
-    WriteFileCallback(int fd);
+    explicit WriteFileCallback(int fd);
     Result<types::Unit, std::string> trigger();
 
 private:
@@ -22,7 +22,7 @@ private:
 
 class WriteFile : public IOTask {
 public:
-    WriteFile(IOTaskManager &manager, int fd, const std::string data_to_write, IWriteFileCallback *cb);
+    WriteFile(IOTaskManager &manager, int fd, std::string& data_to_write, IWriteFileCallback *cb);
     ~WriteFile();
     virtual Result<IOTaskResult, std::string> execute();
 

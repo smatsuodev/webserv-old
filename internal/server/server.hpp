@@ -11,10 +11,10 @@ public:
     Server(const Server &other);
     ~Server();
     Server &operator=(const Server &other);
-    Result<types::Unit, std::string> start(void);
+    static Result<types::Unit, std::string> start(void);
 
 private:
-    Result<int, std::string> createServerSocket();
+    static Result<int, std::string> createServerSocket();
 };
 
 #endif

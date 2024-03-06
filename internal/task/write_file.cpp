@@ -3,7 +3,7 @@
 
 IWriteFileCallback::~IWriteFileCallback() {}
 
-WriteFile::WriteFile(IOTaskManager &manager, int fd, const std::string data_to_write, IWriteFileCallback *cb)
+WriteFile::WriteFile(IOTaskManager &manager, int fd, const std::string& data_to_write, IWriteFileCallback *cb)
     : IOTask(manager, fd), data_to_write_(data_to_write), cb_(cb) {
 }
 

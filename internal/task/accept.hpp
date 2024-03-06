@@ -20,7 +20,7 @@ public:
     virtual Result<types::Unit, std::string> trigger(int client_fd);
 
 private:
-    IOTaskManager &manager_;
+    IOTaskManager &manager_; // NOLINT(*-avoid-const-or-ref-data-members)
     IHandler *handler_;
 };
 

@@ -3,7 +3,7 @@
 int main() {
     Server server;
 
-    server.start();
+    Server::start();
 
     return 0;
 }

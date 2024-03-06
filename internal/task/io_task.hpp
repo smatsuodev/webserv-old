@@ -14,14 +14,14 @@ class IOTaskManager;
 // NOLINTNEXTLINE(cppcoreguidelines-special-member-functions)
 class IOTask {
 public:
-    const int fd;
+    const int fd_;
 
     IOTask(IOTaskManager &m, int fd);
     virtual ~IOTask();
     virtual Result<IOTaskResult, std::string> execute() = 0;
 
 protected:
-    IOTaskManager &manager_;
+    IOTaskManager &manager;
 };
 
 #endif //IO_TASK_HPP

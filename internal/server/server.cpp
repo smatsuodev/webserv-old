@@ -31,13 +31,15 @@ Result<int, std::string> Server::createServerSocket() {
     }
 
     // サーバーソケットの設定
-    struct sockaddr_in addr;
+    struct sockaddr_in addr = {};
+    const int port_num = 8080;
     addr.sin_family = AF_INET;
-    addr.sin_port = htons(8080);
+    addr.sin_port = htons(port_num);
     addr.sin_addr.s_addr = INADDR_ANY; // 0.0.0.0
 
     // ソケットをアドレスにバインド
-    if (bind(server_fd, (struct sockaddr *) &addr, sizeof(addr)) < 0) {
+    // NOLINTNEXTLINE(*-pro-type-reinterpret-cast)
+    if (bind(server_fd, reinterpret_cast<struct sockaddr *>(&addr), sizeof(addr)) < 0) {
         close(server_fd);
         return Err<std::string>("Error: Bind failed\n");
     }
