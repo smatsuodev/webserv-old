@@ -1,5 +1,5 @@
 #include "io_task_manager.hpp"
-#include <iostream>
+#include <algorithm>
 
 IOTaskManager::IOTaskManager() {
 }
