@@ -2,8 +2,8 @@
 #define IOTASKMANAGER_HPP
 
 #include "io_task.hpp"
-#include <vector>
 #include <map>
+#include <vector>
 
 class IOTaskManager {
 public:

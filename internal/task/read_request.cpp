@@ -25,7 +25,6 @@ IReadRequestCallback::~IReadRequestCallback() {}
 
 ReadRequestCallback::ReadRequestCallback(IHandler *handler) : handler_(handler) {}
 
-
 // FIXME: 本当はContextが欲しい
 Result<types::Unit, std::string> ReadRequestCallback::trigger(std::string raw_request, IOTaskManager &manager, int fd) {
     handler_->trigger(raw_request, fd, manager);
