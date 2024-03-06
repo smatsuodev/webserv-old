@@ -20,7 +20,7 @@ public:
     virtual ~IOTask();
     virtual Result<IOTaskResult, std::string> execute() = 0;
 
-private:
+protected:
     IOTaskManager &manager_;
 };
 

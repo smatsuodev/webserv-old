@@ -55,6 +55,9 @@ Result<types::Unit, std::string> Server::start(void) {
     int fd = createServerSocket().unwrap();
 
     IOTaskManager m;
-    Accept *task = new Accept(m, fd); // タスクの登録はコンストラクタがやる
+    Handler *handler = new Handler();
+    new Accept(m, fd, new AcceptCallback(m, handler)); // タスクの登録はコンストラクタがやる
     m.executeTasks();
+    delete handler;
+    return Ok(unit);
 }
