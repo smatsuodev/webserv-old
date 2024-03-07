@@ -1,8 +1,6 @@
 #include "config.hpp"
 
-Config::Config() : client_max_body_size_(kDefaultClientMaxBodySize) {
-    parseConfigFile(kDefaultPath);
-}
+Config::Config() : client_max_body_size_(kDefaultClientMaxBodySize) {}
 
 Config::Config(
         const std::vector<VirtualServerConfig> &virtual_servers,
