@@ -52,7 +52,7 @@ Result<int, std::string> Server::createServerSocket() {
     return Ok(server_fd);
 }
 
-Result<types::Unit, std::string> Server::start(void) {
+Result<types::Unit, std::string> Server::start() {
     std::cout << "start called ! " << std::endl;
     int fd = createServerSocket().unwrap();
 

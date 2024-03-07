@@ -13,11 +13,11 @@ Result<IOTaskResult, std::string> ReadRequest::execute() {
     char buffer[1025] = {};  // read の引数
     std::string raw_request; // callback に渡す文字列
     ssize_t read_len = 0;
-    while ((read_len = read(fd, buffer, 1024)) != 0) {
+    while ((read_len = read(fd_, buffer, 1024)) != 0) {
         if (read_len == -1) break;
         raw_request.append(buffer);
     }
-    cb_->trigger(raw_request, manager_, fd);
+    cb_->trigger(raw_request, manager_, fd_);
     return Ok(kTaskComplete);
 }
 

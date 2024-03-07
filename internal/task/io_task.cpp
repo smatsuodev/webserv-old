@@ -1,14 +1,10 @@
 #include "io_task.hpp"
 #include "io_task_manager.hpp"
 
-IOTask::IOTask(IOTaskManager &m, int fd) : fd(fd), manager(m) {
+IOTask::IOTask(IOTaskManager &m, int fd) : fd_(fd), manager_(m) {
     m.addTask(this);
 }
 
 IOTask::~IOTask() {
-    manager.removeTask(this);
-}
-
-int IOTask::getFd() const {
-    return fd;
+    manager_.removeTask(this);
 }

@@ -18,8 +18,8 @@ public:
     virtual Result<IOTaskResult, std::string> execute() = 0;
 
 protected:
-    int const fd;
-    IOTaskManager &manager; // NOLINT(*-avoid-const-or-ref-data-members)
+    int const fd_;
+    IOTaskManager &manager_; // NOLINT(*-avoid-const-or-ref-data-members)
 };
 
 #endif //IO_TASK_HPP

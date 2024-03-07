@@ -8,7 +8,7 @@ WriteFile::WriteFile(IOTaskManager &manager, int fd, const std::string &data_to_
 }
 
 Result<IOTaskResult, std::string> WriteFile::execute() {
-    write(fd, data_to_write_.c_str(), data_to_write_.size());
+    write(fd_, data_to_write_.c_str(), data_to_write_.size());
     cb_->trigger();
     return Ok(kTaskComplete);
 }

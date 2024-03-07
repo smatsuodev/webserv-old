@@ -11,7 +11,7 @@ public:
     Server(const Server &other);
     ~Server();
     Server &operator=(const Server &other);
-    static Result<types::Unit, std::string> start(void);
+    static Result<types::Unit, std::string> start();
 
 private:
     static Result<int, std::string> createServerSocket();
