@@ -13,8 +13,6 @@ class IOTaskManager;
 
 class IOTask {
 public:
-    int getFd() const;
-
     IOTask(IOTaskManager &m, int fd);
     virtual ~IOTask();
     virtual Result<IOTaskResult, std::string> execute() = 0;
