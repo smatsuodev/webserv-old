@@ -2,7 +2,7 @@
 
 IContext::~IContext() {}
 
-Context::Context(IOTaskManager &manager, int client_fd): manager_(manager), client_fd_(client_fd) {}
+Context::Context(IOTaskManager &manager, int client_fd) : manager_(manager), client_fd_(client_fd) {}
 
 const Request &Context::getRequest() const {
     return request_;
