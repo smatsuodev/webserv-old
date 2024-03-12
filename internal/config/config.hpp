@@ -10,6 +10,7 @@
 class Config {
 public:
     Config();
+    explicit Config(const std::string &path);
     explicit Config(
             const std::vector<VirtualServerConfig> &virtual_servers,
             const std::map<HttpStatusCode, std::string> &error_pages = std::map<HttpStatusCode, std::string>(),
@@ -26,7 +27,8 @@ public:
     static Config parseConfigFile(const std::string &path);
 
 private:
-    static const std::string kDefaultPath;
+    // static const std::string kDefaultPath;
+    const std::string kDefaultPath;
     // Same as nginx default
     // refs: https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size
     static const unsigned int kDefaultClientMaxBodySize = utils::kMiB;
