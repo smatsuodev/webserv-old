@@ -30,4 +30,6 @@ add_library(webserv_internal STATIC
         handler/handler.cpp
         task/write_file.cpp
         task/write_file.hpp
+        http/context.hpp
+        http/context.cpp
 )
