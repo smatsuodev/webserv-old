@@ -56,5 +56,10 @@ const std::string &Request::text() const {
 
 Request Request::parseRawRequest(const std::string &raw_request) {
     // TODO: パースの処理をかく
-    return Request();
+    return Request(
+            kMethodUnknown,
+            "/",
+            std::map<std::string, std::string>(),
+            std::map<std::string, std::string>(),
+            raw_request);
 }
