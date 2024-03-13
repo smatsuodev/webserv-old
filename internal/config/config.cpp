@@ -1,10 +1,7 @@
 #include "config.hpp"
+#include "utils/result.hpp"
 
 Config::Config() : client_max_body_size_(kDefaultClientMaxBodySize) {}
-
-Config::Config(const std::string &path) : client_max_body_size_(kDefaultClientMaxBodySize), kDefaultPath(path) {
-    (void) path;
-}
 
 Config::Config(
         const std::vector<VirtualServerConfig> &virtual_servers,
@@ -30,9 +27,11 @@ Config &Config::operator=(const Config &other) {
     return *this;
 }
 
-Config Config::parseConfigFile(const std::string &path) {
+Result<Config, std::string> Config::parseConfigFile(const std::string &path) {
+    // TODO: ここで頑張ってパースする
+    Config config;
     (void) path;
-    return Config(path);
+    return Ok(config);
 }
 
 // Set a default error page like nginx

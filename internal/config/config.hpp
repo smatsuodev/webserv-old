@@ -4,13 +4,13 @@
 #include "http/status.hpp"
 #include "utils/utils.hpp"
 #include "virtual_server_config.hpp"
+#include "utils/result.hpp"
 #include <map>
 #include <string>
 
 class Config {
 public:
     Config();
-    explicit Config(const std::string &path);
     explicit Config(
             const std::vector<VirtualServerConfig> &virtual_servers,
             const std::map<HttpStatusCode, std::string> &error_pages = std::map<HttpStatusCode, std::string>(),
@@ -24,11 +24,9 @@ public:
     // There should be no need for the map itself, so no getter has been provided
     const std::string &getErrorPage(HttpStatusCode status_code);
 
-    static Config parseConfigFile(const std::string &path);
+    static Result<Config, std::string> parseConfigFile(const std::string &path);
 
 private:
-    // static const std::string kDefaultPath;
-    const std::string kDefaultPath;
     // Same as nginx default
     // refs: https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size
     static const unsigned int kDefaultClientMaxBodySize = utils::kMiB;
