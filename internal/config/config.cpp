@@ -32,6 +32,7 @@ Result<Config, std::string> Config::parseConfigFile(const std::string &path) {
     Config config;
     (void) path;
     return Ok(config);
+    //    return Err<std::string>("Not implemented");
 }
 
 // Set a default error page like nginx

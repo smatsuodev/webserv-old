@@ -2,9 +2,9 @@
 #define CONFIG_HPP
 
 #include "http/status.hpp"
+#include "utils/result.hpp"
 #include "utils/utils.hpp"
 #include "virtual_server_config.hpp"
-#include "utils/result.hpp"
 #include <map>
 #include <string>
 
