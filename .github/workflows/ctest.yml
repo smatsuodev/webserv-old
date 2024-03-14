@@ -15,5 +15,12 @@ jobs:
       - name: Build
         run: cmake --build build
       - name: Test
+        id: test
         working-directory: build
         run: ctest -j $(nproc)
+      - name: Upload Test Log
+        if: failure() && steps.test.outcome == 'failure'
+        uses: actions/upload-artifact@v2
+        with:
+          name: TestLog
+          path: build/Testing/Temporary/LastTest.log
