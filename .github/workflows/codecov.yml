@@ -13,7 +13,7 @@ jobs:
       - name: Install dependencies
         run: sudo apt install -y gcovr
       - name: Configure CMake
-        run: cmake -B build
+        run: CXX=clang++ cmake -B build
       - name: Build
         run: cmake --build build
       - name: Run tests
