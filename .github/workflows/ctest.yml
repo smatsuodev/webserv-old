@@ -17,7 +17,7 @@ jobs:
       - name: Test
         id: test
         working-directory: build
-        run: ctest
+        run: ctest -j $(nproc)
       - name: Upload Test Log
         if: failure() && steps.test.outcome == 'failure'
         uses: actions/upload-artifact@v2
