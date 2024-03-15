@@ -3,7 +3,10 @@
 
 IHandler::~IHandler() {}
 
-Result<types::Unit, std::string> Handler::trigger(Context &ctx) {
-    ctx.text(kStatusOk, ctx.getRequest().text());
+Result<types::Unit, std::string> Handler::trigger(IContext *ctx) {
+    if (ctx == NULL) {
+        return Ok(unit);
+    }
+    ctx->text(kStatusOk, ctx->getRequest().text());
     return Ok(unit);
 }

@@ -11,11 +11,11 @@
 class IHandler {
 public:
     virtual ~IHandler();
-    virtual Result<types::Unit, std::string> trigger(Context &ctx) = 0;
+    virtual Result<types::Unit, std::string> trigger(IContext &ctx) = 0;
 };
 
 class Handler : public IHandler {
 public:
-    Result<types::Unit, std::string> trigger(Context &ctx);
+    Result<types::Unit, std::string> trigger(IContext *ctx);
 };
 #endif //HANDLER_HPP
