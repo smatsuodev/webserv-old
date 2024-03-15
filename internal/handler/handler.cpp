@@ -3,7 +3,7 @@
 
 IHandler::~IHandler() {}
 
-Result<types::Unit, std::string> Handler::trigger(std::string raw_request, int fd, IOTaskManager &manager) {
-    new WriteFile(manager, fd, raw_request, new WriteFileCallback(fd));
+Result<types::Unit, std::string> Handler::trigger(Context &ctx) {
+    ctx.text(kStatusOk, ctx.getRequest().text());
     return Ok(unit);
 }
