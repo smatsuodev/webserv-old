@@ -2,7 +2,7 @@
 name: Featureのテンプレート
 about: Feature PBIはこんな感じで記述しましょう
 title: ''
-labels: icebox
+labels: ''
 assignees: ''
 
 ---
@@ -12,6 +12,7 @@ assignees: ''
 
 # AC（受け入れ条件）
 <!-- PBIが`Done`になるための条件を書きましょう -->
+- AC
 
 # TODO
 <!-- PBIを完了させるためにやるべきことを書きましょう -->
