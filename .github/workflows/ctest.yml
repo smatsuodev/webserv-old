@@ -17,10 +17,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: ccache
-        uses: hendrikmuhs/ccache-action@v1.2
+      - uses: lukka/get-cmake@latest
         with:
-          create-symlink: true
+          cmakeVersion: "~3.28.0"
+          ninjaVersion: "^1.11.1"
 
       - name: Install dependencies on macOS
         if: runner.os == 'macOS'
@@ -31,14 +31,14 @@ jobs:
         run: apt install -y gcovr
 
       - name: Configure CMake
-        run: cmake -B build -DDISABLE_SANITIZER=ON
+        run: cmake -B build -G Ninja -DDISABLE_SANITIZER=ON
 
       - name: Build
-        run: cmake --build build -j
+        run: cmake --build build -j $(nproc)
 
       - name: Test
         working-directory: build
-        run: ctest -j
+        run: ctest -j $(nproc)
 
       - name: Generate XML coverage report
         run: gcovr --exclude-unreachable-branches --xml coverage.xml -f internal/ build/tests/
