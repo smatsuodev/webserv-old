@@ -19,7 +19,12 @@ Result<IOTaskResult, std::string> ReadRequest::execute() {
         buffer[read_len] = 0;
         raw_request.append(buffer);
     }
-    ctx_->setRequest(RequestParser::parseRequest(raw_request));
+
+    Result<Request, std::string> parse_result = RequestParser::parseRequest(raw_request);
+    if (parse_result.isErr()) {
+        return Err(parse_result.unwrapErr());
+    }
+    ctx_->setRequest(parse_result.unwrap());
     cb_->trigger(ctx_);
     return Ok(kTaskComplete);
 }
