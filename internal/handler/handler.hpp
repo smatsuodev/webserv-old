@@ -11,7 +11,7 @@
 class IHandler {
 public:
     virtual ~IHandler();
-    virtual Result<types::Unit, std::string> trigger(IContext &ctx) = 0;
+    virtual Result<types::Unit, std::string> trigger(IContext *ctx) = 0;
 };
 
 class Handler : public IHandler {
