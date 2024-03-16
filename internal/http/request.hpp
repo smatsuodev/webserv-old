@@ -21,7 +21,6 @@ public:
     Option<std::string> query(const std::string &key) const;
     Option<std::string> header(const std::string &key) const;
     const std::string &text() const;
-    static Request parseRawRequest(const std::string &raw_request);
 
 private:
     HttpMethod method_;

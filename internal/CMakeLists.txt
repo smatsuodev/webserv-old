@@ -32,5 +32,6 @@ add_library(webserv_internal STATIC
         task/write_file.hpp
         http/context.hpp
         http/context.cpp
-        http/parse_raw_request.cpp
+        http/request_parser.cpp
+        http/request_parser.hpp
 )

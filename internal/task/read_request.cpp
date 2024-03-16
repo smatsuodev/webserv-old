@@ -1,4 +1,5 @@
 #include "read_request.hpp"
+#include "http/request_parser.hpp"
 #include <iostream>
 #include <unistd.h>
 
@@ -18,7 +19,7 @@ Result<IOTaskResult, std::string> ReadRequest::execute() {
         buffer[read_len] = 0;
         raw_request.append(buffer);
     }
-    ctx_->setRequest(Request::parseRawRequest(raw_request));
+    ctx_->setRequest(RequestParser::parseRequest(raw_request));
     cb_->trigger(ctx_);
     return Ok(kTaskComplete);
 }
