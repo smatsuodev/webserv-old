@@ -26,6 +26,7 @@ jobs:
             /home/linuxbrew/.cache/Homebrew  # Linux cache directory for Homebrew
             /var/cache/apt/archives  # Linux cache directory for apt
           key: ${{ runner.os }}-deps-001
+          restore-keys: ${{ runner.os }}-deps-
 
       - name: Install dependencies on macOS
         if: runner.os == 'macOS'
