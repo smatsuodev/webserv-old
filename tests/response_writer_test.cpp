@@ -12,7 +12,7 @@ TEST(ResponseWriterTest, sendToFd) {
     Fake(Method(manager, addTask));
 
     writer.writeBody("Hello, world!");
-    writer.send<WriteFileCallback>();
+    writer.send();
 
     Verify(Method(manager, addTask)).Exactly(1);
 }

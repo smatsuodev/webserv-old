@@ -21,18 +21,18 @@ void Context::text(HttpStatusCode status, const std::string &body) {
     writer_.setStatus(status);
     writer_.writeHeader("Content-Type", "text/plain");
     writer_.writeBody(body);
-    writer_.send<WriteFileCallback>();
+    writer_.send();
 }
 
 void Context::html(HttpStatusCode status, const std::string &body) {
     writer_.setStatus(status);
     writer_.writeHeader("Content-Type", "text/html");
     writer_.writeBody(body);
-    writer_.send<WriteFileCallback>();
+    writer_.send();
 }
 
 void Context::redirect(HttpStatusCode status, const std::string &location) {
     writer_.setStatus(status);
     writer_.writeHeader("Location", location);
-    writer_.send<WriteFileCallback>();
+    writer_.send();
 }

@@ -31,7 +31,6 @@ public:
         status_code_ = code;
     }
 
-    template<class Callback>
     void send();
 
 private:
@@ -69,14 +68,12 @@ template<class T>
 const std::string ResponseWriter<T>::kProtocolVersion = "HTTP/1.1";
 
 template<>
-template<class Callback>
 void ResponseWriter<int>::send() {
-    new WriteFile(manager_, output_, generateRawResponseText(), new Callback(output_));
+    new WriteFile(manager_, output_, generateRawResponseText(), new WriteFileCallback(output_));
 }
 
 // This function is for testing purposes only.
 template<>
-template<class Callback = void>
 void ResponseWriter<std::ostream &>::send() {
     std::string raw_response = generateRawResponseText();
     output_ << raw_response;
