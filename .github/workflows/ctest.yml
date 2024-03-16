@@ -1,19 +1,51 @@
 name: ctest
+
 on:
   push:
     branches:
       - main
   pull_request:
   workflow_dispatch:
+
 jobs:
   run:
-    runs-on: macos-latest
+    strategy:
+      matrix:
+        # TODO: add ubuntu-latest
+        os: [macos-latest]
+    runs-on: ${{ matrix.os }}
+
     steps:
       - uses: actions/checkout@v3
+
+      - name: Install dependencies on macOS
+        if: runner.os == 'macOS'
+        run: brew install gcovr
+
+      - name: Install dependencies on Ubuntu
+        if: runner.os == 'Linux'
+        run: apt install -y gcovr
+
       - name: Configure CMake
         run: cmake -B build
+
       - name: Build
         run: cmake --build build
+
       - name: Test
         working-directory: build
         run: ctest -j
+
+      - name: Generate coverage report
+        run: gcovr --xml coverage.xml -f internal/ build/tests/
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          fail_ci_if_error: true
+          file: coverage.xml
+          directory: internal/
+          flags: unittests
+          name: webserv
+          token: ${{ secrets.CODECOV_TOKEN }}
+          verbose: true
