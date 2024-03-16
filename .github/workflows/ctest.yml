@@ -14,6 +14,9 @@ jobs:
         # TODO: add ubuntu-latest
         os: [macos-latest]
     runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+
       - name: Install dependencies on macOS
         if: runner.os == 'macOS'
         run: brew install gcovr
