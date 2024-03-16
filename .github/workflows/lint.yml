@@ -6,12 +6,15 @@ on:
   pull_request:
   workflow_dispatch:
 jobs:
-  lint:
+  run:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install clang-tidy
-        run: sudo apt-get install -y clang-tidy
+      - name: Install dependencies
+        uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: clang-tidy
+          version: 1.0
       - name: Configure cmake
         run: cmake -B build
       - name: Run clang-tidy
