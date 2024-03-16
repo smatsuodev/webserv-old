@@ -4,7 +4,6 @@
 
 using namespace fakeit;
 
-
 TEST(ResponseWriterTest, sendToFd) {
     Mock<IOTaskManager> manager;
     int fd = 1;
