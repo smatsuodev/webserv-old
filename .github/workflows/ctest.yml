@@ -22,7 +22,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: build
-          key: ${{ runner.os }}-build-${{ hashFiles('**/CMakeLists.txt', '**/*.cpp', '**/*.h') }}
+          key: ${{ runner.os }}-build-${{ hashFiles('**/CMakeLists.txt', '**/*.cpp', '**/*.hpp') }}
           restore-keys: |
             ${{ runner.os }}-build-
 
