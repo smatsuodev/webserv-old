@@ -34,11 +34,11 @@ jobs:
         run: cmake -B build -G Ninja -DDISABLE_SANITIZER=ON
 
       - name: Build
-        run: cmake --build build -j $(nproc)
+        run: cmake --build build -j
 
       - name: Test
         working-directory: build
-        run: ctest -j $(nproc)
+        run: ctest -j
 
       - name: Generate XML coverage report
         run: gcovr --exclude-unreachable-branches --xml coverage.xml -f internal/ build/tests/
