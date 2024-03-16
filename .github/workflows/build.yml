@@ -13,9 +13,9 @@ jobs:
         compiler: [g++, clang++]
     steps:
       - uses: actions/checkout@v3
-      - name: Install dependencies
+      - name: Install gcc
         if: ${{ matrix.compiler == 'g++' }}
-        run: brew install g++
+        run: brew install gcc
       - name: Configure CMake
         run: CXX=${{ matrix.compiler }} cmake -B build
       - name: Build
