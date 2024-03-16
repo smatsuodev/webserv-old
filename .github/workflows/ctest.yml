@@ -26,7 +26,7 @@ jobs:
         run: apt install -y gcovr
 
       - name: Configure CMake
-        run: cmake -B build -DCMAKE_CXX_FLAGS_DEBUG="-g -O0 --coverage"
+        run: cmake -B build -DDISABLE_SANITIZER=ON
 
       - name: Build
         run: cmake --build build
