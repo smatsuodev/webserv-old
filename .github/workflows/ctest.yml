@@ -35,7 +35,7 @@ jobs:
         run: apt install -y gcovr
 
       - name: Configure CMake
-        run: cmake -B build
+        run: cmake -B build -DCMAKE_CXX_FLAGS_DEBUG="-g -O0 --coverage"
 
       - name: Build
         run: cmake --build build
