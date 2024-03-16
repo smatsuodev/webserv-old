@@ -18,24 +18,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Cache dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/Library/Caches/Homebrew  # macOS cache directory
-            /home/linuxbrew/.cache/Homebrew  # Linux cache directory for Homebrew
-            /var/cache/apt/archives  # Linux cache directory for apt
-          key: ${{ runner.os }}-deps-001
-          restore-keys: ${{ runner.os }}-deps-
-
-      - name: Install dependencies on macOS
-        if: runner.os == 'macOS'
-        run: brew install gcovr
-
-      - name: Install dependencies on Ubuntu
-        if: runner.os == 'Linux'
-        run: apt install -y gcovr
-
       - name: Configure CMake
         run: cmake -B build
 
