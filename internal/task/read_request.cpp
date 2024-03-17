@@ -2,6 +2,7 @@
 #include "http/request_parser.hpp"
 #include <iostream>
 #include <unistd.h>
+#include <cstring>
 
 ReadRequest::ReadRequest(IContext *ctx, IReadRequestCallback *cb)
     : IOTask(ctx->getManager(), ctx->getClientFd()), ctx_(ctx), cb_(cb) {
@@ -17,7 +18,7 @@ ReadRequest::ReadRequest(IContext *ctx, IReadRequestCallback *cb)
 
 ReadRequest::~ReadRequest() {
     delete cb_;
-    fclose(stream_);
+    std::fclose(stream_);
 }
 
 // HTTP-message = start-line CRLF *( field-line CRLF ) CRLF [ message-body ]
@@ -35,7 +36,7 @@ Result<IOTaskResult, std::string> ReadRequest::execute() {
     }
     // TODO: 末尾が \r\n であることを確認する
     req_buffer_ << line;
-    free(line);
+    std::free(line);
     line = NULL;
 
     // *( field-line CRLF ) CRLF
@@ -50,25 +51,25 @@ Result<IOTaskResult, std::string> ReadRequest::execute() {
         // TODO: 末尾が \r\n であることを確認する
         req_buffer_ << line;
 
-        if (strcmp(line, "\r\n") == 0) {
+        if (std::strcmp(line, "\r\n") == 0) {
             break;
         }
 
         // Content-Length ヘッダーの値を取得
         // TODO: validation を適切に行う
-        if (strncmp(line, "Content-Length", 14) == 0) {
-            const char *colon = strchr(line, ':');
+        if (std::strncmp(line, "Content-Length", 14) == 0) {
+            const char *colon = std::strchr(line, ':');
             if (colon == NULL) {
                 return Err<std::string>("failed to parse Content-Length");
             }
             const char *value = colon + 1;
-            while (isspace(*value)) {
+            while (std::isspace(*value)) {
                 value++;
             }
-            content_length = Some(strtoul(value, NULL, 10));
+            content_length = Some(std::strtoul(value, NULL, 10));
         }
 
-        free(line);
+        std::free(line);
         line = NULL;
     }
 
@@ -85,7 +86,7 @@ Result<IOTaskResult, std::string> ReadRequest::execute() {
                 break;
             }
 
-            const size_t bytes_read = fread(body_buffer, sizeof(char), std::min(remaining_body_len, buffer_size - 1), stream_);
+            const size_t bytes_read = std::fread(body_buffer, sizeof(char), std::min(remaining_body_len, buffer_size - 1), stream_);
             if (bytes_read == 0) {
                 // エラーまたは EOF の場合
                 // EOF なら body が足りない

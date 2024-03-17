@@ -8,6 +8,7 @@
 #include "http/context.hpp"
 #include "utils/utils.hpp"
 #include <sstream>
+#include <cstdio>
 
 class IReadRequestCallback {
 public:
@@ -33,7 +34,7 @@ public:
 private:
     IContext *ctx_;
     IReadRequestCallback *cb_;
-    FILE *stream_;
+    std::FILE *stream_;
     std::stringstream req_buffer_;
 };
 
