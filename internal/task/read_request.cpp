@@ -10,6 +10,7 @@ ReadRequest::ReadRequest(IContext *ctx, IReadRequestCallback *cb)
     if (fd_copy == -1) {
         // TODO: handle error
     }
+    // TODO: fdopen を使ってよいか
     stream_ = fdopen(fd_copy, "rb");
     if (stream_ == NULL) {
         // TODO: handle error
@@ -86,6 +87,7 @@ Result<IOTaskResult, std::string> ReadRequest::execute() {
                 break;
             }
 
+            // TODO: fread を使ってよいか
             const size_t bytes_read = std::fread(body_buffer, sizeof(char), std::min(remaining_body_len, buffer_size - 1), stream_);
             if (bytes_read == 0) {
                 // エラーまたは EOF の場合
