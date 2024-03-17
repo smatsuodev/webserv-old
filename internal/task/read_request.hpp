@@ -6,8 +6,9 @@
 #include "utils/result.hpp"
 #include "utils/unit.hpp"
 #include "http/context.hpp"
+#include "utils/utils.hpp"
+#include <sstream>
 
-// NOLINTNEXTLINE(cppcoreguidelines-special-member-functions)
 class IReadRequestCallback {
 public:
     virtual ~IReadRequestCallback();
@@ -32,6 +33,8 @@ public:
 private:
     IContext *ctx_;
     IReadRequestCallback *cb_;
+    FILE *stream_;
+    std::stringstream req_buffer_;
 };
 
 #endif

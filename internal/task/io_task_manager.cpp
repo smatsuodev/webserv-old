@@ -7,6 +7,7 @@ IOTaskManager::IOTaskManager() {
 IOTaskManager::~IOTaskManager() {
 }
 
+#include <iostream>
 void IOTaskManager::executeTasks() {
     while (true) {
         for (unsigned long i = 0; i < tasks_.size(); i++) {
@@ -14,8 +15,13 @@ void IOTaskManager::executeTasks() {
             if (task == NULL) {
                 continue;
             }
-            IOTaskResult r = task->execute().unwrap();
-            if (r == kTaskComplete) {
+            Result<IOTaskResult, std::string> r = task->execute();
+            if (r.isErr()) {
+                std::cerr << r.unwrapErr() << std::endl;
+                delete task;
+                continue;
+            }
+            if (r.unwrap() == kTaskComplete) {
                 delete task;
             }
         }
