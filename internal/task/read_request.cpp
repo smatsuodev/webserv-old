@@ -43,11 +43,14 @@ Result<IOTaskResult, std::string> ReadRequest::execute() {
         headers_.push_back(header);
 
         // Content-Length ヘッダーの値を取得
-        // TODO: validation を適切に行う
-        if (utils::startsWith(header, "Content-Length")) {
-            // "Content-Length:" で 15 文字
-            const std::string &content_length_str = header.substr(16);
-            content_length = Some(std::stoul(content_length_str));
+        Result<std::pair<std::string, std::string>, std::string> parse_field_result = RequestParser::parseHeaderFieldLine(header);
+        if (parse_field_result.isErr()) {
+            return Err(parse_field_result.unwrapErr());
+        }
+        const std::pair<std::string, std::string> &field = parse_field_result.unwrap();
+        if (field.first == "Content-Length") {
+            // TODO: std::stoul を使わない
+            content_length = Some(std::stoul(field.second));
         }
     }
 
