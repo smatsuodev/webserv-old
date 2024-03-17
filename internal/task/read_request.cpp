@@ -1,9 +1,10 @@
 #include "read_request.hpp"
+#include "http/request_parser.hpp"
 #include <iostream>
 #include <unistd.h>
 
-ReadRequest::ReadRequest(IOTaskManager &manager, int client_fd, IReadRequestCallback *cb)
-    : IOTask(manager, client_fd), cb_(cb) {}
+ReadRequest::ReadRequest(IContext *ctx, IReadRequestCallback *cb)
+    : IOTask(ctx->getManager(), ctx->getClientFd()), ctx_(ctx), cb_(cb) {}
 
 ReadRequest::~ReadRequest() {
     delete cb_;
@@ -18,7 +19,13 @@ Result<IOTaskResult, std::string> ReadRequest::execute() {
         buffer[read_len] = 0;
         raw_request.append(buffer);
     }
-    cb_->trigger(raw_request, manager_, fd_);
+
+    Result<Request, std::string> parse_result = RequestParser::parseRequest(raw_request);
+    if (parse_result.isErr()) {
+        return Err(parse_result.unwrapErr());
+    }
+    ctx_->setRequest(parse_result.unwrap());
+    cb_->trigger(ctx_);
     return Ok(kTaskComplete);
 }
 
@@ -26,8 +33,7 @@ IReadRequestCallback::~IReadRequestCallback() {}
 
 ReadRequestCallback::ReadRequestCallback(IHandler *handler) : handler_(handler) {}
 
-// FIXME: 本当はContextが欲しい
-Result<types::Unit, std::string> ReadRequestCallback::trigger(std::string raw_request, IOTaskManager &manager, int fd) {
-    handler_->trigger(raw_request, fd, manager);
+Result<types::Unit, std::string> ReadRequestCallback::trigger(IContext *ctx) {
+    handler_->trigger(ctx);
     return Ok(unit);
 }
