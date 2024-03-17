@@ -48,20 +48,20 @@ jobs:
         run: ctest -j
 
       - name: Generate coverage report
-        if: ${{ matrix.use-sanitizer }} == false
+        if: ${{ matrix.use-sanitizer == false }}
         run: |
           gcovr --exclude-unreachable-branches --xml coverage.xml -f internal/ build/tests/
           gcovr --exclude-unreachable-branches --html coverage.html -f internal/ build/tests/
 
       - name: Upload HTML coverage report
-        if : ${{ matrix.use-sanitizer }} == false
+        if : ${{ matrix.use-sanitizer == false }}
         uses: actions/upload-artifact@v4
         with:
           name: coverage
           path: coverage.html
 
       - name: Upload coverage to Codecov
-        if: ${{ matrix.use-sanitizer }} == false
+        if: ${{ matrix.use-sanitizer == false }}
         uses: codecov/codecov-action@v4
         with:
           fail_ci_if_error: true
