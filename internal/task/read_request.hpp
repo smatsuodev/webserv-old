@@ -2,13 +2,13 @@
 #define READREQUEST_HPP
 
 #include "handler/handler.hpp"
+#include "http/context.hpp"
+#include "http/request_reader.hpp"
 #include "io_task.hpp"
 #include "utils/result.hpp"
 #include "utils/unit.hpp"
-#include "http/context.hpp"
 #include "utils/utils.hpp"
 #include <sstream>
-#include <cstdio>
 
 class IReadRequestCallback {
 public:
@@ -34,7 +34,7 @@ public:
 private:
     IContext *ctx_;
     IReadRequestCallback *cb_;
-    std::FILE *stream_;
+    RequestReader reader_;
     std::stringstream req_buffer_;
 };
 
