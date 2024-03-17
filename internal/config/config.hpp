@@ -25,6 +25,7 @@ public:
     const std::string &getErrorPage(HttpStatusCode status_code);
 
     static Result<Config, std::string> parseConfigFile(const std::string &path);
+    static const std::string kDefaultPath;
 
 private:
     // Same as nginx default
