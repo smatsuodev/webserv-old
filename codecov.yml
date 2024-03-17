@@ -2,4 +2,4 @@ ignore:
   - "cmd/"
   - "tests/"
 comment:
-  layout: "reach, diff, files, footer"
+  layout: "reach, diff, files"
