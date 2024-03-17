@@ -11,8 +11,13 @@ jobs:
   run:
     strategy:
       matrix:
-        # TODO: add ubuntu-latest
+        # TODO?: add ubuntu-latest
         os: [macos-latest]
+        include:
+          - use-sanitizer: true
+            cmake-args: -DDISABLE_SANITIZER=OFF
+          - use-sanitizer: false
+            cmake-args: -DDISABLE_SANITIZER=ON
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -32,7 +37,7 @@ jobs:
           create-symlink: true
 
       - name: Configure CMake
-        run: cmake -B build -G Ninja -DDISABLE_SANITIZER=ON
+        run: cmake -B build -G Ninja ${{ matrix.cmake-args }}
 
       - name: Build
         run: cmake --build build -j
@@ -42,17 +47,20 @@ jobs:
         run: ctest -j
 
       - name: Generate coverage report
+        if: ${{ matrix.use-sanitizer }} == false
         run: |
           gcovr --exclude-unreachable-branches --xml coverage.xml -f internal/ build/tests/
           gcovr --exclude-unreachable-branches --html coverage.html -f internal/ build/tests/
 
       - name: Upload HTML coverage report
+        if : ${{ matrix.use-sanitizer }} == false
         uses: actions/upload-artifact@v4
         with:
           name: coverage
           path: coverage.html
 
       - name: Upload coverage to Codecov
+        if: ${{ matrix.use-sanitizer }} == false
         uses: codecov/codecov-action@v4
         with:
           fail_ci_if_error: true
