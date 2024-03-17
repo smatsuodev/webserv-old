@@ -13,6 +13,7 @@ jobs:
       matrix:
         # TODO?: add ubuntu-latest
         os: [macos-latest]
+        use-sanitizer: [true, false]
         include:
           - use-sanitizer: true
             cmake-args: -DDISABLE_SANITIZER=OFF
