@@ -9,59 +9,61 @@ ReadRequest::~ReadRequest() {
     delete cb_;
 }
 
-// HTTP-message = start-line CRLF *( field-line CRLF ) CRLF [ message-body ]
+// HTTP-request = request-line CRLF *( field-line CRLF ) CRLF [ message-body ]
 Result<IOTaskResult, std::string> ReadRequest::execute() {
-    // start-line CRLF
-    const Result<std::string, std::string> read_start_line_result = reader_.getline();
-    if (read_start_line_result.isErr()) {
-        return Err(read_start_line_result.unwrapErr());
+    // request-line CRLF
+    const Result<std::string, std::string> read_request_line_result = reader_.getline();
+    if (read_request_line_result.isErr()) {
+        return Err(read_request_line_result.unwrapErr());
     }
-    std::string start_line = read_start_line_result.unwrap();
-    if (!utils::endsWith(start_line, "\r\n")) {
+    std::string request_line = read_request_line_result.unwrap();
+    if (!utils::endsWith(request_line, "\r\n")) {
         return Err<std::string>("start-line does not end with CRLF");
     }
-    req_buffer_ << start_line;
+
+    request_line.erase(request_line.size() - 2); // remove CRLF
 
     // *( field-line CRLF ) CRLF
     Option<size_t> content_length = None;
     while (true) {
-        const Result<std::string, std::string> read_field_line_result = reader_.getline();
-        if (read_field_line_result.isErr()) {
-            return Err(read_field_line_result.unwrapErr());
+        const Result<std::string, std::string> read_header_result = reader_.getline();
+        if (read_header_result.isErr()) {
+            return Err(read_header_result.unwrapErr());
         }
-        const std::string &field_line = read_field_line_result.unwrap();
-        if (!utils::endsWith(field_line, "\r\n")) {
+        std::string header = read_header_result.unwrap();
+        if (!utils::endsWith(header, "\r\n")) {
             return Err<std::string>("field-line does not end with CRLF");
         }
 
-        req_buffer_ << field_line;
-
-        if (field_line == "\r\n") {
+        if (header == "\r\n") {
             break;
         }
 
+        header.erase(header.size() - 2); // remove CRLF
+        headers_.push_back(header);
+
         // Content-Length ヘッダーの値を取得
         // TODO: validation を適切に行う
-        if (utils::startsWith(field_line, "Content-Length")) {
+        if (utils::startsWith(header, "Content-Length")) {
             // "Content-Length:" で 15 文字
-            const std::string &content_length_str = field_line.substr(16);
+            const std::string &content_length_str = header.substr(16);
             content_length = Some(std::stoul(content_length_str));
         }
     }
 
+    Option<std::string> body = None;
     if (content_length.isSome()) {
         // message-body
-        const size_t &body_len = content_length.unwrap();
-        const Result<std::string, std::string> read_request_body_result = reader_.read(body_len);
-        if (read_request_body_result.isErr()) {
-            return Err(read_request_body_result.unwrapErr());
+        const size_t &body_size = content_length.unwrap();
+        const Result<std::string, std::string> read_body_result = reader_.read(body_size);
+        if (read_body_result.isErr()) {
+            return Err(read_body_result.unwrapErr());
         }
-        const std::string &request_body = read_request_body_result.unwrap();
-        req_buffer_ << request_body;
+        body = Some(read_body_result.unwrap());
     }
 
-    const std::string &raw_request = req_buffer_.str();
-    Result<Request, std::string> parse_result = RequestParser::parseRequest(raw_request);
+    RequestParser parser;
+    Result<Request, std::string> parse_result = parser.parseRequest(request_line, headers_, body);
     if (parse_result.isErr()) {
         return Err(parse_result.unwrapErr());
     }

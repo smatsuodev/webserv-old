@@ -35,7 +35,7 @@ private:
     IContext *ctx_;
     IReadRequestCallback *cb_;
     RequestReader reader_;
-    std::stringstream req_buffer_;
+    std::vector<std::string> headers_;
 };
 
 #endif

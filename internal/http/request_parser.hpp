@@ -6,7 +6,10 @@
 
 class RequestParser {
 public:
-    static Result<Request, std::string> parseRequest(const std::string &raw_request);
+    Result<Request, std::string> parseRequest(const std::string &request_line, const std::vector<std::string> &headers, const Option<std::string> &body);
+    static Result<std::pair<std::string, std::string>, std::string> parseHeaderFieldLine(const std::string &line);
+
+private:
 };
 
 #endif //REQUEST_PARSER_HPP
