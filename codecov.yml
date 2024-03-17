@@ -3,8 +3,8 @@ ignore:
   - "tests/"
 comment:
   # Show the comment only on coverage changes
-  require_changes: true
-  layout: "reach, diff, tree"
+  require_changes: false
+  layout: "reach, diff, files"
 coverage:
   # Show the Codecov status without waiting for other status checks to complete or pass
   require_ci_to_pass: false
