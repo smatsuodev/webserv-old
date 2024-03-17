@@ -9,6 +9,7 @@ on:
 
 jobs:
   run:
+    name: ${{ matrix.os }} ${{ matrix.use-sanitizer && 'w/' || 'w/o' }} sanitizer
     strategy:
       matrix:
         # TODO?: add ubuntu-latest
