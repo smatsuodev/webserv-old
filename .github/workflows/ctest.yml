@@ -1,19 +1,74 @@
 name: ctest
+
 on:
   push:
     branches:
       - main
   pull_request:
   workflow_dispatch:
+
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  run:
+    name: ${{ matrix.os }} ${{ matrix.use-sanitizer && 'w/' || 'w/o' }} sanitizer
+    strategy:
+      matrix:
+        # TODO?: add ubuntu-latest
+        os: [macos-latest]
+        use-sanitizer: [true, false]
+        include:
+          - use-sanitizer: true
+            cmake-args: -DDISABLE_SANITIZER=OFF
+          - use-sanitizer: false
+            cmake-args: -DDISABLE_SANITIZER=ON
+    runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+
+      - uses: lukka/get-cmake@latest
+        with:
+          cmakeVersion: "~3.28.0"
+          ninjaVersion: "^1.11.1"
+
+      - name: Install gcovr
+        run: pip3 install gcovr
+
+      - name: ccache
+        uses: hendrikmuhs/ccache-action@v1.2.11
+        with:
+          key: ${{ matrix.os }}
+          create-symlink: true
+
       - name: Configure CMake
-        run: cmake -B build
+        run: cmake -B build -G Ninja ${{ matrix.cmake-args }}
+
       - name: Build
-        run: cmake --build build
+        run: cmake --build build -j
+
       - name: Test
         working-directory: build
-        run: ctest -j $(nproc)
+        run: ctest -j
+
+      - name: Generate coverage report
+        if: ${{ matrix.use-sanitizer == false }}
+        run: |
+          gcovr --exclude-unreachable-branches --xml coverage.xml -f internal/ build/tests/
+          gcovr --exclude-unreachable-branches --html coverage.html -f internal/ build/tests/
+
+      - name: Upload HTML coverage report
+        if : ${{ matrix.use-sanitizer == false }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage.html
+
+      - name: Upload coverage to Codecov
+        if: ${{ matrix.use-sanitizer == false }}
+        uses: codecov/codecov-action@v4
+        with:
+          fail_ci_if_error: true
+          codecov_yml_path: codecov.yml
+          file: coverage.xml
+          flags: unittests
+          name: webserv
+          token: ${{ secrets.CODECOV_TOKEN }}
+          verbose: true

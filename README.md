@@ -1,4 +1,5 @@
 # Webserv
+[![codecov](https://codecov.io/gh/EringiShimeji/webserv/graph/badge.svg?token=P80Nq9wU82)](https://codecov.io/gh/EringiShimeji/webserv)
 
 ## Structure
 
