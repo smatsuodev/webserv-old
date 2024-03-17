@@ -44,7 +44,7 @@ Result<std::string, std::string> RequestReader::getline() {
 }
 
 Result<std::string, std::string> RequestReader::read(const std::size_t n) {
-    while (utils::get_stringstream_size(buffer_) < n && !eof_) {
+    while (utils::getStringStreamSize(buffer_) < n && !eof_) {
         Result<std::size_t, std::string> load_result = loadSingleChunk();
         if (load_result.isErr()) {
             return Err<std::string>(load_result.unwrapErr());
