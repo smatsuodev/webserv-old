@@ -21,11 +21,10 @@ RequestParser::parseRequest(const std::string &request_line, const std::vector<s
         parsed_headers.insert(header_field);
     }
 
-    // TODO: pass HTTP-version
     return Ok(Request(
-            parsed_request_line.first.first,
-            parsed_request_line.first.second,
-            std::map<std::string, std::string>(),
+            parsed_request_line.first.first,  // method
+            parsed_request_line.first.second, // request-target
+            parsed_request_line.second,       // HTTP-version
             parsed_headers,
             body.unwrapOr("")));
 }
@@ -105,8 +104,7 @@ Result<RequestParser::RequestLine, std::string> RequestParser::parseRequestLine(
 bool RequestParser::isValidFieldName(const std::string &field_name) {
     for (size_t i = 0; i < field_name.size(); i++) {
         unsigned char c = field_name[i];
-        if (!(std::isalnum(c) || c == '!' || c == '#' || c == '$' || c == '%' || c == '&' || c == '\'' || c == '*' ||
-              c == '+' || c == '-' || c == '.' || c == '^' || c == '_' || c == '`' || c == '|' || c == '~')) {
+        if (!(std::isalnum(c) || c == '!' || c == '#' || c == '$' || c == '%' || c == '&' || c == '\'' || c == '*' || c == '+' || c == '-' || c == '.' || c == '^' || c == '_' || c == '`' || c == '|' || c == '~')) {
             return false;
         }
     }
@@ -126,8 +124,7 @@ bool RequestParser::isValidFieldValue(const std::string &field_value) {
     }
 
     // 先頭・末尾が SP / HTAB でないことを確認
-    if (field_value[0] == ' ' || field_value[0] == '\t' ||
-        field_value[field_value.size() - 1] == ' ' || field_value[field_value.size() - 1] == '\t') {
+    if (field_value[0] == ' ' || field_value[0] == '\t' || field_value[field_value.size() - 1] == ' ' || field_value[field_value.size() - 1] == '\t') {
         return false;
     }
 
