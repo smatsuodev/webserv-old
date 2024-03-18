@@ -9,6 +9,7 @@ ReadRequest::~ReadRequest() {
     delete cb_;
 }
 
+// TODO: ノンブロッキング対応
 // HTTP-request = request-line CRLF *( field-line CRLF ) CRLF [ message-body ]
 Result<IOTaskResult, std::string> ReadRequest::execute() {
     // request-line CRLF
