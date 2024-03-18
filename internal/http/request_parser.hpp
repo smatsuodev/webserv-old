@@ -9,7 +9,7 @@ class RequestParser {
 public:
     typedef std::pair<std::string, std::string> HeaderField;
 
-    static Result<Request, std::string> parseRequest(const std::string &request_line, const std::vector<std::string> &headers, const Option<std::string> &body);
+    static Result<Request, std::string> parseRequest(const std::string &request_line, const std::vector<std::string> &headers, const std::string &body);
     static Result<std::pair<std::string, std::string>, std::string> parseHeaderFieldLine(const std::string &line);
 
 private:

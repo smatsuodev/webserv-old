@@ -54,7 +54,7 @@ Result<IOTaskResult, std::string> ReadRequest::execute() {
         }
     }
 
-    Option<std::string> body = None;
+    Option<std::string> maybe_body = None;
     if (content_length.isSome()) {
         // message-body
         const size_t &body_size = content_length.unwrap();
@@ -62,10 +62,10 @@ Result<IOTaskResult, std::string> ReadRequest::execute() {
         if (read_body_result.isErr()) {
             return Err(read_body_result.unwrapErr());
         }
-        body = Some(read_body_result.unwrap());
+        maybe_body = Some(read_body_result.unwrap());
     }
 
-    Result<Request, std::string> parse_result = RequestParser::parseRequest(request_line, headers_, body);
+    Result<Request, std::string> parse_result = RequestParser::parseRequest(request_line, headers_, maybe_body.unwrapOr(""));
     if (parse_result.isErr()) {
         return Err(parse_result.unwrapErr());
     }

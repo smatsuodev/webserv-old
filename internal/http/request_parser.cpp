@@ -3,7 +3,7 @@
 #include "utils/utils.hpp"
 
 Result<Request, std::string>
-RequestParser::parseRequest(const std::string &request_line, const std::vector<std::string> &headers, const Option<std::string> &body) {
+RequestParser::parseRequest(const std::string &request_line, const std::vector<std::string> &headers, const std::string &body) {
     // TODO: parse query
     const Result<RequestParser::RequestLine, std::string> parse_request_line_result = parseRequestLine(request_line);
     if (parse_request_line_result.isErr()) {
@@ -26,7 +26,7 @@ RequestParser::parseRequest(const std::string &request_line, const std::vector<s
             parsed_request_line.first.second, // request-target
             parsed_request_line.second,       // HTTP-version
             parsed_headers,
-            body.unwrapOr("")));
+            body));
 }
 
 // field-line = field-name ":" OWS field-value OWS
