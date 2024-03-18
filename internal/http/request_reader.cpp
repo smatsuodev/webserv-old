@@ -18,25 +18,22 @@ bool RequestReader::eof() const {
     return eof_ && buffer_.eof();
 }
 
+// TODO: 効率的な実装に変更する
 Result<std::string, std::string> RequestReader::getline() {
     while (true) {
+        const Option<std::string> maybe_line = getlineFromBuffer();
+        if (maybe_line.isSome()) {
+            return Ok(maybe_line.unwrap());
+        }
+
         Result<std::size_t, std::string> load_result = loadSingleChunk();
         if (load_result.isErr()) {
             return Err<std::string>(load_result.unwrapErr());
         }
 
-        // TODO: 効率的な実装に変更する
-        // 毎回コピー, 検索するのは無駄
-        const std::string buf_str = buffer_.str();
-        const std::size_t crlf_pos = buf_str.find("\r\n");
-        if (crlf_pos != std::string::npos) {
-            const std::string line = buf_str.substr(0, crlf_pos + 2);
-            buffer_.str(buf_str.substr(crlf_pos + 2));
-            return Ok(line);
-        }
-
         // CRLF なしで EOF に到達した場合
         if (eof_) {
+            const std::string buf_str = buffer_.str();
             buffer_.clear();
             return Ok(buf_str);
         }
@@ -71,4 +68,16 @@ Result<std::size_t, std::string> RequestReader::loadSingleChunk() {
     chunk_buf_[bytes_read] = '\0';
     buffer_ << chunk_buf_;
     return Ok(bytes_read);
+}
+
+Option<std::string> RequestReader::getlineFromBuffer() {
+    const std::string buf_str = buffer_.str();
+    const std::string::size_type crlf_pos = buf_str.find("\r\n");
+    if (crlf_pos == std::string::npos) {
+        return None;
+    }
+
+    const std::string line = buf_str.substr(0, crlf_pos + 2);
+    buffer_.str(buf_str.substr(crlf_pos + 2));
+    return Some(line);
 }

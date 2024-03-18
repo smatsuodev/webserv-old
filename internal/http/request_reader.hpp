@@ -1,6 +1,7 @@
 #ifndef REQUEST_READER_HPP
 #define REQUEST_READER_HPP
 
+#include "utils/option.hpp"
 #include "utils/result.hpp"
 #include "utils/unit.hpp"
 #include "utils/utils.hpp"
@@ -27,6 +28,8 @@ private:
     bool eof_;
 
     Result<std::size_t, std::string> loadSingleChunk();
+    // Return a CRLF-terminated line from the buffer if present
+    Option<std::string> getlineFromBuffer();
 };
 
 #endif //REQUEST_READER_HPP
