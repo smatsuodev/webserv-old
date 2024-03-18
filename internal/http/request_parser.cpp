@@ -1,7 +1,6 @@
 #include "request_parser.hpp"
 #include "method.hpp"
 #include "utils/utils.hpp"
-#include <regex>
 
 Result<Request, std::string>
 RequestParser::parseRequest(const std::string &request_line, const std::vector<std::string> &headers, const Option<std::string> &body) {
@@ -104,9 +103,14 @@ Result<RequestParser::RequestLine, std::string> RequestParser::parseRequestLine(
 *       / DIGIT / ALPHA ; any VCHAR, except delimiters
 */
 bool RequestParser::isValidFieldName(const std::string &field_name) {
-    // TODO: 正規表現をやめる
-    std::regex re_field_name("^[!#$%&'*+\\-\\.\\^_`\\|~0-9A-Za-z]+$");
-    return std::regex_match(field_name, re_field_name);
+    for (size_t i = 0; i < field_name.size(); i++) {
+        unsigned char c = field_name[i];
+        if (!(std::isalnum(c) || c == '!' || c == '#' || c == '$' || c == '%' || c == '&' || c == '\'' || c == '*' ||
+              c == '+' || c == '-' || c == '.' || c == '^' || c == '_' || c == '`' || c == '|' || c == '~')) {
+            return false;
+        }
+    }
+    return true;
 }
 
 /*
@@ -115,11 +119,28 @@ bool RequestParser::isValidFieldName(const std::string &field_name) {
 * field-vchar = VCHAR / obs-text
 * obs-text = %x80-FF
 */
+// NOTE: trim 済みであることを仮定すれば, field-value = *field-vchar
 bool RequestParser::isValidFieldValue(const std::string &field_value) {
-    // TODO: 正規表現をやめる
-    // NOTE: trim 済みであることを仮定すれば, 文字種のチェックだけで良い
-    std::regex re_field_value("^[\\x21-\\x7E\\x80-\\xFF \t]+$");
-    return std::regex_match(field_value, re_field_value);
+    if (field_value.empty()) {
+        return true;
+    }
+
+    // 先頭・末尾が SP / HTAB でないことを確認
+    if (field_value[0] == ' ' || field_value[0] == '\t' ||
+        field_value[field_value.size() - 1] == ' ' || field_value[field_value.size() - 1] == '\t') {
+        return false;
+    }
+
+    // 最後に *( SP / HTAB / field-vchar ) であることを確認すればよい
+    for (size_t i = 0; i < field_value.size(); i++) {
+        unsigned char c = field_value[i];
+        // TODO: std::isprint で適切か
+        if (!std::isprint(c) && !(c >= 0x80 && c <= 0xff)) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 bool RequestParser::isValidHttpVersion(const std::string &http_version) {
@@ -130,5 +151,5 @@ bool RequestParser::isValidHttpVersion(const std::string &http_version) {
     // バージョンをチェック
     char major = http_version[5];
     char minor = http_version[7];
-    return http_version[6] == '.' && std::isdigit(major) && std::isdigit(minor)
+    return http_version[6] == '.' && std::isdigit(major) && std::isdigit(minor);
 }
