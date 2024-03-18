@@ -10,7 +10,7 @@
 
 class RequestReader {
 public:
-    RequestReader(int fd);
+    explicit RequestReader(int fd);
     RequestReader(int fd, std::size_t chunk_size);
     ~RequestReader();
     // Read a CRLF-terminated line

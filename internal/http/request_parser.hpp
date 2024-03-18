@@ -3,6 +3,7 @@
 
 #include "request.hpp"
 #include "utils/result.hpp"
+#include <vector>
 
 class RequestParser {
 public:
