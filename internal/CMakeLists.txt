@@ -37,4 +37,5 @@ add_library(webserv_internal STATIC
         http/request_reader.cpp
         http/request_reader.hpp
         utils/utils.cpp
+        http/method.cpp
 )

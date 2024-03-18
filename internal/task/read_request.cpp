@@ -65,8 +65,7 @@ Result<IOTaskResult, std::string> ReadRequest::execute() {
         body = Some(read_body_result.unwrap());
     }
 
-    RequestParser parser;
-    Result<Request, std::string> parse_result = parser.parseRequest(request_line, headers_, body);
+    Result<Request, std::string> parse_result = RequestParser::parseRequest(request_line, headers_, body);
     if (parse_result.isErr()) {
         return Err(parse_result.unwrapErr());
     }
