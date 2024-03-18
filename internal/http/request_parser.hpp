@@ -17,6 +17,9 @@ private:
     typedef std::pair<std::pair<HttpMethod, std::string>, std::string> RequestLine;
 
     static Result<RequestLine, std::string> parseRequestLine(const std::string &line);
+    static bool isValidFieldName(const std::string &field_name);
+    static bool isValidFieldValue(const std::string &field_value);
+    static bool isValidHttpVersion(const std::string &http_version);
 };
 
 #endif //REQUEST_PARSER_HPP

@@ -1,5 +1,6 @@
 #include "request_parser.hpp"
 #include "method.hpp"
+#include "utils/utils.hpp"
 #include <regex>
 
 Result<Request, std::string>
@@ -42,16 +43,7 @@ RequestParser::parseHeaderFieldLine(const std::string &line) {
     const std::string raw_field_value = line.substr(colon_pos + 1);
 
     // field-name の検証
-    /*
-     * field-name = token
-     * token = 1*tchar
-     * tchar = "!" / "#" / "$" / "%" / "&" / "'" / "*"
-     *       / "+" / "-" / "." / "^" / "_" / "`" / "|" / "~"
-     *       / DIGIT / ALPHA ; any VCHAR, except delimiters
-     */
-    // TODO: 正規表現をやめる
-    std::regex re_field_name("^[!#$%&'*+\\-\\.\\^_`\\|~0-9A-Za-z]+$");
-    if (!std::regex_match(raw_field_name, re_field_name)) {
+    if (!isValidFieldName(raw_field_name)) {
         return Err<std::string>("invalid field-name");
     }
 
@@ -69,17 +61,7 @@ RequestParser::parseHeaderFieldLine(const std::string &line) {
         return Err<std::string>("invalid field-value");
     }
     const std::string trimmed_raw_field_value = raw_field_value.substr(begin, end - begin + 1);
-
-    /*
-     * field-value = *field-content
-     * field-content = field-vchar [ 1*( SP / HTAB / field-vchar ) field-vchar) ]
-     * field-vchar = VCHAR / obs-text
-     * obs-text = %x80-FF
-     */
-    // trim 済みなので, *( SP / HTAB / field-vchar ) であることを確認すればよい
-    // TODO: 正規表現をやめる
-    std::regex re_field_value("^[\\x21-\\x7E\\x80-\\xFF \t]+$");
-    if (!std::regex_match(trimmed_raw_field_value, re_field_value)) {
+    if (!isValidFieldValue(trimmed_raw_field_value)) {
         return Err<std::string>("invalid field-value");
     }
 
@@ -89,19 +71,64 @@ RequestParser::parseHeaderFieldLine(const std::string &line) {
 // request-line = method SP request-target SP HTTP-version
 // NOTE: サーバーは SP 以外にも HTAB, VT, FF, CR を区切りとしてもよい (MAY)
 Result<RequestParser::RequestLine, std::string> RequestParser::parseRequestLine(const std::string &line) {
-    // TODO: 正規表現をやめる
-    std::regex re("^([^ ]+) ([^ ]+) (HTTP/\\d\\.\\d)$");
-    std::smatch match;
-    if (!std::regex_match(line, match, re)) {
+    // 最初と最後のスペースを探し, 3分割する
+    const std::string::size_type first_space_pos = line.find(' ');
+    const std::string::size_type last_space_pos = line.find_last_of(' ');
+    if (first_space_pos == std::string::npos || last_space_pos == std::string::npos) {
         return Err<std::string>("invalid request-line");
     }
+    if (first_space_pos == last_space_pos) {
+        return Err<std::string>("invalid request-line");
+    }
+    const std::string raw_method = line.substr(0, first_space_pos);
+    const std::string raw_request_target = line.substr(first_space_pos + 1, last_space_pos - first_space_pos - 1);
+    const std::string raw_http_version = line.substr(last_space_pos + 1);
 
-    const HttpMethod method = httpMethodFromString(match[1].str());
+    // TODO: request-target の validation
+    const HttpMethod method = httpMethodFromString(raw_method);
     if (method == kMethodUnknown) {
         return Err<std::string>("unknown method");
     }
-    const std::string request_target = match[2].str();
-    const std::string http_version = match[3].str();
+    if (!isValidHttpVersion(raw_http_version)) {
+        return Err<std::string>("invalid HTTP-version");
+    }
 
-    return Ok<RequestLine>(std::make_pair(std::make_pair(method, request_target), http_version));
+    return Ok(std::make_pair(std::make_pair(method, raw_request_target), raw_http_version));
+}
+
+/*
+* field-name = token
+* token = 1*tchar
+* tchar = "!" / "#" / "$" / "%" / "&" / "'" / "*"
+*       / "+" / "-" / "." / "^" / "_" / "`" / "|" / "~"
+*       / DIGIT / ALPHA ; any VCHAR, except delimiters
+*/
+bool RequestParser::isValidFieldName(const std::string &field_name) {
+    // TODO: 正規表現をやめる
+    std::regex re_field_name("^[!#$%&'*+\\-\\.\\^_`\\|~0-9A-Za-z]+$");
+    return std::regex_match(field_name, re_field_name);
+}
+
+/*
+* field-value = *field-content
+* field-content = field-vchar [ 1*( SP / HTAB / field-vchar ) field-vchar) ]
+* field-vchar = VCHAR / obs-text
+* obs-text = %x80-FF
+*/
+bool RequestParser::isValidFieldValue(const std::string &field_value) {
+    // TODO: 正規表現をやめる
+    // NOTE: trim 済みであることを仮定すれば, 文字種のチェックだけで良い
+    std::regex re_field_value("^[\\x21-\\x7E\\x80-\\xFF \t]+$");
+    return std::regex_match(field_value, re_field_value);
+}
+
+bool RequestParser::isValidHttpVersion(const std::string &http_version) {
+    // HTTP/1.1 の形式, 8文字
+    if (!(http_version.size() == 8 && utils::startsWith(http_version, "HTTP/"))) {
+        return false;
+    }
+    // バージョンをチェック
+    char major = http_version[5];
+    char minor = http_version[7];
+    return http_version[6] == '.' && std::isdigit(major) && std::isdigit(minor)
 }
