@@ -1,5 +1,5 @@
-#include <gtest/gtest.h>
 #include "utils/utils.hpp"
+#include <gtest/gtest.h>
 
 TEST(StartsWith, emptyStr) {
     EXPECT_TRUE(utils::startsWith("", ""));

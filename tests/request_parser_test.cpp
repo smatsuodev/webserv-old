@@ -1,5 +1,5 @@
-#include <gtest/gtest.h>
 #include "http/request_parser.hpp"
+#include <gtest/gtest.h>
 
 TEST(ParseHeaderFieldLineErr, empty) {
     const auto result = RequestParser::parseHeaderFieldLine("");
