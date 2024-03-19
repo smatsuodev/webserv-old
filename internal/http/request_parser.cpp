@@ -102,6 +102,10 @@ Result<RequestParser::RequestLine, std::string> RequestParser::parseRequestLine(
 *       / DIGIT / ALPHA ; any VCHAR, except delimiters
 */
 bool RequestParser::isValidFieldName(const std::string &field_name) {
+    if (field_name.empty()) {
+        return false;
+    }
+
     for (size_t i = 0; i < field_name.size(); i++) {
         unsigned char c = field_name[i];
         if (!(std::isalnum(c) || c == '!' || c == '#' || c == '$' || c == '%' || c == '&' || c == '\'' || c == '*' || c == '+' || c == '-' || c == '.' || c == '^' || c == '_' || c == '`' || c == '|' || c == '~')) {
