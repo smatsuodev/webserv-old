@@ -1,8 +1,8 @@
 #ifndef UTILS_HPP
 #define UTILS_HPP
 
-#include <sstream>
 #include "utils/result.hpp"
+#include <sstream>
 
 namespace utils {
     const unsigned int kKiB = 1024;        // 1 KiB = 1024 bytes

@@ -1,4 +1,5 @@
 #include "utils.hpp"
+#include <cerrno>
 
 std::size_t utils::getStringStreamSize(std::stringstream &ss) {
     ss.seekg(0, std::ios::end);
@@ -30,7 +31,7 @@ Result<unsigned long, std::string> utils::stoul(const std::string &str) {
     }
 
     errno = 0;
-    unsigned long result = std::strtoul(str.c_str(), nullptr, 10);
+    unsigned long result = std::strtoul(str.c_str(), NULL, 10);
     if (errno == ERANGE) {
         return Err<std::string>("out of range");
     }
