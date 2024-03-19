@@ -16,6 +16,8 @@ public:
                      const std::string &body = "");
     Request(const Request &other);
     Request &operator=(const Request &other);
+    bool operator==(const Request &rhs) const;
+
     HttpMethod method() const;
     const std::string &path() const;
     Option<std::string> query(const std::string &key) const;

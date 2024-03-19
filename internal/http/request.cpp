@@ -53,3 +53,11 @@ Option<std::string> Request::header(const std::string &key) const {
 const std::string &Request::body() const {
     return body_;
 }
+
+bool Request::operator==(const Request &rhs) const {
+    return method_ == rhs.method_
+            && request_target_ == rhs.request_target_
+            && http_version_ == rhs.http_version_
+            && headers_ == rhs.headers_
+            && body_ == rhs.body_;
+}
