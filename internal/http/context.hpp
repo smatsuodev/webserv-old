@@ -3,8 +3,7 @@
 
 #include "request.hpp"
 #include "status.hpp"
-
-class IOTaskManager;
+#include "task/io_task_manager.hpp"
 
 class IContext {
 public:
