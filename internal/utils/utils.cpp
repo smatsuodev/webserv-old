@@ -17,3 +17,19 @@ bool utils::endsWith(const std::string &str, const std::string &suffix) {
     }
     return str.rfind(suffix) == (str.size() - suffix.size());
 }
+
+Result<unsigned long, std::string> utils::stoul(const std::string &str) {
+    for (size_t i = 0; i < str.size(); i++) {
+        if (!std::isdigit(str[i])) {
+            return Err<std::string>("contains non-digit character");
+        }
+    }
+
+    errno = 0;
+    unsigned long result = std::strtoul(str.c_str(), nullptr, 10);
+    if (errno == ERANGE) {
+        return Err<std::string>("out of range");
+    }
+
+    return Ok(result);
+}

@@ -51,8 +51,12 @@ Result<IOTaskResult, std::string> ReadRequest::execute() {
         }
         const std::pair<std::string, std::string> &field = parse_field_result.unwrap();
         if (field.first == "Content-Length") {
-            // TODO: std::stoul を使わない
-            content_length = Some(std::stoul(field.second));
+            // TODO: client_max_body_size より大きい値の場合はエラー
+            Result<unsigned long, std::string> field_parse_result = utils::stoul(field.second);
+            if (field_parse_result.isErr()) {
+                return Err(field_parse_result.unwrapErr());
+            }
+            content_length = Some(field_parse_result.unwrap());
         }
     }
 
