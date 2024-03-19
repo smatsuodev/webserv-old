@@ -54,3 +54,9 @@ gtest_discover_tests(stream_utils_test)
 
 add_executable(request_parser_test request_parser_test.cpp)
 gtest_discover_tests(request_parser_test)
+
+add_executable(http_method_test http_method_test.cpp)
+gtest_discover_tests(http_method_test)
+
+add_executable(context_test context_test.cpp)
+gtest_discover_tests(context_test)
