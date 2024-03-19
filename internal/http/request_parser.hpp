@@ -13,6 +13,7 @@ public:
     static Result<std::pair<std::string, std::string>, std::string> parseHeaderFieldLine(const std::string &line);
 
 private:
+    // TODO: 分かりにくいのでクラスにする (使用箇所は限定的なので後回し)
     // method, request-target, HTTP-version
     typedef std::pair<std::pair<HttpMethod, std::string>, std::string> RequestLine;
 

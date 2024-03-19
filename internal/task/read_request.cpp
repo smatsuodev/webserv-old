@@ -10,6 +10,7 @@ ReadRequest::~ReadRequest() {
 }
 
 // TODO: ノンブロッキング対応
+// TODO: 400 Bad Request を返す
 // HTTP-request = request-line CRLF *( field-line CRLF ) CRLF [ message-body ]
 Result<IOTaskResult, std::string> ReadRequest::execute() {
     // request-line CRLF
