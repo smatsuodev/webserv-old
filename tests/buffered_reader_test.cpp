@@ -147,11 +147,11 @@ TEST(BufferedReaderReadLineOk, normal) {
             .Return(Ok(0ul));
 
     BufferedReader reader(&stub.get(), kBufferSize);
-    auto result = reader.readLine();
+    auto result = reader.readLine("\n");
     ASSERT_TRUE(result.isOk());
     EXPECT_EQ(result.unwrap(), "123456\n");
 
-    result = reader.readLine();
+    result = reader.readLine("\n");
     ASSERT_TRUE(result.isOk());
     EXPECT_EQ(result.unwrap(), "789\n");
 }
@@ -193,9 +193,9 @@ TEST(BufferedReaderReadLineOk, buffering) {
     });
 
     BufferedReader reader(&stub.get(), kBufferSize);
-    auto result = reader.readLine();
+    auto result = reader.readLine("\n");
     ASSERT_TRUE(result.isOk());
-    result = reader.readLine();
+    result = reader.readLine("\n");
     ASSERT_TRUE(result.isOk());
 
     // スタブの read は 1 回しか呼ばれていないことを確認
@@ -211,6 +211,6 @@ TEST(BufferedReaderReadLineErr, readErr) {
     When(Method(stub, read)).Return(Err<std::string>("read error"));
 
     BufferedReader reader(&stub.get(), kBufferSize);
-    auto result = reader.readLine();
+    auto result = reader.readLine("\n");
     ASSERT_TRUE(result.isErr());
 }

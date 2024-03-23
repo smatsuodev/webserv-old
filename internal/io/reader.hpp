@@ -1,11 +1,11 @@
 #ifndef READER_HPP
 #define READER_HPP
 
+#include "utils/ownership.hpp"
 #include "utils/result.hpp"
 #include "utils/utils.hpp"
-#include "utils/ownership.hpp"
-#include <string>
 #include <cerrno>
+#include <string>
 
 class IReader {
 public:
@@ -31,15 +31,20 @@ private:
     Ownership ownership_;
 };
 
-class BufferedReader : public IReader {
+class IBufferedReader : public IReader {
+public:
+    virtual Result<std::string, std::string> readLine(const std::string &delimiter) = 0;
+};
+
+class BufferedReader : public IBufferedReader {
 public:
     explicit BufferedReader(IReader *reader, Ownership ownership = kOwnBorrow);
     explicit BufferedReader(IReader *reader, std::size_t buffer_size, Ownership ownership = kOwnBorrow);
     // Delete the reader if ownership is kOwn
     virtual ~BufferedReader();
 
-    Result<std::size_t, std::string> read(char *buf, std::size_t n);
-    Result<std::string, std::string> readLine(const std::string &delimiter = "\n");
+    virtual Result<std::size_t, std::string> read(char *buf, std::size_t n);
+    virtual Result<std::string, std::string> readLine(const std::string &delimiter);
     bool eof() const;
 
 private:
