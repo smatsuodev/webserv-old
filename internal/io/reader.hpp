@@ -5,6 +5,7 @@
 #include "utils/utils.hpp"
 #include "utils/ownership.hpp"
 #include <string>
+#include <cerrno>
 
 class IReader {
 public:

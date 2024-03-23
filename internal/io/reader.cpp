@@ -1,5 +1,5 @@
 #include "reader.hpp"
-#include <cstring>
+#include <string.h> // NOLINT(*-deprecated-headers) to use strnstr
 #include <unistd.h>
 
 IReader::~IReader() {}
@@ -15,7 +15,7 @@ FdReader::~FdReader() {
 Result<std::size_t, std::string> FdReader::read(char *buf, const std::size_t n) {
     ssize_t bytes_read = ::read(fd_, buf, n);
     if (bytes_read == -1) {
-        return Err(std::string(strerror(errno)));
+        return Err(std::string(std::strerror(errno)));
     }
     if (bytes_read == 0) {
         eof_ = true;
