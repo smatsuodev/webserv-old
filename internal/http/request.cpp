@@ -32,6 +32,8 @@ const std::string &Request::path() const {
     return request_target_;
 }
 
+// TODO: NOLINT を消す
+// NOLINTNEXTLINE(*-convert-member-functions-to-static)
 Option<std::string> Request::query(const std::string &key) const {
     // TODO: implement
     return None;
