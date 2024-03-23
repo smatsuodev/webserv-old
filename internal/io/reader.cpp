@@ -60,7 +60,8 @@ Result<std::size_t, std::string> BufferedReader::read(char *buf, const std::size
         const std::size_t buf_bytes_left = buf_write_pos_ - buf_read_pos_;
         const std::size_t bytes_to_copy = std::min(n - total_bytes_copied, buf_bytes_left);
         const char *copy_src = buf_ + buf_read_pos_;
-        std::memcpy(buf, copy_src, bytes_to_copy);
+        char *copy_dst = buf + total_bytes_copied;
+        std::memcpy(copy_dst, copy_src, bytes_to_copy);
 
         total_bytes_copied += bytes_to_copy;
         buf_read_pos_ += bytes_to_copy;
