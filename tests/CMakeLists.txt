@@ -66,3 +66,6 @@ gtest_discover_tests(fd_reader_test)
 
 add_executable(buffered_reader_test buffered_reader_test.cpp)
 gtest_discover_tests(buffered_reader_test)
+
+add_executable(read_request_test read_request_test.cpp)
+gtest_discover_tests(read_request_test)
