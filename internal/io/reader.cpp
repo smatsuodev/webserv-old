@@ -1,4 +1,5 @@
 #include "reader.hpp"
+#include <cstring>
 #include <string.h> // NOLINT(*-deprecated-headers) to use strnstr
 #include <unistd.h>
 
