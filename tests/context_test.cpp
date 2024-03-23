@@ -1,5 +1,5 @@
-#include <gtest/gtest.h>
 #include "http/context.hpp"
+#include <gtest/gtest.h>
 
 class ContextTest : public ::testing::Test {
 protected:
