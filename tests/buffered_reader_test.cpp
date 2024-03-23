@@ -4,6 +4,7 @@
 
 using namespace fakeit;
 
+// デフォルトのバッファは大きいので, 極力小さい値を使う
 constexpr std::size_t kBufferSize = 64;
 
 // "a" を読み続ける Reader
@@ -39,6 +40,17 @@ TEST_F(BufferedReaderInfinite, read) {
     expectBufferEq(buf, len);
 }
 
+TEST_F(BufferedReaderInfinite, readMove) {
+    BufferedReader reader(&stub_.get(), kBufferSize);
+    char buf[16];
+    auto result = reader.read(buf, 16);
+    ASSERT_TRUE(result.isOk());
+
+    auto len = result.unwrap();
+    EXPECT_EQ(len, 16);
+    expectBufferEq(buf, len);
+}
+
 TEST_F(BufferedReaderInfinite, readMoreThanBuffer) {
     BufferedReader reader(&stub_.get(), kBufferSize);
     char buf[kBufferSize * 2];
@@ -63,7 +75,7 @@ TEST_F(BufferedReaderInfinite, smallBuffer) {
 
 // 連続で read
 TEST_F(BufferedReaderInfinite, readTwice) {
-    BufferedReader reader(&stub_.get(), kBufferSize);
+    BufferedReader reader(&stub_.get());
     for (int i = 0; i < 2; i++) {
         char buf[16];
         auto result = reader.read(buf, 16);
@@ -213,4 +225,33 @@ TEST(BufferedReaderReadLineErr, readErr) {
     BufferedReader reader(&stub.get(), kBufferSize);
     auto result = reader.readLine("\n");
     ASSERT_TRUE(result.isErr());
+}
+
+class BufferedReaderFile : public ::testing::Test {
+protected:
+    int fd_ = -1;
+    char tmpfile_[32] = "/tmp/buffered_reader_test";
+    static constexpr char kFileContent[] = "Hello, world!\n";
+
+    void SetUp() override {
+        fd_ = mkstemp(tmpfile_);
+        ASSERT_NE(fd_, -1);
+        ASSERT_EQ(write(fd_, kFileContent, sizeof(kFileContent)), sizeof(kFileContent));
+        ASSERT_EQ(lseek(fd_, 0, SEEK_SET), 0);
+    }
+
+    void TearDown() override {
+        close(fd_);
+        unlink(tmpfile_);
+    }
+};
+
+TEST_F(BufferedReaderFile, read) {
+    // デストラクタで fd, reader を破棄
+    BufferedReader buffered_reader(new FdReader(fd_, kOwnMove), kOwnMove);
+    char buf[16];
+    auto result = buffered_reader.readLine("\n");
+    ASSERT_TRUE(result.isOk());
+
+    EXPECT_EQ(result.unwrap(), "Hello, world!\n");
 }

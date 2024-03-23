@@ -36,6 +36,17 @@ TEST_F(FdReaderTest, read) {
     expectBufferEq(buf, kFileContent, len);
 }
 
+TEST_F(FdReaderTest, readMove) {
+    FdReader reader(fd_, kOwnMove);
+    char buf[16];
+    auto result = reader.read(buf, 16);
+    ASSERT_TRUE(result.isOk());
+
+    auto len = result.unwrap();
+    EXPECT_EQ(len, kFileContentLen);
+    expectBufferEq(buf, kFileContent, len);
+}
+
 TEST_F(FdReaderTest, readPartial) {
     FdReader reader(fd_);
     char buf[8];
