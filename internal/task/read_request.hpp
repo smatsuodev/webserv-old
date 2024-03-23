@@ -27,14 +27,14 @@ private:
 
 class ReadRequest : public IOTask {
 public:
-    ReadRequest(IContext *ctx, IReadRequestCallback *cb);
+    ReadRequest(IContext *ctx, IReadRequestCallback *cb, IBufferedReader *reader);
     ~ReadRequest();
     virtual Result<IOTaskResult, std::string> execute();
 
 private:
     IContext *ctx_;
     IReadRequestCallback *cb_;
-    BufferedReader reader_;
+    IBufferedReader *reader_;
     std::vector<std::string> headers_;
 };
 

@@ -26,6 +26,9 @@ IAcceptCallback::~IAcceptCallback() {}
 AcceptCallback::AcceptCallback(IOTaskManager &manager, IHandler *handler) : manager_(manager), handler_(handler) {}
 
 Result<types::Unit, std::string> AcceptCallback::trigger(int client_fd) {
-    new ReadRequest(new Context(manager_, client_fd), new ReadRequestCallback(handler_));
+    new ReadRequest(
+            new Context(manager_, client_fd),
+            new ReadRequestCallback(handler_),
+            new BufferedReader(new FdReader(client_fd), kOwnMove));
     return Ok(unit);
 }

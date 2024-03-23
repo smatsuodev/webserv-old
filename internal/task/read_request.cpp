@@ -2,8 +2,8 @@
 #include "http/request_parser.hpp"
 #include <iostream>
 
-ReadRequest::ReadRequest(IContext *ctx, IReadRequestCallback *cb)
-    : IOTask(ctx->getManager(), ctx->getClientFd()), ctx_(ctx), cb_(cb), reader_(new FdReader(ctx->getClientFd()), kOwnMove) {}
+ReadRequest::ReadRequest(IContext *ctx, IReadRequestCallback *cb, IBufferedReader *reader)
+    : IOTask(ctx->getManager(), ctx->getClientFd()), ctx_(ctx), cb_(cb), reader_(reader) {}
 
 ReadRequest::~ReadRequest() {
     delete cb_;
@@ -14,7 +14,7 @@ ReadRequest::~ReadRequest() {
 // HTTP-request = request-line CRLF *( field-line CRLF ) CRLF [ message-body ]
 Result<IOTaskResult, std::string> ReadRequest::execute() {
     // request-line CRLF
-    const Result<std::string, std::string> read_request_line_result = reader_.readLine("\r\n");
+    const Result<std::string, std::string> read_request_line_result = reader_->readLine("\r\n");
     if (read_request_line_result.isErr()) {
         return Err(read_request_line_result.unwrapErr());
     }
@@ -28,7 +28,7 @@ Result<IOTaskResult, std::string> ReadRequest::execute() {
     // *( field-line CRLF ) CRLF
     Option<size_t> content_length = None;
     while (true) {
-        const Result<std::string, std::string> read_header_result = reader_.readLine("\r\n");
+        const Result<std::string, std::string> read_header_result = reader_->readLine("\r\n");
         if (read_header_result.isErr()) {
             return Err(read_header_result.unwrapErr());
         }
@@ -66,7 +66,7 @@ Result<IOTaskResult, std::string> ReadRequest::execute() {
         const size_t &body_size = content_length.unwrap();
         // TODO: 小分けに読む
         char *buf = new char[body_size];
-        const Result<size_t, std::string> read_body_result = reader_.read(buf, body_size);
+        const Result<size_t, std::string> read_body_result = reader_->read(buf, body_size);
         if (read_body_result.isErr()) {
             return Err(read_body_result.unwrapErr());
         }
