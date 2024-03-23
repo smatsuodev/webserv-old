@@ -38,4 +38,7 @@ add_library(webserv_internal STATIC
         http/request_reader.hpp
         utils/utils.cpp
         http/method.cpp
+        io/reader.cpp
+        io/reader.hpp
+        utils/ownership.hpp
 )
