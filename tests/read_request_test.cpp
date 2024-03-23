@@ -201,3 +201,64 @@ TEST(ReadRequestErr, headerLineEnd) {
     auto result = task.execute();
     ASSERT_TRUE(result.isErr());
 }
+
+TEST(ReadRequestErr, headerLineReadErr) {
+    Mock<IContext> stub_context;
+    Mock<IReadRequestCallback> stub_callback;
+    Mock<IBufferedReader> stub_reader;
+
+    Fake(Method(stub_context, getManager),
+         Method(stub_context, getClientFd));
+
+    When(Method(stub_reader, readLine))
+            .Do([](auto) {
+                return Ok<std::string>("GET / HTTP/1.1\r\n");
+            })
+            .Return(Err<std::string>("readLine error"));
+
+    ReadRequest task(&stub_context.get(), &stub_callback.get(), &stub_reader.get());
+    auto result = task.execute();
+    ASSERT_TRUE(result.isErr());
+}
+
+TEST(ReadRequestErr, parseHeaderFieldLineErr) {
+    Mock<IContext> stub_context;
+    Mock<IReadRequestCallback> stub_callback;
+    Mock<IBufferedReader> stub_reader;
+
+    Fake(Method(stub_context, getManager),
+         Method(stub_context, getClientFd));
+
+    When(Method(stub_reader, readLine))
+            .Do([](auto) {
+                return Ok<std::string>("GET / HTTP/1.1\r\n");
+            })
+            .Do([](auto) {
+                return Ok<std::string>("INVALID_HEADER\r\n");
+            });
+
+    ReadRequest task(&stub_context.get(), &stub_callback.get(), &stub_reader.get());
+    auto result = task.execute();
+    ASSERT_TRUE(result.isErr());
+}
+
+TEST(ReadRequestErr, invalidContentLength) {
+    Mock<IContext> stub_context;
+    Mock<IReadRequestCallback> stub_callback;
+    Mock<IBufferedReader> stub_reader;
+
+    Fake(Method(stub_context, getManager),
+         Method(stub_context, getClientFd));
+
+    When(Method(stub_reader, readLine))
+            .Do([](auto) {
+                return Ok<std::string>("GET / HTTP/1.1\r\n");
+            })
+            .Do([](auto) {
+                return Ok<std::string>("Content-Length: INVALID\r\n");
+            });
+
+    ReadRequest task(&stub_context.get(), &stub_callback.get(), &stub_reader.get());
+    auto result = task.execute();
+    ASSERT_TRUE(result.isErr());
+}
