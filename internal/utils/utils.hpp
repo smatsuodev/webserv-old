@@ -1,6 +1,7 @@
 #ifndef UTILS_HPP
 #define UTILS_HPP
 
+#include "utils/option.hpp"
 #include "utils/result.hpp"
 #include <sstream>
 
@@ -17,6 +18,10 @@ namespace utils {
     // 先頭・末尾の空白もエラーとする
     // NOTE: C++98 では std::strtoull (cstdlib の関数) を使えないので, utils::strtoull は簡単に実装できない
     Result<unsigned long, std::string> stoul(const std::string &str);
+
+    // 標準ライブラリに含まれないので, 自前で実装
+    // haystack, needle が NULL の場合は None を返す
+    Option<char *> strnstr(const char *haystack, const char *needle, std::size_t len);
 } // namespace utils
 
 #endif //UTILS_HPP

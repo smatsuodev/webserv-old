@@ -1,6 +1,5 @@
 #include "reader.hpp"
 #include <cstring>
-#include <string.h> // NOLINT(*-deprecated-headers) to use strnstr
 #include <unistd.h>
 
 IReader::~IReader() {}
@@ -114,8 +113,8 @@ Result<std::string, std::string> BufferedReader::readLineFromBuffer(const std::s
 
     const char *line_start = buf_ + buf_read_pos_;
     const std::size_t buf_bytes_left = buf_write_pos_ - buf_read_pos_;
-    const char *line_end = strnstr(line_start, delimiter.c_str(), buf_bytes_left);
-    if (line_end == NULL) {
+    const Option<char *> search_result = utils::strnstr(line_start, delimiter.c_str(), buf_bytes_left);
+    if (search_result.isNone()) {
         // If the delimiter is not found, return the entire buffer
         const std::string line(line_start, buf_bytes_left);
         buf_read_pos_ = buf_write_pos_;
@@ -123,6 +122,7 @@ Result<std::string, std::string> BufferedReader::readLineFromBuffer(const std::s
     }
 
     // If the delimiter is found, return the line up to the delimiter
+    const char *line_end = search_result.unwrap();
     const std::size_t line_length = line_end - line_start + delimiter.size();
     std::string line(line_start, line_length);
     buf_read_pos_ += line_length;
