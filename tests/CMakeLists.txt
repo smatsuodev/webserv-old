@@ -40,10 +40,14 @@ add_library(test_utils STATIC
 link_libraries(webserv_internal gtest_main FakeIt::FakeIt-gtest test_utils)
 
 # Tests
-add_executable(option_test option_test.cpp
-        response_writer_test.cpp
-        to_string_test.cpp)
+add_executable(option_test option_test.cpp)
 gtest_discover_tests(option_test)
 
 add_executable(result_test result_test.cpp)
 gtest_discover_tests(result_test)
+
+add_executable(response_writer_test response_writer_test.cpp)
+gtest_discover_tests(response_writer_test)
+
+add_executable(to_string to_string_test.cpp)
+gtest_discover_tests(to_string)
