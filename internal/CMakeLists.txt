@@ -34,8 +34,6 @@ add_library(webserv_internal STATIC
         http/context.cpp
         http/request_parser.cpp
         http/request_parser.hpp
-        http/request_reader.cpp
-        http/request_reader.hpp
         utils/utils.cpp
         http/method.cpp
         io/reader.cpp

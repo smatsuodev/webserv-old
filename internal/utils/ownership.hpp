@@ -2,8 +2,8 @@
 #define OWNERSHIP_HPP
 
 enum Ownership {
-    kOwn,
-    kBorrow,
+    kOwnMove,
+    kOwnBorrow,
 };
 
 #endif //OWNERSHIP_HPP

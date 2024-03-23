@@ -3,7 +3,7 @@
 #include <iostream>
 
 ReadRequest::ReadRequest(IContext *ctx, IReadRequestCallback *cb)
-    : IOTask(ctx->getManager(), ctx->getClientFd()), ctx_(ctx), cb_(cb), reader_(ctx->getClientFd()) {}
+    : IOTask(ctx->getManager(), ctx->getClientFd()), ctx_(ctx), cb_(cb), reader_(new FdReader(ctx->getClientFd()), kOwnMove) {}
 
 ReadRequest::~ReadRequest() {
     delete cb_;
@@ -14,7 +14,7 @@ ReadRequest::~ReadRequest() {
 // HTTP-request = request-line CRLF *( field-line CRLF ) CRLF [ message-body ]
 Result<IOTaskResult, std::string> ReadRequest::execute() {
     // request-line CRLF
-    const Result<std::string, std::string> read_request_line_result = reader_.getline();
+    const Result<std::string, std::string> read_request_line_result = reader_.readLine("\r\n");
     if (read_request_line_result.isErr()) {
         return Err(read_request_line_result.unwrapErr());
     }
@@ -28,7 +28,7 @@ Result<IOTaskResult, std::string> ReadRequest::execute() {
     // *( field-line CRLF ) CRLF
     Option<size_t> content_length = None;
     while (true) {
-        const Result<std::string, std::string> read_header_result = reader_.getline();
+        const Result<std::string, std::string> read_header_result = reader_.readLine("\r\n");
         if (read_header_result.isErr()) {
             return Err(read_header_result.unwrapErr());
         }
@@ -64,11 +64,14 @@ Result<IOTaskResult, std::string> ReadRequest::execute() {
     if (content_length.isSome()) {
         // message-body
         const size_t &body_size = content_length.unwrap();
-        const Result<std::string, std::string> read_body_result = reader_.read(body_size);
+        // TODO: 小分けに読む
+        char *buf = new char[body_size];
+        const Result<size_t, std::string> read_body_result = reader_.read(buf, body_size);
         if (read_body_result.isErr()) {
             return Err(read_body_result.unwrapErr());
         }
-        maybe_body = Some(read_body_result.unwrap());
+        maybe_body = Some(std::string(buf, body_size));
+        delete[] buf;
     }
 
     Result<Request, std::string> parse_result = RequestParser::parseRequest(request_line, headers_, maybe_body.unwrapOr(""));

@@ -3,7 +3,7 @@
 
 #include "handler/handler.hpp"
 #include "http/context.hpp"
-#include "http/request_reader.hpp"
+#include "io/reader.hpp"
 #include "io_task.hpp"
 #include "utils/result.hpp"
 #include "utils/unit.hpp"
@@ -34,7 +34,7 @@ public:
 private:
     IContext *ctx_;
     IReadRequestCallback *cb_;
-    RequestReader reader_;
+    BufferedReader reader_;
     std::vector<std::string> headers_;
 };
 

@@ -7,7 +7,7 @@ IReader::~IReader() {}
 FdReader::FdReader(int fd, Ownership ownership) : fd_(fd), eof_(false), ownership_(ownership) {}
 
 FdReader::~FdReader() {
-    if (ownership_ == kOwn) {
+    if (ownership_ == kOwnMove) {
         close(fd_);
     }
 }
@@ -39,7 +39,7 @@ BufferedReader::BufferedReader(IReader *reader, std::size_t buffer_size, Ownersh
 
 BufferedReader::~BufferedReader() {
     delete[] buf_;
-    if (ownership_ == kOwn) {
+    if (ownership_ == kOwnMove) {
         delete reader_;
     }
 }

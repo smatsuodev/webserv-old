@@ -17,7 +17,7 @@ public:
 
 class FdReader : public IReader {
 public:
-    explicit FdReader(int fd, Ownership ownership = kBorrow);
+    explicit FdReader(int fd, Ownership ownership = kOwnBorrow);
     // Close the file descriptor if ownership is kOwn
     virtual ~FdReader();
 
@@ -32,8 +32,8 @@ private:
 
 class BufferedReader : public IReader {
 public:
-    explicit BufferedReader(IReader *reader, Ownership ownership = kBorrow);
-    explicit BufferedReader(IReader *reader, std::size_t buffer_size, Ownership ownership = kBorrow);
+    explicit BufferedReader(IReader *reader, Ownership ownership = kOwnBorrow);
+    explicit BufferedReader(IReader *reader, std::size_t buffer_size, Ownership ownership = kOwnBorrow);
     // Delete the reader if ownership is kOwn
     virtual ~BufferedReader();
 
