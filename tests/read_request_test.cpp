@@ -163,3 +163,41 @@ TEST(ReadRequestErr, parseErr) {
     auto result = task.execute();
     ASSERT_TRUE(result.isErr());
 }
+
+TEST(ReadRequestErr, requestLineEnd) {
+    Mock<IContext> stub_context;
+    Mock<IReadRequestCallback> stub_callback;
+    Mock<IBufferedReader> stub_reader;
+
+    Fake(Method(stub_context, getManager),
+         Method(stub_context, getClientFd));
+
+    When(Method(stub_reader, readLine)).Do([](auto) {
+        return Ok<std::string>("GET / HTTP/1.1");
+    });
+
+    ReadRequest task(&stub_context.get(), &stub_callback.get(), &stub_reader.get());
+    auto result = task.execute();
+    ASSERT_TRUE(result.isErr());
+}
+
+TEST(ReadRequestErr, headerLineEnd) {
+    Mock<IContext> stub_context;
+    Mock<IReadRequestCallback> stub_callback;
+    Mock<IBufferedReader> stub_reader;
+
+    Fake(Method(stub_context, getManager),
+         Method(stub_context, getClientFd));
+
+    When(Method(stub_reader, readLine))
+            .Do([](auto) {
+                return Ok<std::string>("GET / HTTP/1.1\r\n");
+            })
+            .Do([](auto) {
+                return Ok<std::string>("Content-Length: 5");
+            });
+
+    ReadRequest task(&stub_context.get(), &stub_callback.get(), &stub_reader.get());
+    auto result = task.execute();
+    ASSERT_TRUE(result.isErr());
+}
