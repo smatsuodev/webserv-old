@@ -44,17 +44,17 @@ private:
         std::string status_code = utils::toString(status_code_);
         std::string status_text = getHttpStatusText(status_code_);
 
-        return kProtocolVersion + " " + status_code + " " + status_text + "\n";
+        return kProtocolVersion + " " + status_code + " " + status_text + "\r\n";
     }
 
     template<class V>
     std::string generateHeaderLine(const std::string &key, V value) {
-        return key + ": " + utils::toString(value) + "\n";
+        return key + ": " + utils::toString(value) + "\r\n";
     }
 
     template<>
     std::string generateHeaderLine(const std::string &key, const std::string &value) {
-        return key + ": " + value + "\n";
+        return key + ": " + value + "\r\n";
     }
 
     std::string generateRawResponseText() {

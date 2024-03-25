@@ -25,7 +25,7 @@ TEST(ResponseWriterTest, sendShortBodyToOStream) {
     writer.writeBody("Hello, world!");
     writer.send();
 
-    EXPECT_EQ("HTTP/1.1 200 OK\nContent-Length: 13\n\r\nHello, world!", output.str());
+    EXPECT_EQ("HTTP/1.1 200 OK\r\nContent-Length: 13\r\n\r\nHello, world!", output.str());
 }
 
 TEST(ResponseWriterTest, sendLongBodyToOStream) {
@@ -37,7 +37,7 @@ TEST(ResponseWriterTest, sendLongBodyToOStream) {
     writer.writeBody(long_body);
     writer.send();
 
-    std::string expected = "HTTP/1.1 200 OK\nContent-Length: 1000\n\r\n" + long_body;
+    std::string expected = "HTTP/1.1 200 OK\r\nContent-Length: 1000\r\n\r\n" + long_body;
     EXPECT_EQ(expected, output.str());
 }
 
@@ -49,7 +49,7 @@ TEST(ResponseWriterTest, sendHeadersToOStream) {
     writer.writeHeader("Content-Type", "text/plain");
     writer.send();
 
-    std::string expected = "HTTP/1.1 200 OK\nContent-Length: 0\nContent-Type: text/plain\n\r\n";
+    std::string expected = "HTTP/1.1 200 OK\r\nContent-Length: 0\r\nContent-Type: text/plain\r\n\r\n";
     EXPECT_EQ(expected, output.str());
 }
 
@@ -61,6 +61,6 @@ TEST(ResponseWriterTest, sendStatusToOStream) {
     writer.setStatus(HttpStatusCode::kStatusNotFound);
     writer.send();
 
-    std::string expected = "HTTP/1.1 404 Not Found\nContent-Length: 0\n\r\n";
+    std::string expected = "HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\n\r\n";
     EXPECT_EQ(expected, output.str());
 }
