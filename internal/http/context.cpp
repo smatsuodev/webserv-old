@@ -13,22 +13,15 @@ void Context::setRequest(const Request &request) {
 }
 
 void Context::setHeader(const std::string &name, const std::string &value) {
-    // TODO: set header with ResponseWriter
 }
 
 void Context::text(HttpStatusCode status, const std::string &body) {
-    // TODO: send text response with ResponseWriter
-    // set Content-Type header to "text/plain"
 }
 
 void Context::html(HttpStatusCode status, const std::string &body) {
-    // TODO: send html response with ResponseWriter
-    // set Content-Type header to "text/html"
 }
 
 void Context::redirect(HttpStatusCode status, const std::string &location) {
-    // TODO: send redirect response with ResponseWriter
-    // set Location header
 }
 
 IOTaskManager &Context::getManager() const {
