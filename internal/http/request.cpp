@@ -28,14 +28,15 @@ HttpMethod Request::method() const {
 }
 
 const std::string &Request::path() const {
-    // TODO: implement
+    // TODO: クエリパラメータが含まれる場合, リクエストターゲットが absolute-form 以外の場合に返す値を検討する
+    // refs: https://datatracker.ietf.org/doc/html/rfc9112#section-3.2
     return request_target_;
 }
 
 // TODO: NOLINT を消す
 // NOLINTNEXTLINE(*-convert-member-functions-to-static)
 Option<std::string> Request::query(const std::string &key) const {
-    // TODO: implement
+    // TODO: リクエストターゲットからクエリパラメータを抽出して返す
     return None;
 }
 
