@@ -18,12 +18,12 @@ public:
 
     ~ResponseWriter() {}
 
-    void writeBody(const std::string &content) {
+    void addBody(const std::string &content) {
         body_ += content;
     }
 
     template<class V>
-    void writeHeader(const std::string &key, V value) {
+    void addHeader(const std::string &key, V value) {
         header_ += generateHeaderLine(key, value);
     }
 

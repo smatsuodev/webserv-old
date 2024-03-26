@@ -11,7 +11,7 @@ TEST(ResponseWriterTest, sendToFd) {
 
     Fake(Method(manager, addTask));
 
-    writer.writeBody("Hello, world!");
+    writer.addBody("Hello, world!");
     writer.send();
 
     Verify(Method(manager, addTask)).Exactly(1);
@@ -22,7 +22,7 @@ TEST(ResponseWriterTest, sendShortBodyToOStream) {
     std::ostringstream output;
     ResponseWriter<std::ostream &> writer(manager, output);
 
-    writer.writeBody("Hello, world!");
+    writer.addBody("Hello, world!");
     writer.send();
 
     EXPECT_EQ("HTTP/1.1 200 OK\r\nContent-Length: 13\r\n\r\nHello, world!", output.str());
@@ -34,7 +34,7 @@ TEST(ResponseWriterTest, sendLongBodyToOStream) {
     ResponseWriter<std::ostream &> writer(manager, output);
 
     std::string long_body(1000, 'a');
-    writer.writeBody(long_body);
+    writer.addBody(long_body);
     writer.send();
 
     std::string expected = "HTTP/1.1 200 OK\r\nContent-Length: 1000\r\n\r\n" + long_body;
@@ -46,7 +46,7 @@ TEST(ResponseWriterTest, sendHeadersToOStream) {
     std::ostringstream output;
     ResponseWriter<std::ostream &> writer(manager, output);
 
-    writer.writeHeader("Content-Type", "text/plain");
+    writer.addHeader("Content-Type", "text/plain");
     writer.send();
 
     std::string expected = "HTTP/1.1 200 OK\r\nContent-Length: 0\r\nContent-Type: text/plain\r\n\r\n";

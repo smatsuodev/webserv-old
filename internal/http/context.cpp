@@ -14,25 +14,25 @@ void Context::setRequest(const Request &request) {
 }
 
 void Context::setHeader(const std::string &name, const std::string &value) {
-    writer_.writeHeader(name, value);
+    writer_.addHeader(name, value);
 }
 
 void Context::text(HttpStatusCode status, const std::string &body) {
     writer_.setStatus(status);
-    writer_.writeHeader("Content-Type", "text/plain");
-    writer_.writeBody(body);
+    writer_.addHeader("Content-Type", "text/plain");
+    writer_.addBody(body);
     writer_.send();
 }
 
 void Context::html(HttpStatusCode status, const std::string &body) {
     writer_.setStatus(status);
-    writer_.writeHeader("Content-Type", "text/html");
-    writer_.writeBody(body);
+    writer_.addHeader("Content-Type", "text/html");
+    writer_.addBody(body);
     writer_.send();
 }
 
 void Context::redirect(HttpStatusCode status, const std::string &location) {
     writer_.setStatus(status);
-    writer_.writeHeader("Location", location);
+    writer_.addHeader("Location", location);
     writer_.send();
 }
