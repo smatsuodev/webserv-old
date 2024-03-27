@@ -23,8 +23,8 @@ public:
     const std::vector<VirtualServerConfig> &getVirtualServers() const;
     // There should be no need for the map itself, so no getter has been provided
     const std::string &getErrorPage(HttpStatusCode status_code);
-
     static Result<Config, std::string> parseConfigFile(const std::string &path);
+
     static const std::string kDefaultPath;
 
 private:
