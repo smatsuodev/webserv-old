@@ -16,6 +16,8 @@ void IOTaskManager::executeTasks() {
             }
             Result<IOTaskResult, std::string> r = task->execute();
             if (r.isErr()) {
+                // TODO: 適切なエラーハンドリング
+                // ログを書く, 再試行する, など
                 delete task;
                 continue;
             }
