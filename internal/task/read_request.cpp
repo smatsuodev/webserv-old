@@ -64,8 +64,6 @@ Result<IOTaskResult, std::string> ReadRequest::execute() {
     if (content_length.isSome()) {
         // message-body
         const size_t &body_size = content_length.unwrap();
-        // TODO: body_size が大きい場合を考慮
-        // 最終的に全部メモリに載せるならこれでもいい?
         char *buf = new char[body_size];
         const Result<size_t, std::string> read_body_result = reader_->read(buf, body_size);
         if (read_body_result.isErr()) {
