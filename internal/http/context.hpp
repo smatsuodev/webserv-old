@@ -2,6 +2,7 @@
 #define CONTEXT_HPP
 
 #include "request.hpp"
+#include "response_writer.hpp"
 #include "status.hpp"
 #include "task/io_task_manager.hpp"
 
@@ -34,6 +35,7 @@ private:
     IOTaskManager &manager_;
     Request request_;
     int client_fd_;
+    ResponseWriter<int> writer_;
 };
 
 #endif //CONTEXT_HPP
