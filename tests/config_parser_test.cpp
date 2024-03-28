@@ -1,5 +1,6 @@
-#include <gtest/gtest.h>
 #include "config/config.hpp"
+#include <gtest/gtest.h>
+
 //#include "config/route_config.hpp"
 //#include "config/virtual_server_config.hpp"
 
