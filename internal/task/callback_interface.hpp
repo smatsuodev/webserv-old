@@ -1,5 +1,5 @@
-#ifndef CALLBACK_INTERFACE_HPP
-#define CALLBACK_INTERFACE_HPP
+#ifndef INTERNAL_TASK_CALLBACK_INTERFACE_HPP
+#define INTERNAL_TASK_CALLBACK_INTERFACE_HPP
 
 #include "utils/unit.hpp"
 #include <string>
@@ -14,4 +14,4 @@ public:
     virtual Result<types::Unit, std::string> trigger(std::string file_content) = 0;
 };
 
-#endif //CALLBACK_INTERFACE_HPP
+#endif //INTERNAL_TASK_CALLBACK_INTERFACE_HPP

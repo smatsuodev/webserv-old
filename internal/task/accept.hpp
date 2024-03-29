@@ -1,5 +1,5 @@
-#ifndef ACCEPT_HPP
-#define ACCEPT_HPP
+#ifndef INTERNAL_TASK_ACCEPT_HPP
+#define INTERNAL_TASK_ACCEPT_HPP
 
 #include "handler/handler.hpp"
 #include "io_task.hpp"

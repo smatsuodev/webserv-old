@@ -1,5 +1,5 @@
-#ifndef CONTEXT_INTERFACE_HPP // NOTE: http/context.hpp と衝突しないようにしている
-#define CONTEXT_INTERFACE_HPP
+#ifndef INTERNAL_HTTP_INTERFACE_CONTEXT_HPP
+#define INTERNAL_HTTP_INTERFACE_CONTEXT_HPP
 
 #include "http/request.hpp"
 #include "http/status.hpp"
@@ -18,4 +18,4 @@ public:
     virtual int getClientFd() const = 0;
 };
 
-#endif //CONTEXT_INTERFACE_HPP
+#endif //INTERNAL_HTTP_INTERFACE_CONTEXT_HPP

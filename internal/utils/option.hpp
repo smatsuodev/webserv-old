@@ -1,5 +1,5 @@
-#ifndef OPTION_HPP
-#define OPTION_HPP
+#ifndef INTERNAL_UTILS_OPTION_HPP
+#define INTERNAL_UTILS_OPTION_HPP
 
 #include "try.hpp"
 #include <cstddef>

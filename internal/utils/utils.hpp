@@ -1,5 +1,5 @@
-#ifndef UTILS_HPP
-#define UTILS_HPP
+#ifndef INTERNAL_UTILS_UTILS_HPP
+#define INTERNAL_UTILS_UTILS_HPP
 
 #include "utils/option.hpp"
 #include "utils/result.hpp"
@@ -33,4 +33,4 @@ namespace utils {
     Option<char *> strnstr(const char *haystack, const char *needle, std::size_t len);
 } // namespace utils
 
-#endif //UTILS_HPP
+#endif //INTERNAL_UTILS_UTILS_HPP

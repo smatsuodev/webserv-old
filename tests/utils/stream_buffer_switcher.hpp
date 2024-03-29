@@ -1,5 +1,5 @@
-#ifndef STREAM_BUFFER_SWITCHER_HPP
-#define STREAM_BUFFER_SWITCHER_HPP
+#ifndef TESTS_UTILS_STREAM_BUFFER_SWITCHER_HPP
+#define TESTS_UTILS_STREAM_BUFFER_SWITCHER_HPP
 
 #include <ostream>
 
@@ -15,4 +15,4 @@ private:
     std::streambuf *old_buffer_;
 };
 
-#endif //STREAM_BUFFER_SWITCHER_HPP
+#endif //TESTS_UTILS_STREAM_BUFFER_SWITCHER_HPP

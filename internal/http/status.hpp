@@ -1,5 +1,5 @@
-#ifndef STATUS_HPP
-#define STATUS_HPP
+#ifndef INTERNAL_HTTP_STATUS_HPP
+#define INTERNAL_HTTP_STATUS_HPP
 
 #include <string>
 
@@ -82,4 +82,4 @@ enum HttpStatusCode {
 HttpStatusCode httpStatusCodeFromInt(int code);
 std::string getHttpStatusText(HttpStatusCode code);
 
-#endif //STATUS_HPP
+#endif //INTERNAL_HTTP_STATUS_HPP

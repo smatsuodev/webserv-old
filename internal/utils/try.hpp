@@ -1,5 +1,5 @@
-#ifndef TRY_HPP
-#define TRY_HPP
+#ifndef INTERNAL_UTILS_TRY_HPP
+#define INTERNAL_UTILS_TRY_HPP
 
 // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define TRY(expr) TRY_OR(expr, expr)

@@ -1,5 +1,5 @@
-#ifndef METHOD_HPP
-#define METHOD_HPP
+#ifndef INTERNAL_HTTP_METHOD_HPP
+#define INTERNAL_HTTP_METHOD_HPP
 
 #include <string>
 
@@ -18,4 +18,4 @@ enum HttpMethod {
 
 HttpMethod httpMethodFromString(const std::string &method);
 
-#endif //METHOD_HPP
+#endif //INTERNAL_HTTP_METHOD_HPP
