@@ -3,7 +3,7 @@
 IContext::~IContext() {}
 
 Context::Context(IOTaskManager &manager, int client_fd)
-    : manager_(manager), client_fd_(client_fd), writer_(manager, client_fd) {}
+    : manager_(manager), client_fd_(client_fd), writer_(manager, client_fd, new CloseConnectionCallback(this)) {}
 
 const Request &Context::getRequest() const {
     return request_;

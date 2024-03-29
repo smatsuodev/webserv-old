@@ -41,4 +41,5 @@ add_library(webserv_internal STATIC
         io/reader.cpp
         io/reader.hpp
         utils/ownership.hpp
+        http/interface/context.hpp
 )
