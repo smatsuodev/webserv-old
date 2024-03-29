@@ -8,10 +8,10 @@
 class IOTaskManager {
 public:
     IOTaskManager();
-    ~IOTaskManager();
+    virtual ~IOTaskManager();
     void executeTasks();
-    void addTask(IOTask *task);
-    void removeTask(IOTask *task);
+    virtual void addTask(IOTask *task);
+    virtual void removeTask(IOTask *task);
 
 private:
     std::vector<IOTask *> tasks_;

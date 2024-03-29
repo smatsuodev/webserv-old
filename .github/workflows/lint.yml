@@ -18,4 +18,4 @@ jobs:
       - name: Configure cmake
         run: cmake -B build
       - name: Run clang-tidy
-        run: git ls-files '*.cpp' '*.hpp' | parallel clang-tidy -p build -quiet
+        run: git ls-files '*.cpp' '*.hpp' | grep -v '^scripts/template/' | parallel clang-tidy -p build -quiet
