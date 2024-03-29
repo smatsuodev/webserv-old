@@ -249,7 +249,6 @@ protected:
 TEST_F(BufferedReaderFile, read) {
     // デストラクタで fd, reader を破棄
     BufferedReader buffered_reader(new FdReader(fd_, kOwnMove), kOwnMove);
-    char buf[16];
     auto result = buffered_reader.readLine("\n");
     ASSERT_TRUE(result.isOk());
 
