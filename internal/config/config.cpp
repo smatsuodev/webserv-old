@@ -1,7 +1,7 @@
 #include "config.hpp"
 #include "utils/result.hpp"
 
-const std::string Config::kDefaultPath = "default.conf";
+const std::string Config::kDefaultPath = "conf/default.conf";
 
 Config::Config() : client_max_body_size_(kDefaultClientMaxBodySize) {}
 
