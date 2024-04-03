@@ -18,8 +18,6 @@ namespace utils {
         return ss.str();
     }
 
-    std::size_t getStringStreamSize(std::stringstream &ss);
-
     bool startsWith(const std::string &str, const std::string &prefix);
     bool endsWith(const std::string &str, const std::string &suffix);
 

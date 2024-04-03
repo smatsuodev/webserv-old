@@ -55,9 +55,6 @@ gtest_discover_tests(to_string)
 add_executable(string_utils_test string_utils_test.cpp)
 gtest_discover_tests(string_utils_test)
 
-add_executable(stream_utils_test stream_utils_test.cpp)
-gtest_discover_tests(stream_utils_test)
-
 add_executable(request_parser_test request_parser_test.cpp)
 gtest_discover_tests(request_parser_test)
 
