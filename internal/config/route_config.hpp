@@ -1,5 +1,5 @@
-#ifndef ROUTE_CONFIG_HPP
-#define ROUTE_CONFIG_HPP
+#ifndef INTERNAL_CONFIG_ROUTE_CONFIG_HPP
+#define INTERNAL_CONFIG_ROUTE_CONFIG_HPP
 
 #include "http/method.hpp"
 #include <map>
@@ -61,4 +61,4 @@ private:
     std::map<std::string, std::string> response_headers_;
 };
 
-#endif //ROUTE_CONFIG_HPP
+#endif //INTERNAL_CONFIG_ROUTE_CONFIG_HPP

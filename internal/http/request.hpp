@@ -1,5 +1,5 @@
-#ifndef REQUEST_HPP
-#define REQUEST_HPP
+#ifndef INTERNAL_HTTP_REQUEST_HPP
+#define INTERNAL_HTTP_REQUEST_HPP
 
 #include "method.hpp"
 #include "utils/option.hpp"

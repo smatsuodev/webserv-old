@@ -1,5 +1,5 @@
-#ifndef VIRTUAL_SERVER_CONFIG_HPP
-#define VIRTUAL_SERVER_CONFIG_HPP
+#ifndef INTERNAL_CONFIG_VIRTUAL_SERVER_CONFIG_HPP
+#define INTERNAL_CONFIG_VIRTUAL_SERVER_CONFIG_HPP
 
 #include "route_config.hpp"
 #include <string>
@@ -34,4 +34,4 @@ private:
     std::vector<RouteConfig> routes_;
 };
 
-#endif //VIRTUAL_SERVER_CONFIG_HPP
+#endif //INTERNAL_CONFIG_VIRTUAL_SERVER_CONFIG_HPP

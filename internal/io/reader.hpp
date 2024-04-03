@@ -1,5 +1,5 @@
-#ifndef READER_HPP
-#define READER_HPP
+#ifndef INTERNAL_IO_READER_HPP
+#define INTERNAL_IO_READER_HPP
 
 #include "utils/ownership.hpp"
 #include "utils/result.hpp"
@@ -60,4 +60,4 @@ private:
     Result<std::string, std::string> readLineFromBuffer(const std::string &delimiter);
 };
 
-#endif //READER_HPP
+#endif //INTERNAL_IO_READER_HPP

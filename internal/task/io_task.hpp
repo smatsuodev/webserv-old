@@ -1,5 +1,5 @@
-#ifndef IO_TASK_HPP
-#define IO_TASK_HPP
+#ifndef INTERNAL_TASK_IO_TASK_HPP
+#define INTERNAL_TASK_IO_TASK_HPP
 
 #include "utils/result.hpp"
 #include <string>
@@ -22,4 +22,4 @@ protected:
     IOTaskManager &manager_; // NOLINT(*-avoid-const-or-ref-data-members)
 };
 
-#endif //IO_TASK_HPP
+#endif //INTERNAL_TASK_IO_TASK_HPP

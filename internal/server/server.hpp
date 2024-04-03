@@ -1,5 +1,5 @@
-#ifndef SERVER_HPP
-#define SERVER_HPP
+#ifndef INTERNAL_SERVER_SERVER_HPP
+#define INTERNAL_SERVER_SERVER_HPP
 
 #include "utils/result.hpp"
 #include "utils/unit.hpp"

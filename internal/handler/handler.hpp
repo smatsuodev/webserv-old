@@ -1,5 +1,5 @@
-#ifndef HANDLER_HPP
-#define HANDLER_HPP
+#ifndef INTERNAL_HANDLER_HANDLER_HPP
+#define INTERNAL_HANDLER_HANDLER_HPP
 
 #include "http/interface/context.hpp"
 #include "task/io_task_manager.hpp"
@@ -18,4 +18,4 @@ class Handler : public IHandler {
 public:
     Result<types::Unit, std::string> trigger(IContext *ctx);
 };
-#endif //HANDLER_HPP
+#endif //INTERNAL_HANDLER_HANDLER_HPP

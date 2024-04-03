@@ -1,5 +1,5 @@
-#ifndef CONTEXT_HPP
-#define CONTEXT_HPP
+#ifndef INTERNAL_HTTP_CONTEXT_HPP
+#define INTERNAL_HTTP_CONTEXT_HPP
 
 #include "http/interface/context.hpp"
 #include "request.hpp"
@@ -26,4 +26,4 @@ private:
     ResponseWriter<int> writer_;
 };
 
-#endif //CONTEXT_HPP
+#endif //INTERNAL_HTTP_CONTEXT_HPP

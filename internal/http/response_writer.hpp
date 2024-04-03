@@ -1,5 +1,5 @@
-#ifndef RESPONSE_WRITER_HPP
-#define RESPONSE_WRITER_HPP
+#ifndef INTERNAL_HTTP_RESPONSE_WRITER_HPP
+#define INTERNAL_HTTP_RESPONSE_WRITER_HPP
 
 #include "status.hpp"
 #include "task/io_task_manager.hpp"

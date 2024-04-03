@@ -1,5 +1,5 @@
-#ifndef REQUEST_PARSER_HPP
-#define REQUEST_PARSER_HPP
+#ifndef INTERNAL_HTTP_REQUEST_PARSER_HPP
+#define INTERNAL_HTTP_REQUEST_PARSER_HPP
 
 #include "request.hpp"
 #include "utils/result.hpp"
@@ -23,4 +23,4 @@ private:
     static bool isValidHttpVersion(const std::string &http_version);
 };
 
-#endif //REQUEST_PARSER_HPP
+#endif //INTERNAL_HTTP_REQUEST_PARSER_HPP

@@ -1,5 +1,5 @@
-#ifndef CONFIG_HPP
-#define CONFIG_HPP
+#ifndef INTERNAL_CONFIG_CONFIG_HPP
+#define INTERNAL_CONFIG_CONFIG_HPP
 
 #include "http/status.hpp"
 #include "utils/utils.hpp"
@@ -43,4 +43,4 @@ private:
     void setDefaultErrorPage(HttpStatusCode code);
 };
 
-#endif //CONFIG_HPP
+#endif //INTERNAL_CONFIG_CONFIG_HPP
