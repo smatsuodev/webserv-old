@@ -2,7 +2,7 @@
 
 template<>
 void ResponseWriter<int>::send() {
-    new WriteFile(manager_, output_, generateRawResponseText(), new WriteFileCallback(output_));
+    new WriteFile(manager_, output_, generateRawResponseText(), cb_);
 }
 
 // This function is for testing purposes only.

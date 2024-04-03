@@ -9,7 +9,8 @@ WriteFile::WriteFile(IOTaskManager &manager, int fd, const std::string &data_to_
 
 Result<IOTaskResult, std::string> WriteFile::execute() {
     write(fd_, data_to_write_.c_str(), data_to_write_.size());
-    cb_->trigger();
+    if (cb_ != NULL)
+        cb_->trigger();
     return Ok(kTaskComplete);
 }
 
@@ -17,9 +18,9 @@ WriteFile::~WriteFile() {
     delete cb_;
 }
 
-WriteFileCallback::WriteFileCallback(int fd) : fd_(fd) {}
+CloseConnectionCallback::CloseConnectionCallback(IContext *ctx) : ctx_(ctx) {}
 
-Result<types::Unit, std::string> WriteFileCallback::trigger() {
-    close(fd_);
+Result<types::Unit, std::string> CloseConnectionCallback::trigger() {
+    close(ctx_->getClientFd());
     return Ok(unit);
 }

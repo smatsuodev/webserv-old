@@ -3,7 +3,7 @@
 IContext::~IContext() {}
 
 Context::Context(IOTaskManager &manager, int client_fd)
-    : manager_(manager), client_fd_(client_fd), writer_(manager, client_fd) {}
+    : manager_(manager), client_fd_(client_fd), writer_(manager, client_fd, new CloseConnectionCallback(this)) {}
 
 const Request &Context::getRequest() const {
     return request_;
@@ -35,4 +35,12 @@ void Context::redirect(HttpStatusCode status, const std::string &location) {
     writer_.setStatus(status);
     writer_.addHeader("Location", location);
     writer_.send();
+}
+
+IOTaskManager &Context::getManager() const {
+    return manager_;
+}
+
+int Context::getClientFd() const {
+    return client_fd_;
 }

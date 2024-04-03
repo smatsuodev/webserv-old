@@ -14,7 +14,7 @@ class ResponseWriter {
 public:
     static const std::string kProtocolVersion;
 
-    ResponseWriter(IOTaskManager &manager, T output) : manager_(manager), output_(output), status_code_(kStatusOk) {}
+    ResponseWriter(IOTaskManager &manager, T output, IWriteFileCallback *cb) : manager_(manager), output_(output), cb_(cb), status_code_(kStatusOk) {}
 
     ~ResponseWriter() {}
 
@@ -36,6 +36,7 @@ public:
 private:
     IOTaskManager &manager_;
     T output_;
+    IWriteFileCallback *cb_;
     HttpStatusCode status_code_;
     std::string body_;
     std::string header_;

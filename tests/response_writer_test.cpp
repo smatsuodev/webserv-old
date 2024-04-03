@@ -7,7 +7,7 @@ using namespace fakeit;
 TEST(ResponseWriterTest, sendToFd) {
     Mock<IOTaskManager> manager;
     int fd = 1;
-    ResponseWriter<int> writer(manager.get(), fd);
+    ResponseWriter<int> writer(manager.get(), fd, NULL);
 
     Fake(Method(manager, addTask));
 
@@ -20,7 +20,7 @@ TEST(ResponseWriterTest, sendToFd) {
 TEST(ResponseWriterTest, sendShortBodyToOStream) {
     IOTaskManager manager;
     std::ostringstream output;
-    ResponseWriter<std::ostream &> writer(manager, output);
+    ResponseWriter<std::ostream &> writer(manager, output, NULL);
 
     writer.addBody("Hello, world!");
     writer.send();
@@ -31,7 +31,7 @@ TEST(ResponseWriterTest, sendShortBodyToOStream) {
 TEST(ResponseWriterTest, sendLongBodyToOStream) {
     IOTaskManager manager;
     std::ostringstream output;
-    ResponseWriter<std::ostream &> writer(manager, output);
+    ResponseWriter<std::ostream &> writer(manager, output, NULL);
 
     std::string long_body(1000, 'a');
     writer.addBody(long_body);
@@ -44,7 +44,7 @@ TEST(ResponseWriterTest, sendLongBodyToOStream) {
 TEST(ResponseWriterTest, sendHeadersToOStream) {
     IOTaskManager manager;
     std::ostringstream output;
-    ResponseWriter<std::ostream &> writer(manager, output);
+    ResponseWriter<std::ostream &> writer(manager, output, NULL);
 
     writer.addHeader("Content-Type", "text/plain");
     writer.send();
@@ -56,7 +56,7 @@ TEST(ResponseWriterTest, sendHeadersToOStream) {
 TEST(ResponseWriterTest, sendStatusToOStream) {
     IOTaskManager manager;
     std::ostringstream output;
-    ResponseWriter<std::ostream &> writer(manager, output);
+    ResponseWriter<std::ostream &> writer(manager, output, NULL);
 
     writer.setStatus(HttpStatusCode::kStatusNotFound);
     writer.send();

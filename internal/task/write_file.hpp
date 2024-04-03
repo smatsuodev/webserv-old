@@ -2,6 +2,7 @@
 #define WRITEFILE_HPP
 
 #include "callback_interface.hpp"
+#include "http/interface/context.hpp"
 #include "io_task_manager.hpp"
 
 // NOLINTNEXTLINE(cppcoreguidelines-special-member-functions)
@@ -11,13 +12,13 @@ public:
     virtual Result<types::Unit, std::string> trigger() = 0;
 };
 
-class WriteFileCallback : public IWriteFileCallback {
+class CloseConnectionCallback : public IWriteFileCallback {
 public:
-    explicit WriteFileCallback(int fd);
+    explicit CloseConnectionCallback(IContext *ctx);
     Result<types::Unit, std::string> trigger();
 
 private:
-    int fd_;
+    IContext *ctx_;
 };
 
 class WriteFile : public IOTask {
