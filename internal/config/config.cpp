@@ -1,7 +1,8 @@
 #include "config.hpp"
 #include "utils/result.hpp"
+#include <fstream>
 
-const std::string Config::kDefaultPath = "conf/default.conf";
+const std::string Config::kDefaultPath = "../conf/default.conf";
 
 Config::Config() : client_max_body_size_(kDefaultClientMaxBodySize) {}
 
@@ -29,10 +30,18 @@ Config &Config::operator=(const Config &other) {
     return *this;
 }
 
+static bool cannotOpen(const std::string &path) {
+    std::ifstream ifs(path);
+    if (!ifs)
+        return true;
+    return false;
+}
+
 Result<Config, std::string> Config::parseConfigFile(const std::string &path) {
     // TODO: ここで頑張ってパースする
     Config config;
-    (void) path;
+    if (cannotOpen(path))
+        return Err<std::string>("Cannot open file");
     return Ok(config);
     //    return Err<std::string>("Not implemented");
 }

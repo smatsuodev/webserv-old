@@ -33,7 +33,7 @@ private:
     static const unsigned int kDefaultClientMaxBodySize = utils::kMiB;
 
     // Max body size of client request (bytes)
-    unsigned int client_max_body_size_;
+    size_t client_max_body_size_;
     // Config consists of virtual server configs
     std::vector<VirtualServerConfig> virtual_servers_;
     // Similar to error_page directive in nginx
