@@ -2,13 +2,6 @@
 #include <cerrno>
 #include <cstdlib>
 
-std::size_t utils::getStringStreamSize(std::stringstream &ss) {
-    ss.seekg(0, std::ios::end);
-    std::size_t size = ss.tellg();
-    ss.seekg(0, std::ios::beg);
-    return size;
-}
-
 bool utils::startsWith(const std::string &str, const std::string &prefix) {
     return str.find(prefix) == 0;
 }

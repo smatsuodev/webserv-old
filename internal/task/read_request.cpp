@@ -78,7 +78,8 @@ Result<IOTaskResult, std::string> ReadRequest::execute() {
         return Err(parse_result.unwrapErr());
     }
     ctx_->setRequest(parse_result.unwrap());
-    cb_->trigger(ctx_);
+    if (cb_ != NULL)
+        cb_->trigger(ctx_);
     return Ok(kTaskComplete);
 }
 

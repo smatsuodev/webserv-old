@@ -18,7 +18,8 @@ Result<IOTaskResult, std::string> Accept::execute() {
         return Err<std::string>("Error: Accept failed\n");
     }
     std::cout << "Client connected\n";
-    cb_->trigger(client_fd);
+    if (cb_ != NULL)
+        cb_->trigger(client_fd);
     return Ok(kTaskSuspend);
 }
 
