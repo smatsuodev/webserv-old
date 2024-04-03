@@ -28,7 +28,7 @@ HttpMethod Request::method() const {
 }
 
 const std::string &Request::path() const {
-    // TODO: クエリパラメータが含まれる場合, リクエストターゲットが absolute-form 以外の場合に返す値を検討する
+    // TODO: クエリパラメータが含まれる場合, またはリクエストターゲットが origin-form 以外の場合に返す値を検討する
     // refs: https://datatracker.ietf.org/doc/html/rfc9112#section-3.2
     // refs: https://github.com/EringiShimeji/webserv/pull/84#discussion_r1540941614
     return request_target_;
