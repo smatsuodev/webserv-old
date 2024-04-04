@@ -154,4 +154,11 @@ private:
     types::Some<T> *some_;
 };
 
+namespace types {
+    template<class T>
+    None convertToNoneOrErr(const Option<T> &_) {
+        return ::None;
+    }
+} // namespace types
+
 #endif

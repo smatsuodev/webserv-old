@@ -189,4 +189,11 @@ private:
     types::Err<E> *err_;
 };
 
+namespace types{
+    template<class T,class E>
+    types::Err<E> convertToNoneOrErr(Result<T, E> res) {
+        return Err<E>(res.unwrapErr());
+    }
+}
+
 #endif
