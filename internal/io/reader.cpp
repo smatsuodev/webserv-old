@@ -48,11 +48,7 @@ Result<std::size_t, std::string> BufferedReader::read(char *buf, const std::size
     std::size_t total_bytes_copied = 0;
     while (total_bytes_copied < n) {
         if (buf_read_pos_ == buf_write_pos_) {
-            Result<std::size_t, std::string> fill_result = fillBuffer();
-            if (fill_result.isErr()) {
-                return Err(fill_result.unwrapErr());
-            }
-            if (fill_result.unwrap() == 0) {
+            if (TRY(fillBuffer()) == 0) {
                 break;
             }
         }
@@ -73,20 +69,12 @@ Result<std::size_t, std::string> BufferedReader::read(char *buf, const std::size
 Result<std::string, std::string> BufferedReader::readLine(const std::string &delimiter) {
     std::string line;
     while (true) {
-        Result<std::string, std::string> read_line_result = readLineFromBuffer(delimiter);
-        if (read_line_result.isErr()) {
-            return Err(read_line_result.unwrapErr());
-        }
-
-        line += read_line_result.unwrap();
+        line += TRY(readLineFromBuffer(delimiter));
         if (utils::endsWith(line, delimiter) || eof()) {
             break;
         }
 
-        Result<std::size_t, std::string> fill_result = fillBuffer();
-        if (fill_result.isErr()) {
-            return Err(fill_result.unwrapErr());
-        }
+        TRY(fillBuffer());
     }
 
     return Ok(line);
@@ -97,11 +85,7 @@ bool BufferedReader::eof() const {
 }
 
 Result<std::size_t, std::string> BufferedReader::fillBuffer() {
-    Result<std::size_t, std::string> read_result = reader_->read(buf_, buf_size_);
-    if (read_result.isErr()) {
-        return Err(read_result.unwrapErr());
-    }
-    buf_write_pos_ = read_result.unwrap();
+    buf_write_pos_ = TRY(reader_->read(buf_, buf_size_));
     buf_read_pos_ = 0;
     return Ok(buf_write_pos_);
 }

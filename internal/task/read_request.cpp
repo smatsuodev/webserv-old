@@ -14,11 +14,7 @@ ReadRequest::~ReadRequest() {
 // HTTP-request = request-line CRLF *( field-line CRLF ) CRLF [ message-body ]
 Result<IOTaskResult, std::string> ReadRequest::execute() {
     // request-line CRLF
-    const Result<std::string, std::string> read_request_line_result = reader_->readLine("\r\n");
-    if (read_request_line_result.isErr()) {
-        return Err(read_request_line_result.unwrapErr());
-    }
-    std::string request_line = read_request_line_result.unwrap();
+    std::string request_line = TRY(reader_->readLine("\r\n"));
     if (!utils::endsWith(request_line, "\r\n")) {
         return Err<std::string>("start-line does not end with CRLF");
     }
@@ -28,11 +24,7 @@ Result<IOTaskResult, std::string> ReadRequest::execute() {
     // *( field-line CRLF ) CRLF
     Option<size_t> content_length = None;
     while (true) {
-        const Result<std::string, std::string> read_header_result = reader_->readLine("\r\n");
-        if (read_header_result.isErr()) {
-            return Err(read_header_result.unwrapErr());
-        }
-        std::string header = read_header_result.unwrap();
+        std::string header = TRY(reader_->readLine("\r\n"));
         if (!utils::endsWith(header, "\r\n")) {
             return Err<std::string>("field-line does not end with CRLF");
         }
@@ -45,18 +37,10 @@ Result<IOTaskResult, std::string> ReadRequest::execute() {
         headers_.push_back(header);
 
         // Content-Length ヘッダーの値を取得
-        Result<std::pair<std::string, std::string>, std::string> parse_field_result = RequestParser::parseHeaderFieldLine(header);
-        if (parse_field_result.isErr()) {
-            return Err(parse_field_result.unwrapErr());
-        }
-        const std::pair<std::string, std::string> &field = parse_field_result.unwrap();
+        const std::pair<std::string, std::string> &field = TRY(RequestParser::parseHeaderFieldLine(header));
         if (field.first == "Content-Length") {
             // TODO: client_max_body_size より大きい値の場合はエラー
-            Result<unsigned long, std::string> field_parse_result = utils::stoul(field.second);
-            if (field_parse_result.isErr()) {
-                return Err(field_parse_result.unwrapErr());
-            }
-            content_length = Some(field_parse_result.unwrap());
+            content_length = Some(TRY(utils::stoul(field.second)));
         }
     }
 
@@ -65,19 +49,13 @@ Result<IOTaskResult, std::string> ReadRequest::execute() {
         // message-body
         const size_t &body_size = content_length.unwrap();
         char *buf = new char[body_size];
-        const Result<size_t, std::string> read_body_result = reader_->read(buf, body_size);
-        if (read_body_result.isErr()) {
-            return Err(read_body_result.unwrapErr());
-        }
+        TRY(reader_->read(buf, body_size));
         maybe_body = Some(std::string(buf, body_size));
         delete[] buf;
     }
 
-    Result<Request, std::string> parse_result = RequestParser::parseRequest(request_line, headers_, maybe_body.unwrapOr(""));
-    if (parse_result.isErr()) {
-        return Err(parse_result.unwrapErr());
-    }
-    ctx_->setRequest(parse_result.unwrap());
+    Request parse_result = TRY(RequestParser::parseRequest(request_line, headers_, maybe_body.unwrapOr("")));
+    ctx_->setRequest(parse_result);
     if (cb_ != NULL)
         cb_->trigger(ctx_);
     return Ok(kTaskComplete);
