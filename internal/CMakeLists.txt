@@ -13,7 +13,6 @@ add_library(webserv_internal STATIC
         http/request.hpp
         utils/option.hpp
         utils/result.hpp
-        utils/try.hpp
         task/io_task.hpp
         task/callback_interface.hpp
         handler/handler.hpp

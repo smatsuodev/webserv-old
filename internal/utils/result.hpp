@@ -1,7 +1,6 @@
 #ifndef INTERNAL_UTILS_RESULT_HPP
 #define INTERNAL_UTILS_RESULT_HPP
 
-#include "try.hpp"
 #include <cstddef>
 #include <stdexcept>
 
@@ -189,11 +188,14 @@ private:
     types::Err<E> *err_;
 };
 
-namespace types{
-    template<class T,class E>
-    types::Err<E> convertToNoneOrErr(Result<T, E> res) {
-        return Err<E>(res.unwrapErr());
-    }
-}
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
+#define TRY(expr) TRY_OR(expr, Err((e).unwrapErr()))
+
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
+#define TRY_OR(expr, defaultValue) ({          \
+    typeof(expr) e = (expr);                   \
+    if (!(e).canUnwrap()) return defaultValue; \
+    (e).unwrap();                              \
+})
 
 #endif

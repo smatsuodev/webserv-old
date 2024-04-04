@@ -1,10 +1,8 @@
 #ifndef INTERNAL_UTILS_OPTION_HPP
 #define INTERNAL_UTILS_OPTION_HPP
 
-#include "try.hpp"
 #include <cstddef>
 #include <stdexcept>
-#include <string>
 
 template<class T>
 class Option;
@@ -153,12 +151,5 @@ public:
 private:
     types::Some<T> *some_;
 };
-
-namespace types {
-    template<class T>
-    None convertToNoneOrErr(const Option<T> &_) {
-        return ::None;
-    }
-} // namespace types
 
 #endif
