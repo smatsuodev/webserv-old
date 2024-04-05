@@ -1,4 +1,5 @@
 #include "config.hpp"
+#include "tokenizer.hpp"
 #include "utils/result.hpp"
 #include <fstream>
 
@@ -38,10 +39,11 @@ static bool cannotOpen(const std::string &path) {
 }
 
 Result<Config, std::string> Config::parseConfigFile(const std::string &path) {
-    // TODO: ここで頑張ってパースする
     Config config;
     if (cannotOpen(path))
         return Err<std::string>("Cannot open file");
+    Tokenizer tokenizer(path);
+    // TODO: ここで頑張ってパースする
     return Ok(config);
     //    return Err<std::string>("Not implemented");
 }
