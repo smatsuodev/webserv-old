@@ -7,6 +7,14 @@
 #include "virtual_server_config.hpp"
 #include <map>
 #include <string>
+#include <fstream>
+#include <iostream>
+#include <fcntl.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <sstream>
+#include <vector>
 
 class Config {
 public:

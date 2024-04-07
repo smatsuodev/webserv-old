@@ -1,7 +1,6 @@
 #include "config.hpp"
 #include "tokenizer.hpp"
 #include "utils/result.hpp"
-#include <fstream>
 
 const std::string Config::kDefaultPath = "../conf/default.conf";
 
@@ -38,12 +37,56 @@ static bool cannotOpen(const std::string &path) {
     return false;
 }
 
+static std::map<HttpStatusCode, std::string> parse_error_page(const std::string &block) {
+    if (block.front() != '{' || block.back() != '}') {
+        throw std::runtime_error("Invalid error_page directive");
+        exit(1);
+    }
+    std::string line = block.substr(1, block.size() - 2);
+    line.erase(line.find_last_not_of(" \t") + 1);
+    line.erase(0, line.find_first_not_of(" \t"));
+    size_t pos = line.find('=');
+    std::string key = "0";
+    std::string value = "/";
+    HttpStatusCode status = kStatusUnknown;
+    if (pos != std::string::npos) {
+        std::string key = line.substr(0, pos);
+        std::string value = line.substr(pos + 1);
+        key.erase(key.find_last_not_of(" \t") + 1);
+        key.erase(0, key.find_first_not_of(" \t"));
+        value.erase(value.find_last_not_of(" \t") + 1);
+        value.erase(0, value.find_first_not_of(" \t"));
+    } else {
+        throw std::runtime_error("Invalid error_page directive");
+        exit(1);
+    }
+    char *end;
+    status = httpStatusCodeFromInt((int)std::strtol(key.c_str(), &end, 10));
+    if (*end != '\0' || errno == ERANGE || status == kStatusUnknown) {
+        throw std::runtime_error("Invalid error_page directive");
+        exit(1);
+    }
+    std::map<HttpStatusCode, std::string> error_pages;
+    error_pages[status] = value;
+    return error_pages;
+}
+
+static std::map<HttpStatusCode, std::string> getErrorPages(const std::vector<std::pair<std::string, std::string> > &blocks) {
+    std::map<HttpStatusCode, std::string> error_pages;
+    for (const auto &block : blocks) {
+        if (block.first == "error_page") {
+            error_pages = parse_error_page(block.second);
+        }
+    }
+    return error_pages;
+}
+
 Result<Config, std::string> Config::parseConfigFile(const std::string &path) {
-    Config config;
     if (cannotOpen(path))
         return Err<std::string>("Cannot open file");
     Tokenizer tokenizer(path);
-    // TODO: ここで頑張ってパースする
+    std::map<HttpStatusCode, std::string> error_pages = getErrorPages(tokenizer.blocks_);
+    Config config;
     return Ok(config);
     //    return Err<std::string>("Not implemented");
 }

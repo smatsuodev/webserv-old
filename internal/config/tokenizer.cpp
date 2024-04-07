@@ -32,13 +32,11 @@ static std::vector<std::string> getConfString(const std::string &path) {
 
 Tokenizer::Tokenizer(const std::string &path) {
     std::vector<std::string> input = getConfString(path);
-    std::vector<std::pair<std::string, std::string> > blocks;
     for (const auto &line : input) {
         std::string key, value;
         if (line.empty() || std::all_of(line.begin(), line.end(), isspace)) {
             continue;
         }
-        // 最初に登場する '=' で分割
         size_t pos = line.find('=');
         if (pos != std::string::npos) {
             key = line.substr(0, pos);
@@ -52,10 +50,7 @@ Tokenizer::Tokenizer(const std::string &path) {
         }
         key.erase(key.find_last_not_of(" \t") + 1);
         key.erase(0, key.find_first_not_of(" \t"));
-        blocks.push_back(std::make_pair(key, value));
-    }
-    for (const auto &block : blocks) {
-        std::cout << block.first << " " << block.second << std::endl;
+        blocks_.push_back(std::make_pair(key, value));
     }
 }
 

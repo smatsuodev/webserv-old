@@ -25,8 +25,7 @@ class Tokenizer {
 public:
     Tokenizer(const std::string &path);
     ~Tokenizer();
-private:
-    std::map<TokenType, std::string> token_type_map_;
+    std::vector<std::pair<std::string, std::string> > blocks_;
 };
 
 #endif
