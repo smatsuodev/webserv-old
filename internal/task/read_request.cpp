@@ -54,8 +54,8 @@ Result<IOTaskResult, std::string> ReadRequest::execute() {
         delete[] buf;
     }
 
-    Request parse_result = TRY(RequestParser::parseRequest(request_line, headers_, maybe_body.unwrapOr("")));
-    ctx_->setRequest(parse_result);
+    Request parsed_request = TRY(RequestParser::parseRequest(request_line, headers_, maybe_body.unwrapOr("")));
+    ctx_->setRequest(parsed_request);
     if (cb_ != NULL)
         cb_->trigger(ctx_);
     return Ok(kTaskComplete);
