@@ -40,7 +40,6 @@ static bool cannotOpen(const std::string &path) {
 static std::map<HttpStatusCode, std::string> parse_error_page(const std::string &block) {
     if (block.front() != '{' || block.back() != '}') {
         throw std::runtime_error("Invalid error_page directive");
-        exit(1);
     }
     std::string line = block.substr(1, block.size() - 2);
     line.erase(line.find_last_not_of(" \t") + 1);
@@ -50,21 +49,19 @@ static std::map<HttpStatusCode, std::string> parse_error_page(const std::string 
     std::string value = "/";
     HttpStatusCode status = kStatusUnknown;
     if (pos != std::string::npos) {
-        std::string key = line.substr(0, pos);
-        std::string value = line.substr(pos + 1);
+        key = line.substr(0, pos);
+        value = line.substr(pos + 1);
         key.erase(key.find_last_not_of(" \t") + 1);
         key.erase(0, key.find_first_not_of(" \t"));
         value.erase(value.find_last_not_of(" \t") + 1);
         value.erase(0, value.find_first_not_of(" \t"));
     } else {
         throw std::runtime_error("Invalid error_page directive");
-        exit(1);
     }
     char *end;
     status = httpStatusCodeFromInt((int)std::strtol(key.c_str(), &end, 10));
     if (*end != '\0' || errno == ERANGE || status == kStatusUnknown) {
         throw std::runtime_error("Invalid error_page directive");
-        exit(1);
     }
     std::map<HttpStatusCode, std::string> error_pages;
     error_pages[status] = value;
@@ -85,7 +82,7 @@ Result<Config, std::string> Config::parseConfigFile(const std::string &path) {
     if (cannotOpen(path))
         return Err<std::string>("Cannot open file");
     Tokenizer tokenizer(path);
-    std::map<HttpStatusCode, std::string> error_pages = getErrorPages(tokenizer.blocks_);
+    std::map<HttpStatusCode, std::string> error_pages = getErrorPages(tokenizer.common_config_blocks_);
     Config config;
     return Ok(config);
     //    return Err<std::string>("Not implemented");

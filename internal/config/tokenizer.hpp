@@ -25,7 +25,10 @@ class Tokenizer {
 public:
     Tokenizer(const std::string &path);
     ~Tokenizer();
-    std::vector<std::pair<std::string, std::string> > blocks_;
+
+    std::vector<std::pair<std::string, std::string> > server_config_blocks_;
+    std::vector<std::vector<std::pair<std::string, std::string> > > route_config_blocks_;
+    std::vector<std::pair<std::string, std::string> > common_config_blocks_;
 };
 
 #endif
