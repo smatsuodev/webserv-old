@@ -68,13 +68,26 @@ static std::map<HttpStatusCode, std::string> parse_error_page(const std::string 
     return error_pages;
 }
 
+void    print_error_pages(const std::map<HttpStatusCode, std::string> &error_pages) {
+    for (size_t k = 0; k < error_pages.size(); k++) {
+        std::cout << "Error page: [" << error_pages.begin()->first << "] [" << error_pages.begin()->second << "]"<< std::endl;
+    }
+}
+
 static std::map<HttpStatusCode, std::string> getErrorPages(const std::vector<std::pair<std::string, std::string> > &blocks) {
     std::map<HttpStatusCode, std::string> error_pages;
-    for (const auto &block : blocks) {
-        if (block.first == "error_page") {
-            error_pages = parse_error_page(block.second);
+    for (size_t i = 0; i < blocks.size(); i++) {
+        if (blocks[i].first == "error_page") {
+            std::map<HttpStatusCode, std::string> parsed = parse_error_page(blocks[i].second);
+            for (size_t j = 0; j < parsed.size(); j++) {
+                if (error_pages.find(parsed.begin()->first) != error_pages.end()) {
+                    throw std::runtime_error("Duplicate error_page directive");
+                }
+                error_pages[parsed.begin()->first] = parsed.begin()->second;
+            }
         }
     }
+    print_error_pages(error_pages);
     return error_pages;
 }
 
