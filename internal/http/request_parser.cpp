@@ -5,19 +5,11 @@
 Result<Request, std::string>
 RequestParser::parseRequest(const std::string &request_line, const std::vector<std::string> &headers, const std::string &body) {
     // TODO: parse query
-    const Result<RequestParser::RequestLine, std::string> parse_request_line_result = parseRequestLine(request_line);
-    if (parse_request_line_result.isErr()) {
-        return Err(parse_request_line_result.unwrapErr());
-    }
-    const RequestLine parsed_request_line = parse_request_line_result.unwrap();
+    const RequestLine parsed_request_line = TRY(parseRequestLine(request_line));
 
     std::map<std::string, std::string> parsed_headers;
     for (std::size_t i = 0; i < headers.size(); i++) {
-        const Result<std::pair<std::string, std::string>, std::string> parse_header_field_result = parseHeaderFieldLine(headers[i]);
-        if (parse_header_field_result.isErr()) {
-            return Err(parse_header_field_result.unwrapErr());
-        }
-        const HeaderField header_field = parse_header_field_result.unwrap();
+        const HeaderField header_field = TRY(parseHeaderFieldLine(headers[i]));
         parsed_headers.insert(header_field);
     }
 

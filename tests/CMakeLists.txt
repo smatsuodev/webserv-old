@@ -1,6 +1,7 @@
 project(webserv_tests)
 
 set(CMAKE_CXX_STANDARD 17)
+set(BUILD_GMOCK OFF)
 unset(CMAKE_RUNTIME_OUTPUT_DIRECTORY)
 unset(CMAKE_CXX_CLANG_TIDY) # disable temporarily
 unset(CMAKE_EXPORT_COMPILE_COMMANDS) # disable temporarily

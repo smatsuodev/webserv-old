@@ -1,10 +1,8 @@
 #ifndef INTERNAL_UTILS_OPTION_HPP
 #define INTERNAL_UTILS_OPTION_HPP
 
-#include "try.hpp"
 #include <cstddef>
 #include <stdexcept>
-#include <string>
 
 template<class T>
 class Option;

@@ -106,33 +106,3 @@ TEST(OptionTest, unwrapOrNone) {
     Option<std::string> target = None;
     EXPECT_EQ(target.unwrapOr("none"), "none");
 }
-
-Option<int> addOneIf(const Option<int> &op) {
-    int value = TRY(op);
-
-    return Some(value + 1);
-}
-
-TEST(OptionTest, trySome) {
-    Option<int> expect = Some(2);
-    EXPECT_EQ(expect, addOneIf(Some(1)));
-}
-
-TEST(OptionTest, tryNone) {
-    Option<int> expect = None;
-    EXPECT_EQ(expect, addOneIf(None));
-}
-
-int doubleIf(const Option<int> &op, int default_value) {
-    int value = TRY_OR(op, default_value);
-
-    return value * 2;
-}
-
-TEST(OptionTest, tryOrSome) {
-    EXPECT_EQ(doubleIf(Some(1), 0), 2);
-}
-
-TEST(OptionTest, tryOrNone) {
-    EXPECT_EQ(doubleIf(None, 0), 0);
-}

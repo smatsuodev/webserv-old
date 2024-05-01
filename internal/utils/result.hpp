@@ -1,7 +1,6 @@
 #ifndef INTERNAL_UTILS_RESULT_HPP
 #define INTERNAL_UTILS_RESULT_HPP
 
-#include "try.hpp"
 #include <cstddef>
 #include <stdexcept>
 
@@ -188,5 +187,15 @@ private:
     types::Ok<T> *ok_;
     types::Err<E> *err_;
 };
+
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
+#define TRY(expr) TRY_OR(expr, Err((e).unwrapErr()))
+
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
+#define TRY_OR(expr, defaultValue) ({          \
+    typeof(expr) e = (expr);                   \
+    if (!(e).canUnwrap()) return defaultValue; \
+    (e).unwrap();                              \
+})
 
 #endif
