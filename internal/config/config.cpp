@@ -49,13 +49,19 @@ void Config::setDefaultErrorPage(const HttpStatusCode code) {
 }
 
 /* getters */
-unsigned int Config::getClientMaxBodySize() const { return client_max_body_size_; }
+unsigned int Config::getClientMaxBodySize() const {
+    return client_max_body_size_;
+}
 
-const std::vector<VirtualServerConfig> &Config::getVirtualServers() const { return virtual_servers_; }
+const std::vector<VirtualServerConfig> &Config::getVirtualServers() const {
+    return virtual_servers_;
+}
 
 // If an error page is not set, generate a default one and store it to reduce resource usage
 const std::string &Config::getErrorPage(const HttpStatusCode code) {
-    if (error_pages_.find(code) != error_pages_.end()) { return error_pages_.at(code); }
+    if (error_pages_.find(code) != error_pages_.end()) {
+        return error_pages_.at(code);
+    }
     setDefaultErrorPage(code);
     return error_pages_.at(code);
 }
