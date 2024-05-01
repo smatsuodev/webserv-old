@@ -1,6 +1,6 @@
+#include "config/config.hpp"
 #include <fakeit.hpp>
 #include <gtest/gtest.h>
-#include "config/config.hpp"
 
 using namespace fakeit;
 

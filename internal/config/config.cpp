@@ -42,15 +42,18 @@ Result<Config, std::string> Config::parseConfigFile(const std::string &path) {
 void Config::setDefaultErrorPage(const HttpStatusCode code) {
     if (error_pages_.find(code) == error_pages_.end()) {
         const std::string text = utils::toString(code) + " " + getHttpStatusText(code);
+        // clang-format の都合で読みにくい書式になっている
         error_pages_[code] =
                 "<html>"
-                "<head><title>" + text + "</title></head>"
-                "<body>"
-                "<center><h1>" + text + "</h1></center>"
-                "<hr>"
-                "<center>webserv/0.1.0</center>"
-                "</body>"
-                "</html>";
+                "<head><title>"
+                + text + "</title></head>"
+                         "<body>"
+                         "<center><h1>"
+                + text + "</h1></center>"
+                         "<hr>"
+                         "<center>webserv/0.1.0</center>"
+                         "</body>"
+                         "</html>";
     }
 }
 
