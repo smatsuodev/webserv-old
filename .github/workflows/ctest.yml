@@ -31,7 +31,10 @@ jobs:
           ninjaVersion: "^1.11.1"
 
       - name: Install gcovr
-        run: pip3 install gcovr
+        run: |
+          python3 -m venv venv
+          source venv/bin/activate
+          pip install gcovr
 
       - name: ccache
         uses: hendrikmuhs/ccache-action@v1.2.11
