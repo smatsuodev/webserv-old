@@ -30,12 +30,6 @@ jobs:
           cmakeVersion: "~3.28.0"
           ninjaVersion: "^1.11.1"
 
-      - name: Install gcovr
-        run: |
-          python3 -m venv venv
-          source venv/bin/activate
-          pip install gcovr
-
       - name: ccache
         uses: hendrikmuhs/ccache-action@v1.2.11
         with:
@@ -55,6 +49,9 @@ jobs:
       - name: Generate coverage report
         if: ${{ matrix.use-sanitizer == false }}
         run: |
+          python3 -m venv venv
+          source venv/bin/activate
+          pip install gcovr
           gcovr --exclude-unreachable-branches --xml coverage.xml -f internal/ build/tests/
           gcovr --exclude-unreachable-branches --html coverage.html -f internal/ build/tests/
 
