@@ -73,3 +73,6 @@ gtest_discover_tests(buffered_reader_test)
 
 add_executable(read_request_test read_request_test.cpp)
 gtest_discover_tests(read_request_test)
+
+add_executable(default_error_page_test default_error_page_test.cpp)
+gtest_discover_tests(default_error_page_test)

@@ -39,9 +39,21 @@ Result<Config, std::string> Config::parseConfigFile(const std::string &path) {
 
 // Set a default error page like nginx
 // Do nothing if error page is already set
-void Config::setDefaultErrorPage(HttpStatusCode code) {
+void Config::setDefaultErrorPage(const HttpStatusCode code) {
     if (error_pages_.find(code) == error_pages_.end()) {
-        error_pages_[code] = "";
+        const std::string text = utils::toString(code) + " " + getHttpStatusText(code);
+        // clang-format の都合で読みにくい書式になっている
+        error_pages_[code] =
+                "<html>"
+                "<head><title>"
+                + text + "</title></head>"
+                         "<body>"
+                         "<center><h1>"
+                + text + "</h1></center>"
+                         "<hr>"
+                         "<center>webserv/0.1.0</center>"
+                         "</body>"
+                         "</html>";
     }
 }
 
@@ -55,7 +67,7 @@ const std::vector<VirtualServerConfig> &Config::getVirtualServers() const {
 }
 
 // If an error page is not set, generate a default one and store it to reduce resource usage
-const std::string &Config::getErrorPage(HttpStatusCode code) {
+const std::string &Config::getErrorPage(const HttpStatusCode code) {
     if (error_pages_.find(code) != error_pages_.end()) {
         return error_pages_.at(code);
     }
