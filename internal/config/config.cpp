@@ -69,34 +69,67 @@ static std::map<HttpStatusCode, std::string> parse_error_page(const std::string 
 }
 
 void    print_error_pages(const std::map<HttpStatusCode, std::string> &error_pages) {
-    for (size_t k = 0; k < error_pages.size(); k++) {
-        std::cout << "Error page: [" << error_pages.begin()->first << "] [" << error_pages.begin()->second << "]"<< std::endl;
+    for (std::map<HttpStatusCode, std::string>::const_iterator it = error_pages.begin(); it != error_pages.end(); it++) {
+        std::cout << "Error page: [" << it->first << "] [" << it->second << "]" << std::endl;
     }
 }
 
-static std::map<HttpStatusCode, std::string> getErrorPages(const std::vector<std::pair<std::string, std::string> > &blocks) {
+void    print_client_max_body_size(unsigned int client_max_body_size) {
+    std::cout << "Client max body size: " << client_max_body_size << std::endl;
+}
+
+static std::map<HttpStatusCode, std::string> getErrorPagesFromConfig(const std::vector<std::pair<std::string, std::string> > &blocks) {
     std::map<HttpStatusCode, std::string> error_pages;
     for (size_t i = 0; i < blocks.size(); i++) {
         if (blocks[i].first == "error_page") {
             std::map<HttpStatusCode, std::string> parsed = parse_error_page(blocks[i].second);
-            for (size_t j = 0; j < parsed.size(); j++) {
-                if (error_pages.find(parsed.begin()->first) != error_pages.end()) {
-                    throw std::runtime_error("Duplicate error_page directive");
-                }
-                error_pages[parsed.begin()->first] = parsed.begin()->second;
+            if (error_pages.find(parsed.begin()->first) != error_pages.end()) {
+                throw std::runtime_error("Duplicate error_page directive");
             }
+            error_pages.insert(parsed.begin(), parsed.end());
         }
     }
-    print_error_pages(error_pages);
     return error_pages;
 }
 
+static unsigned int getClientMaxBodySizeFromConfig(const std::vector<std::pair<std::string, std::string> > &blocks) {
+    Config tmp;
+    unsigned int client_max_body_size = tmp.getClientMaxBodySize();
+    for (size_t i = 0; i < blocks.size(); i++) {
+        if (blocks[i].first == "client_max_body_size") {
+            std::string line = blocks[i].second;
+            line.erase(line.find_last_not_of("\"\' \t") + 1);
+            line.erase(0, line.find_first_not_of("\"\' \t"));
+            char *end;
+            unsigned int size = (unsigned int)std::strtol(line.c_str(), &end, 10);
+            std::string rest = line.substr(end - line.c_str());
+            rest.erase(rest.find_last_not_of(" \t") + 1);
+            if (errno == ERANGE) {
+                throw std::runtime_error("Invalid client_max_body_size directive");
+            }
+            if (*end == '\0') {
+                client_max_body_size = size;
+            } else if (rest == "kB" || rest == "KB" || rest == "KiB") {
+                client_max_body_size = size * utils::kKiB;
+            } else if (rest == "MB" || rest == "MiB") {
+                client_max_body_size = size * utils::kMiB;
+            } else {
+                throw std::runtime_error("Invalid client_max_body_size directive");
+            }
+        }
+    }
+    return client_max_body_size;
+}
+
 Result<Config, std::string> Config::parseConfigFile(const std::string &path) {
+    Config config;
     if (cannotOpen(path))
         return Err<std::string>("Cannot open file");
     Tokenizer tokenizer(path);
-    std::map<HttpStatusCode, std::string> error_pages = getErrorPages(tokenizer.common_config_blocks_);
-    Config config;
+    config.error_pages_ = getErrorPagesFromConfig(tokenizer.common_config_blocks_);
+    print_error_pages(config.error_pages_);
+    config.client_max_body_size_ = getClientMaxBodySizeFromConfig(tokenizer.common_config_blocks_);
+    print_client_max_body_size(config.client_max_body_size_);
     return Ok(config);
     //    return Err<std::string>("Not implemented");
 }
