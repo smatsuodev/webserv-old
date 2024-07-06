@@ -4,7 +4,7 @@ static std::vector<std::string> getConfString(const std::string &path) {
     int fd = open(path.c_str(), O_RDONLY);
     if (fd == -1) {
         std::cerr << "Cannot open file" << std::endl;
-        exit(1);
+        throw std::runtime_error("Cannot open file");
     }
     struct stat st = {};
     fstat(fd, &st);
@@ -12,7 +12,7 @@ static std::vector<std::string> getConfString(const std::string &path) {
     char *buf = (char *)mmap(NULL, size, PROT_READ, MAP_PRIVATE, fd, 0);
     if (buf == MAP_FAILED) {
         std::cerr << "Cannot mmap file" << std::endl;
-        exit(1);
+        throw std::runtime_error("Cannot mmap file");
     }
     close(fd);
     std::string s(buf, size);
